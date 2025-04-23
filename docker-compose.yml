@@ -48,7 +48,7 @@ services:
     ports:
       - "${NG_PORT}:${NG_PORT}"
     volumes:
-      - ./Frontend/frontend:/app        # hot‑reload en modo dev
+      - ./Frontend/frontend:/app        
     networks: [stack]
 
 volumes:
