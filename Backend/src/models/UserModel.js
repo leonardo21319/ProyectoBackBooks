@@ -1,13 +1,33 @@
-import bd from '../config/configDB.js'
-import conexion from '../config/configDB.js'
+import pool from '../config/configDB.js';
+
 export const guardarUsuarioDB = async (usuario) => {
+  const contrasenaHasheada = await usuario.hash(usuario.contrasena);
 
-    const contrasenaHassheada = await usuario.hash(usuario.contrasena);
-    usuario.contrasena = contrasenaHassheada;
-    usuario.fechaCreacion = new Date().toISOString().slice(0, 19).replace('T', ' ');
-    usuario.estatus = usuario.estatus || 1;
-    
-    const sql = 
-    'INSERT INTO usuarios (nombre, correo_institucional, contrasena) VALUES ($1, $2, $3) RETURNING id';
+  const sql = `
+    INSERT INTO usuario 
+    (correo_institucional, nombre, apellido_paterno, apellido_materno, contraseña, id_rol, calificacion, fecha_registro, estatus)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+    RETURNING id
+  `;
 
-}
+  const valores = [
+    usuario.correoInstitucional,
+    usuario.nombre,
+    usuario.apellidoPaterno,
+    usuario.apellidoMaterno,
+    contrasenaHasheada,
+    usuario.rol?.id ?? 3,
+    usuario.calificacion,
+    usuario.fechaRegistro,
+    usuario.estatus ? 1 : 0
+  ];
+
+  try {
+    const resultado = await pool.query(sql, valores);
+    usuario.id = resultado.rows[0].id;
+    return usuario;
+  } catch (error) {
+    console.error('Error al guardar usuario:', error);
+    throw error;
+  }
+};

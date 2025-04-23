@@ -3,6 +3,7 @@ import express from 'express';
 import path from 'path';
 import cors from 'cors';
 import testConnection from './src/config/test.js'; 
+import indexRutas from './src/modules/login/LoginRoutes.js';
 const app = express();
 
 //Configuraciones
@@ -22,7 +23,7 @@ app.use(
 );
 //Importacion de rutas
 const rutas = [
-    
+    {path: '/', route: indexRutas}
 ];
 rutas.forEach(({ path, route }) => {
     app.use(path, route);
