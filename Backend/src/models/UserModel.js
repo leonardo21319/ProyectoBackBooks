@@ -5,7 +5,7 @@ export const guardarUsuarioDB = async (usuario) => {
 
   const sql = `
     INSERT INTO usuario 
-    (correo_institucional, nombre, apellido_paterno, apellido_materno, contraseña, id_rol, calificacion, fecha_registro, estatus)
+    (correo_institucional, nombre, apellido_paterno, apellido_materno, contrasena, id_rol, calificacion, fecha_registro, estatus)
     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
     RETURNING id
   `;
