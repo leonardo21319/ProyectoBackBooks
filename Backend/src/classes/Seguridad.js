@@ -1,4 +1,3 @@
-// utils/Seguridad.js
 import bcrypt from 'bcrypt';
 
 export default class Seguridad {
@@ -10,3 +9,4 @@ export default class Seguridad {
     return bcrypt.compare(contrasena, hash);
   }
 }
+

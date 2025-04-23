@@ -1,39 +1,16 @@
-
-
-class Usuario {
-    constructor({
-      id,
-      correoInstitucional,
-      nombre,
-      apellidoPaterno,
-      apellidoMaterno,
-      contrasena,
-      rol,
-      calificacion,
-      fechaRegistro = new Date(),
-      estatus = true,
-      librosPublicados = [],
-      transaccionesComoComprador = [],
-      transaccionesComoVendedor = []
-    }) {
-      this.id = id;
-      this.correoInstitucional = correoInstitucional;
-      this.nombre = nombre;
-      this.apellidoPaterno = apellidoPaterno;
-      this.apellidoMaterno = apellidoMaterno;
-      this.contrasena = contrasena;
-      this.rol = rol; // Objeto Rol
-      this.calificacion = calificacion;
-      this.fechaRegistro = fechaRegistro;
-      this.estatus = estatus;
-  
-      // Relaciones
-      this.librosPublicados = librosPublicados;
-      this.transaccionesComoComprador = transaccionesComoComprador;
-      this.transaccionesComoVendedor = transaccionesComoVendedor;
+export class Usuario {
+    constructor(datos) {
+      this.id = datos.id;
+      this.correoInstitucional = datos.correoInstitucional;
+      this.nombre = datos.nombre;
+      this.apellidoPaterno = datos.apellidoPaterno;
+      this.apellidoMaterno = datos.apellidoMaterno;
+      this.contrasena = datos.contrasena;
+      this.rol = datos.rol;
+      this.calificacion = datos.calificacion;
+      this.fechaRegistro = datos.fechaRegistro;
+      this.estatus = datos.estatus ?? true;
     }
-  
-    // Métodos
   
     getNombreCompleto() {
       return `${this.nombre} ${this.apellidoPaterno} ${this.apellidoMaterno}`;
@@ -55,16 +32,3 @@ class Usuario {
       this.rol = nuevoRol;
     }
   }
-  const nuevoUsuario = new Usuario({
-    id: 1,
-    correoInstitucional: 'leonardo.dominguez@escom.ipn.mx',
-    nombre: 'Leonardo',
-    apellidoPaterno: 'Dominguez',
-    apellidoMaterno: 'Olvera',
-    contrasena: 'segura123',
-    rol: { id: 2, nombre: 'Comprador' },
-    calificacion: 4.8
-  });
-  
-  console.log(nuevoUsuario.getNombreCompleto()); // Leonardo Dominguez Olvera
-  
