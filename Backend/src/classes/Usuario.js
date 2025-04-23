@@ -21,7 +21,7 @@ class Usuario {
   getNombreCompleto() {
     return `${this.nombre} ${this.apellidoPaterno} ${this.apellidoMaterno}`;
   }
-
+//aaaaaaaaaaaaaaaa
   cambiarRol(nuevoRol) {
     this.rol = nuevoRol;
   }
