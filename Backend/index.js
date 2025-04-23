@@ -2,7 +2,7 @@
 import express from 'express';
 import path from 'path';
 import cors from 'cors';
-import testConnection from './config/test.js'; 
+import testConnection from './src/config/test.js'; 
 const app = express();
 
 //Configuraciones

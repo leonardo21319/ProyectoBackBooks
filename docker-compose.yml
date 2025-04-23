@@ -1,0 +1,58 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:16
+    container_name: intercambiolibros_db
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks: [stack]
+
+  backend:
+    build:
+      context: ./Backend
+      target: dev        
+    container_name: api-server
+    depends_on: [db]
+    environment:
+      - DB_USER=${POSTGRES_USER}
+      - DB_PASS=${POSTGRES_PASSWORD}
+      - DB_NAME=${POSTGRES_DB}
+      - DB_HOST=db
+      - DB_PORT=5432
+      - PORT=${PORT}
+      - JWT_SECRET=${JWT_SECRET}
+    ports:
+      - "${PORT}:${PORT}"
+    volumes:
+      - ./Backend:/usr/src/app          # hot‑reload
+    networks: [stack]
+
+  frontend:
+    build:
+      context: ./Frontend/frontend
+    container_name: angular-app
+    depends_on: [backend]
+    # Descomenta UNO de estos 2 bloques según tu Dockerfile
+    # --- Producción (Nginx) ---
+    # ports:
+    #   - "8080:80"
+    # --- Desarrollo (ng serve) ---
+    ports:
+      - "${NG_PORT}:${NG_PORT}"
+    volumes:
+      - ./Frontend/frontend:/app        # hot‑reload en modo dev
+    networks: [stack]
+
+volumes:
+  pgdata:
+
+networks:
+  stack:
