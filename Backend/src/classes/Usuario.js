@@ -1,5 +1,6 @@
 import bcrypt from 'bcryptjs';
 
+
 class Usuario {
   constructor(datos) {
     this.id = datos.id;
@@ -17,6 +18,8 @@ class Usuario {
   async hash(contrasena) {
     return bcrypt.hash(contrasena, 10);
   }
+
+
 
   getNombreCompleto() {
     return `${this.nombre} ${this.apellidoPaterno} ${this.apellidoMaterno}`;

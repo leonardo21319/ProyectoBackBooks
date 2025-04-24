@@ -1,6 +1,8 @@
 import Usuario from '../../classes/Usuario.js';
 import { guardarUsuarioDB, obtenerUsuarioPorCorreo } from '../../models/UserModel.js';
 import Seguridad from '../../classes/Seguridad.js';
+import Autenticacion from '../../classes/Autenticacion.js';
+
 export const RegistroControlador = async (req, res) => {
   const listaUsuarios = req.body;
 
@@ -36,13 +38,13 @@ export const RegistroControlador = async (req, res) => {
 
 // Controlador para el inicio de sesión
 export const LoginControlador = async (req, res) => {
-
   const { correo, contrasena } = req.body.data;
 
   if (!correo || !contrasena) {
     return res.status(400).json({ error: 'Correo y contraseña son requeridos' });
   }
 
+  // NO se descifra el correo de entrada
   const usuario = await obtenerUsuarioPorCorreo(correo);
   if (!usuario) {
     return res.status(404).json({ error: 'Usuario no encontrado' });
@@ -55,4 +57,4 @@ export const LoginControlador = async (req, res) => {
 
   const token = Autenticacion.generarToken(usuario);
   res.status(200).json({ data: token });
-}
+};

@@ -1,8 +1,7 @@
 import express from 'express';
 import { 
     LoginControlador,
-    RegistroControlador
-    
+    RegistroControlador    
  } from './LoginController.js';
 
 const router = express.Router();
