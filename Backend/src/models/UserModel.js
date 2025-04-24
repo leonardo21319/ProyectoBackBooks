@@ -1,3 +1,4 @@
+import e from 'express';
 import pool from '../config/configDB.js';
 
 export const guardarUsuarioDB = async (usuario) => {
@@ -31,3 +32,22 @@ export const guardarUsuarioDB = async (usuario) => {
     throw error;
   }
 };
+
+
+export const obtenerUsuarioPorCorreo = async (correo) => {
+  try {
+    const resultado = await pool.query(
+      'SELECT * FROM usuario WHERE correoInstitucional = $1',
+      [correo]
+    );
+
+    if (resultado.rows.length === 0) {
+      return null;
+    }
+
+    return resultado.rows[0];
+  } catch (error) {
+    console.error('Error al obtener usuario por correo:', error);
+    throw error;
+  }
+}
