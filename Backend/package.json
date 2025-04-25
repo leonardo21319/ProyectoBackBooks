@@ -17,8 +17,13 @@
     "crypto": "^1.0.1",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
+<<<<<<< Updated upstream
     "jsonwebtoken": "^9.0.2",
     "pg": "^8.15.1"
+=======
+    "pg": "^8.15.5",
+    "pool": "^0.4.1"
+>>>>>>> Stashed changes
   },
   "devDependencies": {
     "nodemon": "^3.1.10"
