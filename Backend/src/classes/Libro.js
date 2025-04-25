@@ -33,4 +33,4 @@ class Libro {
       this.id_tipo_transaccion = id_tipo_transaccion;
     }
   }
-  
+  export default Libro;
