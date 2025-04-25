@@ -63,8 +63,12 @@ export const LogoutControlador = async (req, res) => {
   const token = req.headers['authorization'];
   if (!token) {
     return res.status(401).json({ error: 'Token no proporcionado' });
-  }else{
-    Autenticacion.invalidarToken(token);
   }
-  res.status(200).json({ message: 'Sesión cerrada con éxito' });
-}
+
+  try {
+    await Autenticacion.invalidarToken(token);
+    res.status(200).json({ message: 'Sesión cerrada con éxito' });
+  } catch (error) {
+    res.status(500).json({ error: 'Error al cerrar sesión' });
+  }
+};
