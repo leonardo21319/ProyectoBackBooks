@@ -43,8 +43,7 @@ export const LoginControlador = async (req, res) => {
   if (!correo || !contrasena) {
     return res.status(400).json({ error: 'Correo y contraseña son requeridos' });
   }
-
-  // NO se descifra el correo de entrada
+//Recibe id, el correo y la contraseña del usuario
   const usuario = await obtenerUsuarioPorCorreo(correo);
   if (!usuario) {
     return res.status(404).json({ error: 'Usuario no encontrado' });
@@ -58,3 +57,14 @@ export const LoginControlador = async (req, res) => {
   const token = Autenticacion.generarToken(usuario);
   res.status(200).json({ data: token });
 };
+
+
+export const LogoutControlador = async (req, res) => {
+  const token = req.headers['authorization'];
+  if (!token) {
+    return res.status(401).json({ error: 'Token no proporcionado' });
+  }else{
+    Autenticacion.invalidarToken(token);
+  }
+  res.status(200).json({ message: 'Sesión cerrada con éxito' });
+}

@@ -19,8 +19,6 @@ class Usuario {
     return bcrypt.hash(contrasena, 10);
   }
 
-
-
   getNombreCompleto() {
     return `${this.nombre} ${this.apellidoPaterno} ${this.apellidoMaterno}`;
   }

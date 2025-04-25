@@ -4,11 +4,12 @@ import crypto from 'crypto';
 
 dotenv.config();
 
-const algorithm = 'aes-256-cbc';
-const key = Buffer.from(process.env.ENCRYPT_KEY, 'hex');
-const iv = Buffer.alloc(16, 0); // Un IV fijo de 16 bytes en cero
-
 export default class Seguridad {
+  static  algorithm = 'aes-256-cbc';
+  static  key = Buffer.from(process.env.ENCRYPT_KEY, 'hex');
+  static  iv = Buffer.alloc(16, 0); // Un IV
+  static  blacklist = new Map(); 
+
   static async hash(contrasena) {
     return bcrypt.hash(contrasena, 10);
   }
@@ -28,10 +29,21 @@ export default class Seguridad {
   }
   
   static descifrar(valor) {
-    const decipher = crypto.createDecipheriv(algorithm, key, iv); // Usa el iv ya definido
+    const decipher = crypto.createDecipheriv(algorithm, key, iv); 
     let decrypted = decipher.update(valor, 'hex', 'utf8');
     decrypted += decipher.final('utf8');
     return decrypted;
   }
+
+  static agregarTokenBlacklist(token) {
+    Seguridad.blacklist.set(token, Date.now()); 
+  }
   
+  static verificarTokenBlacklist(token) {
+    return Seguridad.blacklist.has(token); // Verifica si el token está en la blacklist
+  }
+
+  static limpiarBlacklist(token) {
+    Seguridad.blacklist.clear();
+  }
 }
