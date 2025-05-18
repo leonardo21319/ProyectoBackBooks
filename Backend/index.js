@@ -36,4 +36,4 @@ app.listen(puerto, '0.0.0.0', () => {
     console.log(`Servidor corriendo en http://localhost:${puerto}`);
 });
 
-testConnection(); // Probar la conexión a la base de datos al iniciar el servidor
+testConnection(); 
