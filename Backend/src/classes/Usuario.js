@@ -1,5 +1,4 @@
-import bcrypt from 'bcryptjs';
-
+import bcrypt from "bcryptjs";
 
 class Usuario {
   constructor(datos) {
@@ -22,7 +21,7 @@ class Usuario {
   getNombreCompleto() {
     return `${this.nombre} ${this.apellidoPaterno} ${this.apellidoMaterno}`;
   }
-//aaaaaaaaaaaaaaaa
+  //aaaaaaaaaaaaaaaa
   cambiarRol(nuevoRol) {
     this.rol = nuevoRol;
   }
