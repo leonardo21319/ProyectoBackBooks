@@ -5,7 +5,6 @@ import cors from 'cors';
 import testConnection from './src/config/test.js'; 
 import indexRutas from './src/modules/login/LoginRoutes.js';
 import IntercambioRutas from './src/modules/Intercambio/LibroRoutes.js'
-import TransaccionRutas from './src/modules/Intercambio/TransaccionRoutes.js'
 
 const app = express();
 
@@ -27,8 +26,7 @@ app.use(
 //Importacion de rutas
 const rutas = [
     {path: '/', route: indexRutas}, 
-    {path: '/', route: IntercambioRutas}, 
-    {path: '/', route: TransaccionRutas}
+    {path: '/', route: IntercambioRutas}
 ];
 rutas.forEach(({ path, route }) => {
     app.use(path, route);
@@ -38,4 +36,4 @@ app.listen(puerto, '0.0.0.0', () => {
     console.log(`Servidor corriendo en http://localhost:${puerto}`);
 });
 
-testConnection(); // Probar la conexión a la base de datos al iniciar el servidor
+testConnection(); 

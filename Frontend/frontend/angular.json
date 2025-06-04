@@ -97,8 +97,15 @@
         }
       }
     }
+<<<<<<< HEAD
   },
   "cli": {
+<<<<<<< HEAD
     "analytics": "1eaeaceb-6319-438f-ac91-9a287bd477f4"
+=======
+    "analytics": "2fb55b86-ad19-4585-96e0-a94447469b58"
+>>>>>>> 0bf952c0245ad8002a4cd9f81505e038604d9b38
+=======
+>>>>>>> parent of 57002d6 (TRANSACCION COMPLETA)
   }
 }
