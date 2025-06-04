@@ -5,6 +5,7 @@ import cors from 'cors';
 import testConnection from './src/config/test.js'; 
 import indexRutas from './src/modules/login/LoginRoutes.js';
 import IntercambioRutas from './src/modules/Intercambio/LibroRoutes.js'
+import TransaccionRutas from './src/modules/Intercambio/TransaccionRoutes.js'
 
 const app = express();
 
@@ -26,7 +27,8 @@ app.use(
 //Importacion de rutas
 const rutas = [
     {path: '/', route: indexRutas}, 
-    {path: '/', route: IntercambioRutas}
+    {path: '/', route: IntercambioRutas}, 
+    {path: '/', route: TransaccionRutas}
 ];
 rutas.forEach(({ path, route }) => {
     app.use(path, route);

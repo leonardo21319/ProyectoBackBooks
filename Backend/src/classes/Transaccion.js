@@ -24,3 +24,4 @@ class Transaccion {
     }
   }
   
+  export default Transaccion;
