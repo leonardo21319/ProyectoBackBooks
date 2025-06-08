@@ -1,32 +1,40 @@
-import { Component } from "@angular/core";
-import { ApiService } from "../../servicios/api.service";
-import { Router } from '@angular/router';
+import { Component } from '@angular/core';
+import { NgForm } from '@angular/forms'; // Asegúrate de que FormsModule esté importado en tu módulo
+
 @Component({
   selector: 'app-login',
-  template: `
-    <h2>Iniciar Sesión</h2>
-    <form (ngSubmit)="iniciarSesion()">
-      <input [(ngModel)]="email" name="email" placeholder="Correo" required>
-      <input [(ngModel)]="password" type="password" name="password" placeholder="Contraseña" required>
-      <button type="submit">Entrar</button>
-    </form>
-  `
+  templateUrl: './login.component.html',
+  styleUrls: ['./login.component.css'],
 })
 export class LoginComponent {
-  email = '';
-  password = '';
+  isLoginFormActive = true;
+  loginEmail: string = '';
+  loginPassword: string = '';
+  signupName: string = '';
+  signupLastname: string = '';
+  signupEmail: string = '';
+  signupPassword: string = '';
+  errorMsg: string[] = [];
 
-  constructor(private api: ApiService, private router: Router) {}
+  toggleForm(isLogin: boolean): void {
+    this.isLoginFormActive = isLogin;
+  }
 
-  iniciarSesion() {
-    this.api.login({ email: this.email, password: this.password }).subscribe({
-      next: (res) => {
-        localStorage.setItem('token', res.token);
-        this.router.navigate(['/home']); // Redirige a la vista principal
-      },
-      error: (err) => {
-        alert(err.error.message || 'Error al iniciar sesión');
-      }
-    });
+  submitLogin(): void {
+    // Implementar lógica para el inicio de sesión
+    // Asegúrate de manejar la validación y errores
+    console.log('Login Form Submitted', this.loginEmail, this.loginPassword);
+  }
+
+  submitSignup(): void {
+    // Implementar lógica para el registro
+    // Asegúrate de manejar la validación y errores
+    console.log(
+      'Signup Form Submitted',
+      this.signupName,
+      this.signupLastname,
+      this.signupEmail,
+      this.signupPassword
+    );
   }
 }
