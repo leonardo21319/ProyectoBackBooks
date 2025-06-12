@@ -1,0 +1,186 @@
+/* Contenedor general */
+.forms-section {
+  max-width: 430px;
+  margin: 60px auto;
+  padding: 20px;
+  font-family: "Segoe UI", sans-serif;
+}
+
+/* Logo */
+.logo-placeholder {
+  width: 220px;
+  height: 80px;
+  background: #ddd;
+  margin: 0 auto 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  color: #666;
+  border-radius: 8px;
+}
+
+/* Botones de conmutación */
+.switcher-buttons {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 25px;
+}
+
+.switcher {
+  flex: 1;
+  background: none;
+  border: none;
+  font-size: 1.1rem;
+  padding: 10px 15px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: #555;
+  border-bottom: 2px solid transparent;
+}
+
+.switcher.active {
+  border-bottom: 2px solid #007bff;
+  font-weight: bold;
+  color: #007bff;
+}
+
+/* Contenedor del formulario */
+.forms-container {
+  perspective: 1000px;
+}
+
+.form-wrapper {
+  width: 100%;
+  position: relative;
+}
+
+.form-card {
+  background-color: #2c3e50;
+  border-radius: 20px;
+  padding: 35px 25px;
+  color: #fff;
+  position: relative;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+/* Ícono de usuario */
+.icon-user {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 30px;
+}
+
+.icon-user img {
+  border-radius: 50%;
+  background-color: #ffffff;
+  padding: 10px;
+  width: 80px;
+  height: 80px;
+}
+
+/* Formulario */
+.form {
+  display: flex;
+  flex-direction: column;
+}
+
+fieldset {
+  border: none;
+  margin: 0;
+  padding: 0;
+}
+
+.input-block {
+  margin-bottom: 20px;
+}
+
+/* Etiquetas y campos */
+.input-block label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 500;
+  color: #fff;
+}
+
+.input-icon {
+  position: relative;
+}
+
+.input-icon i {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #bbb;
+  font-size: 1.2rem;
+  z-index: 1;
+}
+
+.input-icon input {
+  width: 100%;
+  padding: 12px 16px 12px 40px; /* padding-left ajustado para íconos */
+  border: 1.8px solid #fff;
+  background: transparent;
+  border-radius: 14px;
+  color: white;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.input-icon input::placeholder {
+  color: #ccc;
+  font-size: 0.95rem;
+}
+
+.input-icon input:focus {
+  border-color: #66b2ff;
+}
+
+/* Botón */
+button.rounded-btn {
+  margin-top: 10px;
+  width: 100%;
+  padding: 12px;
+  background-color: #ffffff;
+  color: #2c3e50;
+  font-weight: bold;
+  font-size: 1rem;
+  border-radius: 16px;
+  border: none;
+  transition: background 0.3s ease;
+}
+
+button.rounded-btn:hover {
+  background-color: #e0e0e0;
+}
+
+/* Texto pequeño */
+.forgot {
+  display: block;
+  font-size: 0.9rem;
+  color: #ccc;
+  margin: 10px 0 0;
+  text-align: right;
+}
+
+/* Animación */
+.animate-switch {
+  transition: all 0.6s ease-in-out;
+}
+
+.fade-in {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

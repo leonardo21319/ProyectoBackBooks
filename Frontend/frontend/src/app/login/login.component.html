@@ -1,0 +1,138 @@
+<div class="forms-section">
+  <div class="logo-placeholder">LOGO</div>
+  <div class="switcher-buttons">
+    <button
+      class="switcher"
+      [class.active]="isLoginActive"
+      (click)="toggleLogin(true)"
+    >
+      Iniciar sesión
+    </button>
+    <button
+      class="switcher"
+      [class.active]="!isLoginActive"
+      (click)="toggleLogin(false)"
+    >
+      Registrarse
+    </button>
+  </div>
+
+  <div class="forms-container">
+    <div
+      class="form-wrapper"
+      [ngClass]="{
+        'login-active': isLoginActive,
+        'signup-active': !isLoginActive
+      }"
+    >
+      <div class="form-card animate-switch shadow-card">
+        <div class="icon-user">
+          <img
+            src="https://cdn-icons-png.flaticon.com/512/847/847969.png"
+            alt="icono usuario"
+            width="80"
+            height="80"
+            style="border-radius: 50%; background-color: #fff; padding: 10px"
+          />
+        </div>
+
+        <!-- Login -->
+        <form
+          *ngIf="isLoginActive"
+          class="form login fade-in"
+          (ngSubmit)="login()"
+        >
+          <fieldset>
+            <div class="input-block styled-input">
+              <label for="login-email">Correo electrónico</label>
+              <div class="input-icon">
+                <i class="fa fa-envelope"></i>
+                <input
+                  id="login-email"
+                  type="email"
+                  [(ngModel)]="loginEmail"
+                  name="login_email"
+                  required
+                  placeholder="ejemplo@correo.com"
+                />
+              </div>
+            </div>
+            <div class="input-block styled-input">
+              <label for="login-password">Contraseña</label>
+              <div class="input-icon">
+                <i class="fa fa-lock"></i>
+                <input
+                  id="login-password"
+                  type="password"
+                  [(ngModel)]="loginPassword"
+                  name="login_password"
+                  required
+                  placeholder="********"
+                />
+              </div>
+            </div>
+            <small class="forgot">¿Olvidaste tu contraseña?</small>
+          </fieldset>
+          <button class="btn-login rounded-btn" type="submit">Ingresar</button>
+        </form>
+
+        <!-- Registro -->
+        <form
+          *ngIf="!isLoginActive"
+          class="form signup fade-in"
+          (ngSubmit)="signup()"
+        >
+          <fieldset>
+            <div class="input-block styled-input">
+              <label for="signup-name">Nombre</label>
+              <input
+                id="signup-name"
+                type="text"
+                [(ngModel)]="signupName"
+                name="signup_name"
+                required
+                placeholder="Tu nombre"
+              />
+            </div>
+            <div class="input-block styled-input">
+              <label for="signup-lastname">Apellido</label>
+              <input
+                id="signup-lastname"
+                type="text"
+                [(ngModel)]="signupLastname"
+                name="signup_lastname"
+                required
+                placeholder="Tu apellido"
+              />
+            </div>
+            <div class="input-block styled-input">
+              <label for="signup-email">Correo electrónico</label>
+              <input
+                id="signup-email"
+                type="email"
+                [(ngModel)]="signupEmail"
+                name="signup_email"
+                required
+                placeholder="correo@ejemplo.com"
+              />
+            </div>
+            <div class="input-block styled-input">
+              <label for="signup-password">Contraseña</label>
+              <input
+                id="signup-password"
+                type="password"
+                [(ngModel)]="signupPassword"
+                name="signup_password"
+                required
+                placeholder="Mínimo 8 caracteres"
+              />
+            </div>
+          </fieldset>
+          <button class="btn-signup rounded-btn" type="submit">
+            Crear cuenta
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

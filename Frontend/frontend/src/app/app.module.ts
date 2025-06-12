@@ -1,18 +1,13 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { FormsModule } from '@angular/forms'; // Asegúrate de importar FormsModule
+import { FormsModule } from '@angular/forms';
 import { AppComponent } from './app.component';
-import { LoginComponent } from './pages/Login/login.component'; // Asegúrate de que la ruta sea correcta
-
+import { AppRoutingModule } from './app-routing.module';
+import { AuthComponent } from './login/login.component';
+import { RouterModule } from '@angular/router';
 @NgModule({
-  declarations: [
-    AppComponent,
-    LoginComponent, // Declara el componente que estás usando
-  ],
-  imports: [
-    BrowserModule,
-    FormsModule, // Asegúrate de agregar FormsModule aquí para usar ngModel
-  ],
+  declarations: [AppComponent],
+  imports: [BrowserModule, RouterModule],
   providers: [],
   bootstrap: [AppComponent],
 })
