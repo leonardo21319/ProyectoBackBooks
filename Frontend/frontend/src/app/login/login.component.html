@@ -38,19 +38,20 @@
 
         <!-- Login -->
         <form
-          *ngIf="isLoginActive"
           class="form login fade-in"
+          *ngIf="isLoginActive"
           (ngSubmit)="login()"
+          #form="ngForm"
         >
           <fieldset>
             <div class="input-block styled-input">
-              <label for="login-email">Correo electrónico</label>
+              <label for="correo">Correo electrónico</label>
               <div class="input-icon">
                 <i class="fa fa-envelope"></i>
                 <input
-                  id="login-email"
+                  id="correo"
                   type="email"
-                  [(ngModel)]="loginEmail"
+                  [(ngModel)]="correo"
                   name="login_email"
                   required
                   placeholder="ejemplo@correo.com"
@@ -58,13 +59,13 @@
               </div>
             </div>
             <div class="input-block styled-input">
-              <label for="login-password">Contraseña</label>
+              <label for="contrasena">Contraseña</label>
               <div class="input-icon">
                 <i class="fa fa-lock"></i>
                 <input
-                  id="login-password"
+                  id="contrasena"
                   type="password"
-                  [(ngModel)]="loginPassword"
+                  [(ngModel)]="contrasena"
                   name="login_password"
                   required
                   placeholder="********"
@@ -74,58 +75,89 @@
             <small class="forgot">¿Olvidaste tu contraseña?</small>
           </fieldset>
           <button class="btn-login rounded-btn" type="submit">Ingresar</button>
+          <p *ngIf="error">{{ error }}</p>
         </form>
 
         <!-- Registro -->
         <form
-          *ngIf="!isLoginActive"
           class="form signup fade-in"
+          *ngIf="!isLoginActive"
           (ngSubmit)="signup()"
         >
           <fieldset>
             <div class="input-block styled-input">
               <label for="signup-name">Nombre</label>
-              <input
-                id="signup-name"
-                type="text"
-                [(ngModel)]="signupName"
-                name="signup_name"
-                required
-                placeholder="Tu nombre"
-              />
+              <div class="input-icon">
+                <i class="fa fa-envelope"></i>
+                <input
+                  id="signup-name"
+                  type="text"
+                  [(ngModel)]="nombre"
+                  name="signup_name"
+                  required
+                  placeholder="Tu nombre"
+                />
+              </div>
             </div>
+
             <div class="input-block styled-input">
-              <label for="signup-lastname">Apellido</label>
-              <input
-                id="signup-lastname"
-                type="text"
-                [(ngModel)]="signupLastname"
-                name="signup_lastname"
-                required
-                placeholder="Tu apellido"
-              />
+              <label for="appaterno">Apellido Paterno</label>
+              <div class="input-icon">
+                <i class="fa fa-envelope"></i>
+                <input
+                  id="appaterno"
+                  type="text"
+                  [(ngModel)]="appaterno"
+                  name="signup_lastname"
+                  required
+                  placeholder="Apellido paterno"
+                />
+              </div>
             </div>
+
+            <div class="input-block styled-input">
+              <label for="apmaterno">Apellido Materno</label>
+              <div class="input-icon">
+                <i class="fa fa-envelope"></i>
+                <input
+                  id="apmaterno"
+                  type="text"
+                  [(ngModel)]="apmaterno"
+                  name="signup_lastname"
+                  required
+                  placeholder="Apellido materno"
+                />
+              </div>
+            </div>
+
             <div class="input-block styled-input">
               <label for="signup-email">Correo electrónico</label>
-              <input
-                id="signup-email"
-                type="email"
-                [(ngModel)]="signupEmail"
-                name="signup_email"
-                required
-                placeholder="correo@ejemplo.com"
-              />
+              <div class="input-icon">
+                <i class="fa fa-envelope"></i>
+                <input
+                  id="signup-email"
+                  type="email"
+                  [(ngModel)]="correo"
+                  name="signup_email"
+                  required
+                  placeholder="correo@ejemplo.com"
+                />
+              </div>
             </div>
+
             <div class="input-block styled-input">
               <label for="signup-password">Contraseña</label>
-              <input
-                id="signup-password"
-                type="password"
-                [(ngModel)]="signupPassword"
-                name="signup_password"
-                required
-                placeholder="Mínimo 8 caracteres"
-              />
+              <div class="input-icon">
+                <i class="fa fa-envelope"></i>
+                <input
+                  id="signup-password"
+                  type="password"
+                  [(ngModel)]="contrasena"
+                  name="signup_password"
+                  required
+                  placeholder="Mínimo 8 caracteres"
+                />
+              </div>
             </div>
           </fieldset>
           <button class="btn-signup rounded-btn" type="submit">
