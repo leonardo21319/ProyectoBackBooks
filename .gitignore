@@ -18,7 +18,7 @@ coverage/
 **/.env
 **/.env.*.local
 **/.env.*.local.*
-
+.env
 # Directorio del proyecto Angular:
 Frontend/frontend/node_modules/
 Frontend/frontend/dist/
