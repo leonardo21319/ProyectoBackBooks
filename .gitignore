@@ -11,6 +11,10 @@ build/
 coverage/
 
 
+#certificado SSL base de datos
+.crt
+**/*.crt
+
 
 # local env files
 .env
