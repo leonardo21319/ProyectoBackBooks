@@ -4,90 +4,138 @@
   font-family: "Segoe UI", sans-serif;
 }
 
-/* Header personalizado */
+/* Header personalizado - Estilo Figma */
 .custom-header {
-  background: #B6C6D4 !important;
-  box-shadow: 0 2px 10px rgba(47, 70, 83, 0.15);
+  background: #ffffff !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid #e9ecef;
 }
 
-.logo-custom {
-  background: #2F4653;
-  color: #B6C6D4;
-  padding: 12px 24px;
+/* Logo */
+.logo-container {
+  width: 120px;
+  height: 50px;
+  background: #e9ecef;
   border-radius: 8px;
-  font-weight: bold;
-  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.logo-img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.logo-placeholder {
+  color: #6c757d;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+/* Buscador estilo Figma */
+.search-container-figma {
+  display: flex;
+  align-items: center;
+  background: #ffffff;
   border: 2px solid #87ACC5;
+  border-radius: 25px;
+  max-width: 500px;
+  width: 100%;
+  overflow: hidden;
 }
 
-/* Buscador personalizado */
-.search-input-custom {
-  border: 2px solid #87ACC5 !important;
-  border-right: none !important;
-  color: #2F4653 !important;
+.search-input-figma {
+  flex: 1;
+  border: none;
+  padding: 12px 20px;
+  font-size: 1rem;
+  outline: none;
+  background: transparent;
+  color: #2F4653;
 }
 
-.search-input-custom::placeholder {
-  color: #87ACC5 !important;
+.search-input-figma::placeholder {
+  color: #87ACC5;
 }
 
-.search-input-custom:focus {
-  border-color: #6A93B2 !important;
-  box-shadow: none !important;
+.search-btn-figma {
+  background: transparent;
+  border: none;
+  padding: 12px 16px;
+  color: #87ACC5;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.3s ease;
 }
 
-.search-btn-custom {
-  background: #6A93B2 !important;
-  border: 2px solid #6A93B2 !important;
-  border-left: none !important;
-  color: white !important;
+.search-btn-figma:hover {
+  color: #6A93B2;
 }
 
-.search-btn-custom:hover {
-  background: #2F4653 !important;
-  border-color: #2F4653 !important;
+/* Navegación estilo Figma */
+.nav-item-figma {
+  background: transparent;
+  border: none;
+  color: #6A93B2;
+  font-size: 1rem;
+  font-weight: 400;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
 }
 
-/* Navegación personalizada */
-.nav-btn-custom {
-  background: transparent !important;
-  border: 2px solid transparent !important;
-  color: #2F4653 !important;
-  font-weight: 500 !important;
-  padding: 10px 16px !important;
-  border-radius: 8px !important;
+.nav-item-figma:hover {
+  background: rgba(106, 147, 178, 0.1);
+  color: #2F4653;
 }
 
-.nav-btn-custom:hover {
-  background: rgba(47, 70, 83, 0.1) !important;
-  color: #2F4653 !important;
+.nav-item-figma svg {
+  flex-shrink: 0;
 }
 
-.profile-btn-custom {
-  background: #6A93B2 !important;
-  border: 2px solid #87ACC5 !important;
-  color: white !important;
-  border-radius: 50% !important;
-  width: 45px !important;
-  height: 45px !important;
-}
-
-.profile-btn-custom:hover {
-  background: #2F4653 !important;
-  border-color: #2F4653 !important;
-}
-
-.badge-custom {
-  background: #2F4653 !important;
-  color: #B6C6D4 !important;
+.profile-btn-figma {
+  background: #6A93B2;
+  border: none;
+  color: white;
+  width: 45px;
+  height: 45px;
   border-radius: 50%;
-  padding: 3px 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.profile-btn-figma:hover {
+  background: #2F4653;
+}
+
+.badge-figma {
+  background: #ff4757;
+  color: white;
+  border-radius: 50%;
+  padding: 2px 6px;
   font-size: 0.7rem;
   font-weight: bold;
   position: absolute;
-  top: -5px;
-  right: -5px;
-  border: 1px solid #87ACC5;
+  top: -2px;
+  right: -2px;
+  min-width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Banner personalizado */
