@@ -1,0 +1,99 @@
+<div class="bookstore-container">
+  <!-- Header -->
+  <header class="main-header">
+    <div class="header-content">
+      <!-- Logo -->
+      <div class="logo-section">
+        <div class="logo">LOGO</div>
+      </div>
+
+      <!-- Buscador -->
+      <div class="search-section">
+        <div class="search-container">
+          <input 
+            type="text" 
+            [(ngModel)]="searchTerm"
+            placeholder="Buscar libros..."
+            class="search-input"
+            (keyup.enter)="onSearch()"
+          >
+          <button class="search-btn" (click)="onSearch()">
+            <i class="fas fa-search"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Navegación -->
+      <nav class="nav-section">
+        <button class="nav-item" (click)="goToCategories()">
+          <i class="fas fa-th-large"></i>
+          Categorías
+        </button>
+        <button class="nav-item" (click)="goToSaved()">
+          <i class="fas fa-heart"></i>
+          Guardados
+          <span *ngIf="savedItems > 0" class="badge">{{savedItems}}</span>
+        </button>
+        <button class="nav-item" (click)="goToCart()">
+          <i class="fas fa-shopping-cart"></i>
+          Mi carrito
+          <span *ngIf="cartItems > 0" class="badge">{{cartItems}}</span>
+        </button>
+        <button class="nav-item profile-btn" (click)="goToLogin()">
+          <i class="fas fa-user"></i>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Banner principal -->
+  <section class="hero-banner">
+    <div class="banner-content">
+      <div class="banner-text">
+        <h1>LOS LIBROS, COMO BUENOS AMIGOS:</h1>
+        <p>siempre están cuando los necesitas.</p>
+      </div>
+      <div class="banner-image">
+        <div class="books-illustration">
+          📚📖📓📗📘📙
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Grid de libros -->
+  <section class="books-section">
+    <div class="books-grid">
+      <div class="book-card" *ngFor="let book of books">
+        <div class="book-image">
+          <img [src]="book.image" [alt]="book.title">
+          <button class="save-btn" (click)="addToSaved(book)">
+            <i class="fas fa-heart"></i>
+          </button>
+        </div>
+        
+        <div class="book-info">
+          <h3 class="book-title">{{book.title}}</h3>
+          <p class="book-author">{{book.author}}</p>
+          
+          <div class="book-actions">
+            <div class="book-type">{{book.type}}</div>
+            <button 
+              class="action-btn"
+              [ngClass]="{
+                'offer-btn': book.type === 'Intercambio',
+                'cart-btn': book.type === 'Venta',
+                'donation-btn': book.type === 'Donación'
+              }"
+              (click)="book.type === 'Intercambio' ? makeOffer(book) : addToCart(book)"
+            >
+              <span *ngIf="book.type === 'Intercambio'">Hacer oferta</span>
+              <span *ngIf="book.type === 'Venta'">Añadir al carrito</span>
+              <span *ngIf="book.type === 'Donación'">Añadir al carrito</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
