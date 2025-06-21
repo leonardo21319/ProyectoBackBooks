@@ -1,3 +1,4 @@
+// src/app/home/home.component.ts - CORRECTO CON HEADER FIGMA
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -8,8 +9,8 @@ import { Router } from '@angular/router';
   standalone: true,
   imports: [CommonModule, FormsModule],
   template: `
-    <div class="bookstore-container">
-      <!-- Header con Bootstrap -->
+    <div class="bookstore-container" (click)="closeDropdownOnOutsideClick($event)">
+      <!-- Header con Bootstrap - ESTILO FIGMA -->
       <header class="custom-header sticky-top">
         <div class="container-fluid">
           <div class="row align-items-center py-3">
@@ -50,18 +51,46 @@ import { Router } from '@angular/router';
             <!-- Navegación -->
             <div class="col-auto">
               <div class="d-flex align-items-center" style="gap: 2rem;">
-                <button class="nav-item-figma" (click)="goToCategories()">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M3 7H8V12H3V7Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M13 7H18V12H13V7Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M13 17H18V22H13V17Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M3 17H8V22H3V17Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                  <span>Categorías</span>
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                </button>
+                <!-- Categorías con dropdown -->
+                <div class="position-relative dropdown-container">
+                  <button class="nav-item-figma" (click)="toggleCategoriesDropdown($event)">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M3 7H8V12H3V7Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                      <path d="M13 7H18V12H13V7Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                      <path d="M13 17H18V22H13V17Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                      <path d="M3 17H8V22H3V17Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span>Categorías</span>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" 
+                         [style.transform]="showCategoriesDropdown ? 'rotate(180deg)' : 'rotate(0deg)'"
+                         [style.transition]="'transform 0.3s ease'">
+                      <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </button>
+
+                  <!-- Dropdown de categorías -->
+                  <div class="categories-dropdown-figma" 
+                       [class.show]="showCategoriesDropdown"
+                       *ngIf="showCategoriesDropdown">
+                    
+                    <button 
+                      class="dropdown-item-figma" 
+                      [class.active]="selectedCategory === 'Todas'"
+                      (click)="selectCategory('Todas')"
+                    >
+                      Todas las categorías
+                    </button>
+                    
+                    <button 
+                      class="dropdown-item-figma" 
+                      *ngFor="let category of categories"
+                      [class.active]="selectedCategory === category"
+                      (click)="selectCategory(category)"
+                    >
+                      {{category}}
+                    </button>
+                  </div>
+                </div>
                 
                 <button class="nav-item-figma position-relative" (click)="goToSaved()">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -91,6 +120,21 @@ import { Router } from '@angular/router';
         </div>
       </header>
 
+      <!-- Indicador de categoría seleccionada -->
+      <section class="category-indicator" *ngIf="selectedCategory !== 'Todas'">
+        <div class="container">
+          <div class="alert alert-info d-flex align-items-center justify-content-between">
+            <div>
+              <strong>Mostrando libros de:</strong> {{selectedCategory}}
+              <span class="badge bg-primary ms-2">{{books.length}} libro(s)</span>
+            </div>
+            <button class="btn btn-outline-secondary btn-sm" (click)="selectCategory('Todas')">
+              Ver todos
+            </button>
+          </div>
+        </div>
+      </section>
+
       <!-- Banner principal con Bootstrap -->
       <section class="hero-section my-4">
         <div class="container">
@@ -115,7 +159,7 @@ import { Router } from '@angular/router';
       <!-- Grid de libros con Bootstrap -->
       <section class="books-section">
         <div class="container">
-          <div class="row g-4">
+          <div class="row g-4" *ngIf="books.length > 0; else noBooks">
             <div class="col-12 col-sm-6 col-lg-4" *ngFor="let book of books">
               <div class="card book-card-custom h-100">
                 <div class="position-relative">
@@ -148,6 +192,23 @@ import { Router } from '@angular/router';
               </div>
             </div>
           </div>
+
+          <!-- Mensaje cuando no hay libros -->
+          <ng-template #noBooks>
+            <div class="text-center py-5">
+              <div class="mb-4">
+                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-muted">
+                  <path d="M4 19.5C4 18.837 4.26339 18.2011 4.73223 17.7322C5.20107 17.2634 5.83696 17 6.5 17H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M6.5 2H20V22H6.5C5.83696 22 5.20107 21.7366 4.73223 21.2678C4.26339 20.7989 4 20.163 4 19.5V4.5C4 3.83696 4.26339 3.20107 4.73223 2.73223C5.20107 2.26339 5.83696 2 6.5 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M9 7H15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M9 11H15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <h4 class="text-muted">No se encontraron libros</h4>
+              <p class="text-muted">No hay libros disponibles en la categoría "{{selectedCategory}}"</p>
+              <button class="btn btn-primary" (click)="selectCategory('Todas')">Ver todos los libros</button>
+            </div>
+          </ng-template>
         </div>
       </section>
     </div>
@@ -158,8 +219,28 @@ export class HomeComponent {
   searchTerm = '';
   cartItems = 0;
   savedItems = 0;
+  selectedCategory = 'Todas';
+  showCategoriesDropdown = false;
 
-  books = [
+  // Lista de categorías del dropdown
+  categories = [
+    'Literatura',
+    'Ciencias y tecnología',
+    'Historia y filosofía',
+    'Economía y negocios',
+    'Arte y cultura',
+    'Desarrollo personal',
+    'Ciencias sociales',
+    'Idiomas y lingüística',
+    'Cocina y alimentación',
+    'Deportes y aventura',
+    'Religión y espiritualidad',
+    'Entretenimiento y hobbies',
+    'Ciencia ficción'
+  ];
+
+  // Todos los libros
+  allBooks = [
     {
       id: 1,
       title: 'Drácula',
@@ -167,7 +248,7 @@ export class HomeComponent {
       price: 250,
       type: 'Venta',
       image: 'https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=300&h=400&fit=crop',
-      category: 'Terror'
+      category: 'Literatura'
     },
     {
       id: 2,
@@ -176,7 +257,7 @@ export class HomeComponent {
       price: 450,
       type: 'Venta',
       image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=400&fit=crop',
-      category: 'Programación'
+      category: 'Ciencias y tecnología'
     },
     {
       id: 3,
@@ -185,7 +266,7 @@ export class HomeComponent {
       price: 0,
       type: 'Donación',
       image: 'https://images.unsplash.com/photo-1509021436665-8f07dbf5bf1d?w=300&h=400&fit=crop',
-      category: 'Matemáticas'
+      category: 'Ciencias y tecnología'
     },
     {
       id: 4,
@@ -194,7 +275,7 @@ export class HomeComponent {
       price: 300,
       type: 'Intercambio',
       image: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=300&h=400&fit=crop',
-      category: 'Manga'
+      category: 'Entretenimiento y hobbies'
     },
     {
       id: 5,
@@ -203,7 +284,7 @@ export class HomeComponent {
       price: 200,
       type: 'Venta',
       image: 'https://images.unsplash.com/photo-1612178991618-2928271778e4?w=300&h=400&fit=crop',
-      category: 'Manga'
+      category: 'Entretenimiento y hobbies'
     },
     {
       id: 6,
@@ -213,10 +294,54 @@ export class HomeComponent {
       type: 'Donación',
       image: 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=300&h=400&fit=crop',
       category: 'Literatura'
+    },
+    {
+      id: 7,
+      title: 'El Arte de la Guerra',
+      author: 'Sun Tzu',
+      price: 180,
+      type: 'Venta',
+      image: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=300&h=400&fit=crop',
+      category: 'Historia y filosofía'
+    },
+    {
+      id: 8,
+      title: 'Cocina Mediterránea',
+      author: 'María González',
+      price: 320,
+      type: 'Venta',
+      image: 'https://images.unsplash.com/photo-1466637574441-749b8f19452f?w=300&h=400&fit=crop',
+      category: 'Cocina y alimentación'
+    },
+    {
+      id: 9,
+      title: 'Economía para Dummies',
+      author: 'Sean Flynn',
+      price: 280,
+      type: 'Venta',
+      image: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=300&h=400&fit=crop',
+      category: 'Economía y negocios'
+    },
+    {
+      id: 10,
+      title: 'Historia del Arte',
+      author: 'Ernst Gombrich',
+      price: 450,
+      type: 'Intercambio',
+      image: 'https://images.unsplash.com/photo-1541963463532-d68292c34d19?w=300&h=400&fit=crop',
+      category: 'Arte y cultura'
     }
   ];
 
   constructor(private router: Router) {}
+
+  // Getter para libros filtrados
+  get books() {
+    if (this.selectedCategory === 'Todas') {
+      return this.allBooks;
+    }
+    return this.allBooks.filter(book => book.category === this.selectedCategory);
+  }
 
   onSearch() {
     console.log('Buscando:', this.searchTerm);
@@ -236,12 +361,27 @@ export class HomeComponent {
     console.log('Hacer oferta para:', book.title);
   }
 
-  goToLogin() {
-    this.router.navigate(['/']);
+  // Métodos para categorías
+  toggleCategoriesDropdown(event: Event) {
+    event.stopPropagation();
+    this.showCategoriesDropdown = !this.showCategoriesDropdown;
   }
 
-  goToCategories() {
-    console.log('Ir a categorías');
+  closeDropdownOnOutsideClick(event: Event) {
+    const target = event.target as HTMLElement;
+    if (!target.closest('.dropdown-container')) {
+      this.showCategoriesDropdown = false;
+    }
+  }
+
+  selectCategory(category: string) {
+    this.selectedCategory = category;
+    this.showCategoriesDropdown = false;
+    console.log('Categoría seleccionada:', category);
+  }
+
+  goToLogin() {
+    this.router.navigate(['/']);
   }
 
   goToSaved() {
