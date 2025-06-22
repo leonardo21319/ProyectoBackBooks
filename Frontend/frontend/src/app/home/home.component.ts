@@ -1,45 +1,26 @@
-// src/app/home/home.component.ts - COMPLETO Y ACTUALIZADO
+// src/app/home/home.component.ts - USANDO HEADER COMPARTIDO
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { HeaderComponent } from '../shared/header/header.component'; // Importar header compartido
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, HeaderComponent], // Agregar HeaderComponent
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent {
-  searchTerm = '';
   cartItems = 0;
   savedItems = 0;
   selectedCategory = 'Todas';
-  showCategoriesDropdown = false;
-  showProfileDropdown = false;
-  showCartSidebar = false; // Nueva propiedad para el carrito
-  savedBooksIds: Set<number> = new Set(); // Para trackear libros guardados
+  showCartSidebar = false;
+  savedBooksIds: Set<number> = new Set();
 
   // Carrito de compras
   cartBooks: any[] = [];
-
-  // Lista de categorías del dropdown
-  categories = [
-    'Literatura',
-    'Ciencias y tecnología',
-    'Historia y filosofía',
-    'Economía y negocios',
-    'Arte y cultura',
-    'Desarrollo personal',
-    'Ciencias sociales',
-    'Idiomas y lingüística',
-    'Cocina y alimentación',
-    'Deportes y aventura',
-    'Religión y espiritualidad',
-    'Entretenimiento y hobbies',
-    'Ciencia ficción'
-  ];
 
   // 3 libros de muestra con diferentes tipos
   allBooks = [
@@ -85,14 +66,23 @@ export class HomeComponent {
     return this.allBooks.filter(book => book.category === this.selectedCategory);
   }
 
-  onSearch() {
-    console.log('Buscando:', this.searchTerm);
+  // Métodos para eventos del header
+  onCategorySelected(category: string) {
+    this.selectedCategory = category;
+    console.log('Categoría seleccionada:', category);
+  }
+
+  onCartClicked() {
+    this.toggleCartSidebar();
+  }
+
+  onSearchPerformed(searchTerm: string) {
+    console.log('Búsqueda desde header:', searchTerm);
     // 🔌 AQUÍ INTEGRAR BACKEND - Búsqueda
-    // this.bookService.searchBooks(this.searchTerm).subscribe(...)
+    // Aquí puedes filtrar los libros por el término de búsqueda
   }
 
   addToCart(book: any) {
-    // Verificar si el libro ya está en el carrito
     const existingBook = this.cartBooks.find(item => item.id === book.id);
     
     if (existingBook) {
@@ -106,9 +96,6 @@ export class HomeComponent {
     
     this.cartItems = this.cartBooks.reduce((total, item) => total + item.quantity, 0);
     console.log('Agregado al carrito:', book.title);
-    console.log('Carrito actual:', this.cartBooks);
-    // 🔌 AQUÍ INTEGRAR BACKEND - Agregar al carrito
-    // this.cartService.addToCart(book.id).subscribe(...)
   }
 
   removeFromCart(book: any) {
@@ -117,8 +104,6 @@ export class HomeComponent {
       this.cartBooks.splice(index, 1);
       this.cartItems = this.cartBooks.reduce((total, item) => total + item.quantity, 0);
       console.log('Libro removido del carrito:', book.title);
-      // 🔌 AQUÍ INTEGRAR BACKEND - Remover del carrito
-      // this.cartService.removeFromCart(book.id).subscribe(...)
     }
   }
 
@@ -140,9 +125,6 @@ export class HomeComponent {
 
   toggleCartSidebar() {
     this.showCartSidebar = !this.showCartSidebar;
-    // Cerrar otros dropdowns
-    this.showCategoriesDropdown = false;
-    this.showProfileDropdown = false;
   }
 
   closeCartSidebar() {
@@ -152,49 +134,28 @@ export class HomeComponent {
   requestBook(book: any) {
     console.log('Solicitando donación de libro:', book.title);
     alert(`Solicitud enviada para: ${book.title}`);
-    // 🔌 AQUÍ INTEGRAR BACKEND - Solicitar donación
-    // this.donationService.requestBook(book.id).subscribe(...)
   }
 
   makeOffer(book: any) {
     console.log('Hacer oferta para:', book.title);
-    // 🔌 AQUÍ INTEGRAR BACKEND - Crear oferta de intercambio
-    // this.exchangeService.createOffer(book.id, offerData).subscribe(...)
   }
 
   addToSaved(book: any) {
-    console.log('Estado actual - Libro ID:', book.id, 'Está guardado:', this.isBookSaved(book.id));
-    console.log('IDs guardados actuales:', Array.from(this.savedBooksIds));
-    
     if (this.isBookSaved(book.id)) {
-      // Si ya está guardado, lo removemos
       this.savedBooksIds.delete(book.id);
       this.savedItems = this.savedBooksIds.size;
       console.log('✅ Libro removido de guardados:', book.title);
-      console.log('📊 Nuevo contador:', this.savedItems);
-      // 🔌 AQUÍ INTEGRAR BACKEND - Remover de favoritos
-      // this.favoritesService.removeFromFavorites(book.id).subscribe(...)
     } else {
-      // Si no está guardado, lo agregamos
       this.savedBooksIds.add(book.id);
       this.savedItems = this.savedBooksIds.size;
       console.log('⭐ Libro agregado a guardados:', book.title);
-      console.log('📊 Nuevo contador:', this.savedItems);
-      // 🔌 AQUÍ INTEGRAR BACKEND - Agregar a favoritos
-      // this.favoritesService.addToFavorites(book.id).subscribe(...)
     }
-    
-    console.log('IDs guardados después del cambio:', Array.from(this.savedBooksIds));
   }
 
-  // Método para verificar si un libro está guardado
   isBookSaved(bookId: number): boolean {
-    const isSaved = this.savedBooksIds.has(bookId);
-    console.log(`🔍 Verificando libro ${bookId}: ${isSaved ? 'GUARDADO' : 'NO GUARDADO'}`);
-    return isSaved;
+    return this.savedBooksIds.has(bookId);
   }
 
-  // Métodos para obtener el texto del botón según el tipo
   getButtonText(type: string): string {
     switch(type) {
       case 'Venta': 
@@ -209,7 +170,6 @@ export class HomeComponent {
   }
 
   getButtonAction(book: any) {
-    console.log('Tipo de libro:', book.type); // Para debug
     switch(book.type) {
       case 'Venta': 
         this.addToCart(book);
@@ -220,81 +180,25 @@ export class HomeComponent {
       case 'Intercambio': 
         this.makeOffer(book);
         break;
-      default:
-        console.log('Tipo no reconocido:', book.type);
-    }
-  }
-
-  // Métodos para categorías
-  toggleCategoriesDropdown(event: Event) {
-    event.stopPropagation();
-    this.showCategoriesDropdown = !this.showCategoriesDropdown;
-    this.showProfileDropdown = false;
-  }
-
-  closeDropdownOnOutsideClick(event: Event) {
-    const target = event.target as HTMLElement;
-    if (!target.closest('.dropdown-container') && 
-        !target.closest('.profile-btn-figma') && 
-        !target.closest('.cart-sidebar') &&
-        !target.closest('.nav-item-figma')) {
-      this.showCategoriesDropdown = false;
-      this.showProfileDropdown = false;
-      this.showCartSidebar = false;
     }
   }
 
   selectCategory(category: string) {
     this.selectedCategory = category;
-    this.showCategoriesDropdown = false;
     console.log('Categoría seleccionada:', category);
   }
 
-  // Métodos para el dropdown del perfil
-  toggleProfileDropdown(event: Event) {
-    event.stopPropagation();
-    this.showProfileDropdown = !this.showProfileDropdown;
-    this.showCategoriesDropdown = false;
+  closeDropdownOnOutsideClick(event: Event) {
+    const target = event.target as HTMLElement;
+    if (!target.closest('.cart-sidebar') &&
+        !target.closest('.nav-item-figma')) {
+      this.showCartSidebar = false;
+    }
   }
 
-  goToProfile() {
-    this.showProfileDropdown = false;
-    console.log('Ir a Mi cuenta');
-    // 🔌 AQUÍ INTEGRAR BACKEND - Navegar al perfil
-    // this.router.navigate(['/profile']);
-  }
-
-  goToOrders() {
-    this.showProfileDropdown = false;
-    console.log('Ir a Mis pedidos');
-    // 🔌 AQUÍ INTEGRAR BACKEND - Navegar a pedidos
-    // this.router.navigate(['/orders']);
-  }
-
-  goToLogin() {
-    this.showProfileDropdown = false;
-    this.router.navigate(['/']);
-  }
-
-  goToSaved() {
-    console.log('Navegando a guardados');
-    this.router.navigate(['/saved']); // Redirección a la página de guardados
-  }
-
-  // Método ACTUALIZADO para el botón del header
-  goToCart() {
-    // Mantener el comportamiento actual del sidebar
-    this.toggleCartSidebar();
-  }
-
-  // NUEVO: Método para ir a la página completa del carrito
   goToCartPage() {
-    // Cerrar el sidebar primero
     this.closeCartSidebar();
-    
-    // Navegar a la página del carrito
     this.router.navigate(['/cart']);
-    
     console.log('Navegando a la página completa del carrito');
   }
 }

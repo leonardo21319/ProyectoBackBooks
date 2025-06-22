@@ -1,314 +1,9 @@
-/* src/app/home/home.component.css - COMPLETO SIN ERRORES */
+/* src/app/home/home.component.css - SOLO ESTILOS ESPECÍFICOS DE HOME */
 
 .bookstore-container {
   min-height: 100vh;
   background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
   font-family: "Segoe UI", sans-serif;
-}
-
-/* Header personalizado - Estilo Figma */
-.custom-header {
-  background: #ffffff !important;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  border-bottom: 1px solid #e9ecef;
-}
-
-/* Logo */
-.logo-container {
-  width: 120px;
-  height: 50px;
-  background: #e9ecef;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-}
-
-.logo-img {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
-}
-
-.logo-placeholder {
-  color: #6c757d;
-  font-weight: 500;
-  font-size: 0.9rem;
-}
-
-/* Buscador estilo Figma */
-.search-container-figma {
-  display: flex;
-  align-items: center;
-  background: #ffffff;
-  border: 2px solid #87ACC5;
-  border-radius: 25px;
-  max-width: 500px;
-  width: 100%;
-  overflow: hidden;
-}
-
-.search-input-figma {
-  flex: 1;
-  border: none;
-  padding: 12px 20px;
-  font-size: 1rem;
-  outline: none;
-  background: transparent;
-  color: #2F4653;
-}
-
-.search-input-figma::placeholder {
-  color: #87ACC5;
-}
-
-.search-btn-figma {
-  background: transparent;
-  border: none;
-  padding: 12px 16px;
-  color: #87ACC5;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: color 0.3s ease;
-}
-
-.search-btn-figma:hover {
-  color: #6A93B2;
-}
-
-/* Navegación estilo Figma */
-.nav-item-figma {
-  background: transparent;
-  border: none;
-  color: #6A93B2;
-  font-size: 1rem;
-  font-weight: 400;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 12px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  position: relative;
-}
-
-.nav-item-figma:hover {
-  background: rgba(106, 147, 178, 0.1);
-  color: #2F4653;
-}
-
-.nav-item-figma svg {
-  flex-shrink: 0;
-}
-
-.profile-btn-figma {
-  background: #6A93B2;
-  border: none;
-  color: white;
-  width: 45px;
-  height: 45px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  position: relative;
-}
-
-.profile-btn-figma:hover {
-  background: #2F4653;
-}
-
-.badge-figma {
-  background: #ff4757;
-  color: white;
-  border-radius: 50%;
-  padding: 2px 6px;
-  font-size: 0.7rem;
-  font-weight: bold;
-  position: absolute;
-  top: -2px;
-  right: -2px;
-  min-width: 18px;
-  height: 18px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* Título de categoría - NUEVO DISEÑO SIMPLE */
-.category-title {
-  padding: 0 2rem;
-  margin-bottom: 2rem;
-}
-
-.category-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-bottom: 1rem;
-  border-bottom: 2px solid #e9ecef;
-}
-
-.category-name {
-  font-size: 1.8rem;
-  font-weight: 600;
-  color: #2F4653;
-  margin: 0;
-}
-
-.books-count {
-  font-size: 1rem;
-  color: #6c757d;
-  font-weight: 500;
-}
-.dropdown-container {
-  position: relative;
-}
-
-.categories-dropdown-figma {
-  position: absolute;
-  top: calc(100% + 8px);
-  left: 50%;
-  transform: translateX(-50%);
-  background: white;
-  border: 1px solid #e9ecef;
-  border-radius: 12px;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-  min-width: 220px;
-  z-index: 1050;
-  opacity: 0;
-  visibility: hidden;
-  transform: translateX(-50%) translateY(-10px);
-  transition: all 0.3s ease;
-  max-height: 400px;
-  overflow-y: auto;
-}
-
-.categories-dropdown-figma.show {
-  opacity: 1;
-  visibility: visible;
-  transform: translateX(-50%) translateY(0);
-}
-
-.dropdown-item-figma {
-  width: 100%;
-  text-align: left;
-  background: none;
-  border: none;
-  padding: 12px 16px;
-  color: #2F4653;
-  font-size: 0.95rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  display: block;
-}
-
-.dropdown-item-figma:hover {
-  background: rgba(106, 147, 178, 0.1);
-  color: #6A93B2;
-}
-
-.dropdown-item-figma.active {
-  background: #6A93B2;
-  color: white;
-  font-weight: 500;
-}
-
-.dropdown-item-figma:first-of-type {
-  border-top-left-radius: 12px;
-  border-top-right-radius: 12px;
-}
-
-.dropdown-item-figma:last-of-type {
-  border-bottom-left-radius: 12px;
-  border-bottom-right-radius: 12px;
-}
-
-/* Dropdown del perfil */
-.profile-dropdown-figma {
-  position: absolute;
-  top: calc(100% + 8px);
-  right: 0;
-  background: white;
-  border: 1px solid #e9ecef;
-  border-radius: 12px;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-  min-width: 180px;
-  z-index: 1050;
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(-10px);
-  transition: all 0.3s ease;
-}
-
-.profile-dropdown-figma.show {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0);
-}
-
-.profile-header {
-  padding: 16px;
-  text-align: center;
-  border-bottom: 1px solid #e9ecef;
-  background: #f8f9fa;
-  border-radius: 12px 12px 0 0;
-}
-
-.profile-avatar {
-  width: 48px;
-  height: 48px;
-  background: #6A93B2;
-  border-radius: 50%;
-  margin: 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-}
-
-.profile-dropdown-item {
-  width: 100%;
-  text-align: left;
-  background: none;
-  border: none;
-  padding: 12px 16px;
-  color: #2F4653;
-  font-size: 0.95rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  display: block;
-}
-
-.profile-dropdown-item:hover {
-  background: rgba(106, 147, 178, 0.1);
-  color: #6A93B2;
-}
-
-.profile-dropdown-item.logout {
-  color: #dc3545;
-}
-
-.profile-dropdown-item.logout:hover {
-  background: rgba(220, 53, 69, 0.1);
-  color: #dc3545;
-}
-
-.profile-divider {
-  height: 1px;
-  background: #e9ecef;
-  margin: 8px 0;
-}
-
-.profile-dropdown-item:last-of-type {
-  border-bottom-left-radius: 12px;
-  border-bottom-right-radius: 12px;
 }
 
 /* Banner personalizado */
@@ -335,6 +30,33 @@
   opacity: 0.7;
 }
 
+/* Título de categoría */
+.category-title {
+  padding: 0 2rem;
+  margin-bottom: 2rem;
+}
+
+.category-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #e9ecef;
+}
+
+.category-name {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: #2F4653;
+  margin: 0;
+}
+
+.books-count {
+  font-size: 1rem;
+  color: #6c757d;
+  font-weight: 500;
+}
+
 /* Tarjetas de libros */
 .book-card-custom {
   border: none !important;
@@ -354,7 +76,7 @@
   object-fit: cover;
 }
 
-/* Botón de guardados actualizado */
+/* Botón de guardados */
 .save-btn-custom {
   top: 15px !important;
   right: 15px !important;
@@ -377,7 +99,6 @@
   transform: scale(1.05);
 }
 
-/* Estado activo del botón de guardados */
 .save-btn-custom.saved-active {
   background: #6A93B2 !important;
   color: white !important;
@@ -390,7 +111,6 @@
   transform: scale(1.05);
 }
 
-/* Color del SVG cuando está guardado */
 .save-btn-custom.saved-active svg {
   color: white !important;
 }
@@ -500,34 +220,8 @@
   box-shadow: 0 4px 12px rgba(253, 126, 20, 0.3) !important;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-  .header-content {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-  
-  .banner-content {
-    grid-template-columns: 1fr;
-    text-align: center;
-  }
-  
-  .banner-text h1 {
-    font-size: 1.8rem;
-  }
-  
-  .books-grid {
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1rem;
-  }
-  
-  .nav-section {
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-}
+/* === SIDEBAR DEL CARRITO === */
 
-/* Sidebar del carrito */
 .cart-overlay {
   position: fixed;
   top: 0;
@@ -765,19 +459,6 @@
   border-color: #2F4653;
 }
 
-.cart-actions .btn-outline-secondary {
-  border-color: #6A93B2;
-  color: #6A93B2;
-}
-
-.cart-actions .btn-outline-secondary:hover {
-  background: #6A93B2;
-  border-color: #6A93B2;
-  color: white;
-}
-
-/* AGREGAR estos estilos al FINAL del archivo home.component.css existente */
-
 /* Botón para ir a carrito completo en el sidebar */
 .btn-outline-primary {
   border-color: #6A93B2 !important;
@@ -799,47 +480,23 @@
   box-shadow: 0 4px 12px rgba(106, 147, 178, 0.3);
 }
 
-.btn-outline-primary:focus {
-  background: #6A93B2 !important;
-  border-color: #6A93B2 !important;
-  color: white !important;
-  box-shadow: 0 0 0 0.2rem rgba(106, 147, 178, 0.25) !important;
-}
-
-.btn-outline-primary:active {
-  background: #2F4653 !important;
-  border-color: #2F4653 !important;
-  color: white !important;
-}
-
-/* Icono del botón de carrito completo */
-.btn-outline-primary svg {
-  flex-shrink: 0;
-}
-
-/* Espaciado entre iconos */
 .me-2 {
   margin-right: 0.5rem;
 }
 
-/* Mejorar el espaciado entre botones en las acciones del carrito */
-.cart-actions .btn + .btn {
-  margin-top: 0;
-}
-
-.cart-actions .mb-2 {
-  margin-bottom: 0.5rem !important;
-}
-
-/* Asegurar que los botones del sidebar mantengan su estilo */
-.cart-sidebar .btn-primary {
-  background: #6A93B2 !important;
-  border-color: #6A93B2 !important;
-  color: white !important;
-}
-
-.cart-sidebar .btn-primary:hover {
-  background: #2F4653 !important;
-  border-color: #2F4653 !important;
-  color: white !important;
+/* Responsive */
+@media (max-width: 768px) {
+  .banner-content {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+  
+  .banner-text h1 {
+    font-size: 1.8rem;
+  }
+  
+  .books-grid {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+  }
 }

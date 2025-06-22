@@ -1,144 +1,16 @@
-<!-- src/app/home/home.component.html - COMPLETO Y ACTUALIZADO -->
+<!-- src/app/home/home.component.html - USANDO HEADER COMPARTIDO CON EVENTOS -->
 <div class="bookstore-container" (click)="closeDropdownOnOutsideClick($event)">
-  <!-- Header con Bootstrap - ESTILO FIGMA -->
-  <header class="custom-header sticky-top">
-    <div class="container-fluid">
-      <div class="row align-items-center py-3">
-        
-        <!-- Logo -->
-        <div class="col-auto">
-          <div class="logo-container">
-            <img src="assets/images/logo.png" alt="Logo" class="logo-img" 
-                 onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-            <div class="logo-placeholder" style="display: none;">LOGO</div>
-          </div>
-        </div>
-
-        <!-- Buscador Centrado -->
-        <div class="col d-flex justify-content-center">
-          <div class="search-container-figma">
-            <input 
-              type="text" 
-              class="search-input-figma"
-              [(ngModel)]="searchTerm"
-              placeholder="Buscar libros..."
-              (keyup.enter)="onSearch()"
-            >
-            <button 
-              class="search-btn-figma" 
-              type="button"
-              (click)="onSearch()"
-            >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M21 21L16.514 16.506M19 10.5C19 15.194 15.194 19 10.5 19S2 15.194 2 10.5 5.806 2 10.5 2 19 5.806 19 10.5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </button>
-          </div>
-        </div>
-
-        <!-- Navegación -->
-        <div class="col-auto">
-          <div class="d-flex align-items-center" style="gap: 2rem;">
-            <!-- Categorías con dropdown -->
-            <div class="position-relative dropdown-container">
-              <button class="nav-item-figma" (click)="toggleCategoriesDropdown($event)">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M3 7H8V12H3V7Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                  <path d="M13 7H18V12H13V7Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                  <path d="M13 17H18V22H13V17Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                  <path d="M3 17H8V22H3V17Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-                <span>Categorías</span>
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" 
-                     [style.transform]="showCategoriesDropdown ? 'rotate(180deg)' : 'rotate(0deg)'"
-                     [style.transition]="'transform 0.3s ease'">
-                  <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-              </button>
-
-              <!-- Dropdown de categorías -->
-              <div class="categories-dropdown-figma" 
-                   [class.show]="showCategoriesDropdown"
-                   *ngIf="showCategoriesDropdown">
-                
-                <button 
-                  class="dropdown-item-figma" 
-                  [class.active]="selectedCategory === 'Todas'"
-                  (click)="selectCategory('Todas')"
-                >
-                  Todas las categorías
-                </button>
-                
-                <button 
-                  class="dropdown-item-figma" 
-                  *ngFor="let category of categories"
-                  [class.active]="selectedCategory === category"
-                  (click)="selectCategory(category)"
-                >
-                  {{category}}
-                </button>
-              </div>
-            </div>
-            
-            <button class="nav-item-figma position-relative" (click)="goToSaved()">
-              <!-- Mismo ícono bookmark que en las tarjetas -->
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M19 21L12 16L5 21V5C5 4.46957 5.21071 3.96086 5.58579 3.58579C5.96086 3.21071 6.46957 3 7 3H17C17.5304 3 18.0391 3.21071 18.4142 3.58579C18.7893 3.96086 19 4.46957 19 5V21Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-              <span>Guardados</span>
-              <span *ngIf="savedItems > 0" class="badge-figma">{{savedItems}}</span>
-            </button>
-            
-            <button class="nav-item-figma position-relative" (click)="goToCart()">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M3 3H5L5.4 5M7 13H17L21 5H5.4M7 13L5.4 5M7 13L4.7 15.3C4.3 15.7 4.6 16.5 5.1 16.5H17M17 13V16.5M9 19.5C9.8 19.5 10.5 20.2 10.5 21S9.8 22.5 9 22.5 7.5 21.8 7.5 21 8.2 19.5 9 19.5ZM20 19.5C20.8 19.5 21.5 20.2 21.5 21S20.8 22.5 20 22.5 18.5 21.8 18.5 21 19.2 19.5 20 19.5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-              <span>Mi carrito</span>
-              <span *ngIf="cartItems > 0" class="badge-figma">{{cartItems}}</span>
-            </button>
-            
-            <div class="position-relative">
-              <button class="profile-btn-figma" (click)="toggleProfileDropdown($event)">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                  <circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-              </button>
-
-              <!-- Dropdown del perfil -->
-              <div class="profile-dropdown-figma" 
-                   [class.show]="showProfileDropdown"
-                   *ngIf="showProfileDropdown">
-                
-                <div class="profile-header">
-                  <div class="profile-avatar">
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                      <circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                  </div>
-                </div>
-                
-                <button class="profile-dropdown-item" (click)="goToProfile()">
-                  Mi cuenta
-                </button>
-                
-                <button class="profile-dropdown-item" (click)="goToOrders()">
-                  Mis pedidos
-                </button>
-                
-                <div class="profile-divider"></div>
-                
-                <button class="profile-dropdown-item logout" (click)="goToLogin()">
-                  Cerrar sesión
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </header>
+  
+  <!-- Header compartido con eventos -->
+  <app-header 
+    [cartItems]="cartItems" 
+    [savedItems]="savedItems" 
+    [selectedCategory]="selectedCategory"
+    currentPage="home"
+    (categorySelected)="onCategorySelected($event)"
+    (cartClicked)="onCartClicked()"
+    (searchPerformed)="onSearchPerformed($event)">
+  </app-header>
 
   <!-- Banner principal con Bootstrap -->
   <section class="hero-section my-4">
@@ -161,7 +33,7 @@
     </div>
   </section>
 
-  <!-- Indicador de categoría seleccionada - NUEVO DISEÑO -->
+  <!-- Indicador de categoría seleccionada -->
   <section class="category-title" *ngIf="selectedCategory !== 'Todas'">
     <div class="container">
       <div class="category-header">
@@ -254,7 +126,7 @@
   </section>
 </div>
 
-<!-- Sidebar del carrito - ACTUALIZADO CON BOTÓN PARA PÁGINA COMPLETA -->
+<!-- Sidebar del carrito - MANTENIDO EN HOME -->
 <div class="cart-overlay" [class.show]="showCartSidebar" (click)="closeCartSidebar()"></div>
 <div class="cart-sidebar" [class.show]="showCartSidebar">
   <div class="cart-header">
@@ -304,7 +176,6 @@
       <span class="total-amount">${{getCartSubtotal()}}</span>
     </div>
     <div class="cart-actions">
-      <!-- ACTUALIZADO: Botón para ir a la página completa del carrito -->
       <button class="btn btn-outline-primary w-100 mb-2" (click)="goToCartPage()">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="me-2">
           <path d="M3 3H5L5.4 5M7 13H17L21 5H5.4M7 13L5.4 5M7 13L4.7 15.3C4.3 15.7 4.6 16.5 5.1 16.5H17M17 13V16.5M9 19.5C9.8 19.5 10.5 20.2 10.5 21S9.8 22.5 9 22.5 7.5 21.8 7.5 21 8.2 19.5 9 19.5ZM20 19.5C20.8 19.5 21.5 20.2 21.5 21S20.8 22.5 20 22.5 18.5 21.8 18.5 21 19.2 19.5 20 19.5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
