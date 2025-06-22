@@ -1,4 +1,4 @@
-// src/app/home/home.component.ts - COMPLETO Y CORREGIDO
+// src/app/home/home.component.ts - COMPLETO Y ACTUALIZADO
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -281,7 +281,20 @@ export class HomeComponent {
     this.router.navigate(['/saved']); // Redirección a la página de guardados
   }
 
+  // Método ACTUALIZADO para el botón del header
   goToCart() {
+    // Mantener el comportamiento actual del sidebar
     this.toggleCartSidebar();
+  }
+
+  // NUEVO: Método para ir a la página completa del carrito
+  goToCartPage() {
+    // Cerrar el sidebar primero
+    this.closeCartSidebar();
+    
+    // Navegar a la página del carrito
+    this.router.navigate(['/cart']);
+    
+    console.log('Navegando a la página completa del carrito');
   }
 }

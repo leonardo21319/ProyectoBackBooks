@@ -775,3 +775,71 @@
   border-color: #6A93B2;
   color: white;
 }
+
+/* AGREGAR estos estilos al FINAL del archivo home.component.css existente */
+
+/* Botón para ir a carrito completo en el sidebar */
+.btn-outline-primary {
+  border-color: #6A93B2 !important;
+  color: #6A93B2 !important;
+  background: transparent !important;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  border-width: 2px !important;
+}
+
+.btn-outline-primary:hover {
+  background: #6A93B2 !important;
+  border-color: #6A93B2 !important;
+  color: white !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(106, 147, 178, 0.3);
+}
+
+.btn-outline-primary:focus {
+  background: #6A93B2 !important;
+  border-color: #6A93B2 !important;
+  color: white !important;
+  box-shadow: 0 0 0 0.2rem rgba(106, 147, 178, 0.25) !important;
+}
+
+.btn-outline-primary:active {
+  background: #2F4653 !important;
+  border-color: #2F4653 !important;
+  color: white !important;
+}
+
+/* Icono del botón de carrito completo */
+.btn-outline-primary svg {
+  flex-shrink: 0;
+}
+
+/* Espaciado entre iconos */
+.me-2 {
+  margin-right: 0.5rem;
+}
+
+/* Mejorar el espaciado entre botones en las acciones del carrito */
+.cart-actions .btn + .btn {
+  margin-top: 0;
+}
+
+.cart-actions .mb-2 {
+  margin-bottom: 0.5rem !important;
+}
+
+/* Asegurar que los botones del sidebar mantengan su estilo */
+.cart-sidebar .btn-primary {
+  background: #6A93B2 !important;
+  border-color: #6A93B2 !important;
+  color: white !important;
+}
+
+.cart-sidebar .btn-primary:hover {
+  background: #2F4653 !important;
+  border-color: #2F4653 !important;
+  color: white !important;
+}
