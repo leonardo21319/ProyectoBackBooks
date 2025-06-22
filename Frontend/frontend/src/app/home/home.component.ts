@@ -1,3 +1,4 @@
+// src/app/home/home.component.ts - COMPLETO Y CORREGIDO
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -17,7 +18,11 @@ export class HomeComponent {
   selectedCategory = 'Todas';
   showCategoriesDropdown = false;
   showProfileDropdown = false;
+  showCartSidebar = false; // Nueva propiedad para el carrito
   savedBooksIds: Set<number> = new Set(); // Para trackear libros guardados
+
+  // Carrito de compras
+  cartBooks: any[] = [];
 
   // Lista de categorías del dropdown
   categories = [
@@ -54,7 +59,7 @@ export class HomeComponent {
       author: 'Varios Autores',
       price: 0,
       type: 'Donación',
-      image: 'https://www.egames.news/__export/1672625013431/sites/debate/img/2023/01/01/kaguya-sama-poster-especial-cumpleaxos-de-kaguya_1.jpg_976912859.jpg',
+      image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=400&fit=crop',
       category: 'Ciencias y tecnología',
       description: 'Manual completo para aprender programación en Java desde cero.'
     },
@@ -87,10 +92,61 @@ export class HomeComponent {
   }
 
   addToCart(book: any) {
-    this.cartItems++;
+    // Verificar si el libro ya está en el carrito
+    const existingBook = this.cartBooks.find(item => item.id === book.id);
+    
+    if (existingBook) {
+      existingBook.quantity += 1;
+    } else {
+      this.cartBooks.push({
+        ...book,
+        quantity: 1
+      });
+    }
+    
+    this.cartItems = this.cartBooks.reduce((total, item) => total + item.quantity, 0);
     console.log('Agregado al carrito:', book.title);
+    console.log('Carrito actual:', this.cartBooks);
     // 🔌 AQUÍ INTEGRAR BACKEND - Agregar al carrito
     // this.cartService.addToCart(book.id).subscribe(...)
+  }
+
+  removeFromCart(book: any) {
+    const index = this.cartBooks.findIndex(item => item.id === book.id);
+    if (index > -1) {
+      this.cartBooks.splice(index, 1);
+      this.cartItems = this.cartBooks.reduce((total, item) => total + item.quantity, 0);
+      console.log('Libro removido del carrito:', book.title);
+      // 🔌 AQUÍ INTEGRAR BACKEND - Remover del carrito
+      // this.cartService.removeFromCart(book.id).subscribe(...)
+    }
+  }
+
+  updateQuantity(book: any, quantity: number) {
+    if (quantity <= 0) {
+      this.removeFromCart(book);
+    } else {
+      const cartBook = this.cartBooks.find(item => item.id === book.id);
+      if (cartBook) {
+        cartBook.quantity = quantity;
+        this.cartItems = this.cartBooks.reduce((total, item) => total + item.quantity, 0);
+      }
+    }
+  }
+
+  getCartSubtotal(): number {
+    return this.cartBooks.reduce((total, item) => total + (item.price * item.quantity), 0);
+  }
+
+  toggleCartSidebar() {
+    this.showCartSidebar = !this.showCartSidebar;
+    // Cerrar otros dropdowns
+    this.showCategoriesDropdown = false;
+    this.showProfileDropdown = false;
+  }
+
+  closeCartSidebar() {
+    this.showCartSidebar = false;
   }
 
   requestBook(book: any) {
@@ -178,9 +234,13 @@ export class HomeComponent {
 
   closeDropdownOnOutsideClick(event: Event) {
     const target = event.target as HTMLElement;
-    if (!target.closest('.dropdown-container') && !target.closest('.profile-btn-figma')) {
+    if (!target.closest('.dropdown-container') && 
+        !target.closest('.profile-btn-figma') && 
+        !target.closest('.cart-sidebar') &&
+        !target.closest('.nav-item-figma')) {
       this.showCategoriesDropdown = false;
       this.showProfileDropdown = false;
+      this.showCartSidebar = false;
     }
   }
 
@@ -217,14 +277,11 @@ export class HomeComponent {
   }
 
   goToSaved() {
-    console.log('Ir a guardados');
-    // 🔌 AQUÍ INTEGRAR BACKEND - Navegar a favoritos
-    // this.router.navigate(['/favorites']);
+    console.log('Navegando a guardados');
+    this.router.navigate(['/saved']); // Redirección a la página de guardados
   }
 
   goToCart() {
-    console.log('Ir al carrito');
-    // 🔌 AQUÍ INTEGRAR BACKEND - Navegar al carrito
-    // this.router.navigate(['/cart']);
+    this.toggleCartSidebar();
   }
 }

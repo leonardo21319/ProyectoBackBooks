@@ -1,9 +1,12 @@
 import { Routes } from '@angular/router';
 import { LoginComponent } from './login/login.component';
-import { HomeComponent } from './home/home.component'; // 👈 AGREGAR
+import { HomeComponent } from './home/home.component';
+import { SaveComponent } from './save/save.component';
 
 export const routes: Routes = [
   { path: '', component: LoginComponent },
-  { path: 'home', component: HomeComponent }, // 👈 AGREGAR
-  { path: '**', redirectTo: '' },
+  { path: 'login', component: LoginComponent },
+  { path: 'home', component: HomeComponent },
+  { path: 'saved', component: SaveComponent }, // Nueva ruta para guardados
+  { path: '**', redirectTo: '' }
 ];
