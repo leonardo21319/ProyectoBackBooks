@@ -1,4 +1,3 @@
-// src/app/profile-shooper/profile-shooper.component.ts
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -27,6 +26,37 @@ export class ProfileShooperComponent {
     email: 'mikerrbern@gmail.com',
     phone: ''
   };
+
+  // Datos de pedidos simulados
+  orders = [
+    {
+      id: 1,
+      bookTitle: 'Drácula',
+      date: '08-06-2025',
+      status: 'Completado',
+      type: 'Venta',
+      total: 120,
+      canRate: true
+    },
+    {
+      id: 2,
+      bookTitle: 'Frieren',
+      date: '07-06-2025',
+      status: 'Cancelada',
+      type: 'Donación',
+      total: 0,
+      canRate: false
+    },
+    {
+      id: 3,
+      bookTitle: 'Baldor',
+      date: '06-06-2025',
+      status: 'Pendiente',
+      type: 'Intercambio',
+      total: 0,
+      canRate: false
+    }
+  ];
 
   constructor(private router: Router) {}
 
@@ -84,5 +114,43 @@ export class ProfileShooperComponent {
     //     // Mostrar mensaje de error
     //   }
     // );
+  }
+
+  // Métodos para pedidos
+  getStatusClass(status: string): string {
+    switch(status.toLowerCase()) {
+      case 'completado':
+        return 'status-completed';
+      case 'pendiente':
+        return 'status-pending';
+      case 'cancelada':
+        return 'status-cancelled';
+      default:
+        return '';
+    }
+  }
+
+  getTypeClass(type: string): string {
+    switch(type.toLowerCase()) {
+      case 'venta':
+        return 'type-venta';
+      case 'donación':
+        return 'type-donacion';
+      case 'intercambio':
+        return 'type-intercambio';
+      default:
+        return '';
+    }
+  }
+
+  rateOrder(order: any) {
+    console.log('Calificar pedido:', order);
+    // 🔌 AQUÍ INTEGRAR BACKEND - Abrir modal de calificación
+    alert(`Calificar pedido: ${order.bookTitle}`);
+  }
+
+  viewOrderDetails(order: any) {
+    console.log('Ver detalles del pedido:', order);
+    // 🔌 AQUÍ INTEGRAR BACKEND - Navegar a detalles
   }
 }
