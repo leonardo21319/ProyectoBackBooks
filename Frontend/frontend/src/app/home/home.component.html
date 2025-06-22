@@ -139,21 +139,6 @@
     </div>
   </header>
 
-  <!-- Indicador de categoría seleccionada -->
-  <section class="category-indicator" *ngIf="selectedCategory !== 'Todas'">
-    <div class="container">
-      <div class="alert alert-info d-flex align-items-center justify-content-between">
-        <div>
-          <strong>Mostrando libros de:</strong> {{selectedCategory}}
-          <span class="badge bg-primary ms-2">{{books.length}} libro(s)</span>
-        </div>
-        <button class="btn btn-outline-secondary btn-sm" (click)="selectCategory('Todas')">
-          Ver todos
-        </button>
-      </div>
-    </div>
-  </section>
-
   <!-- Banner principal con Bootstrap -->
   <section class="hero-section my-4">
     <div class="container">
@@ -171,6 +156,16 @@
             📚📖📓📗📘📙
           </div>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Indicador de categoría seleccionada - NUEVO DISEÑO -->
+  <section class="category-title" *ngIf="selectedCategory !== 'Todas'">
+    <div class="container">
+      <div class="category-header">
+        <h2 class="category-name">{{selectedCategory}}</h2>
+        <span class="books-count">{{books.length}} libro(s)</span>
       </div>
     </div>
   </section>

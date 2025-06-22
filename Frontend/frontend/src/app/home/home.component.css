@@ -139,7 +139,32 @@
   justify-content: center;
 }
 
-/* Dropdown de categorías estilo Figma */
+/* Título de categoría - NUEVO DISEÑO SIMPLE */
+.category-title {
+  padding: 0 2rem;
+  margin-bottom: 2rem;
+}
+
+.category-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #e9ecef;
+}
+
+.category-name {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: #2F4653;
+  margin: 0;
+}
+
+.books-count {
+  font-size: 1rem;
+  color: #6c757d;
+  font-weight: 500;
+}
 .dropdown-container {
   position: relative;
 }

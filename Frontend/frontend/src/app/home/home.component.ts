@@ -54,7 +54,7 @@ export class HomeComponent {
       author: 'Varios Autores',
       price: 0,
       type: 'Donación',
-      image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=400&fit=crop',
+      image: 'https://www.egames.news/__export/1672625013431/sites/debate/img/2023/01/01/kaguya-sama-poster-especial-cumpleaxos-de-kaguya_1.jpg_976912859.jpg',
       category: 'Ciencias y tecnología',
       description: 'Manual completo para aprender programación en Java desde cero.'
     },
