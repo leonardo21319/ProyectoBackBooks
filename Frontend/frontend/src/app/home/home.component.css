@@ -1,5 +1,3 @@
-/* src/app/home/home.component.css - ESTILO FIGMA CORRECTO */
-
 .bookstore-container {
   min-height: 100vh;
   background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
@@ -117,6 +115,7 @@
   justify-content: center;
   cursor: pointer;
   transition: all 0.3s ease;
+  position: relative;
 }
 
 .profile-btn-figma:hover {
@@ -204,6 +203,87 @@
   border-bottom-right-radius: 12px;
 }
 
+/* Dropdown del perfil */
+.profile-dropdown-figma {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background: white;
+  border: 1px solid #e9ecef;
+  border-radius: 12px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  min-width: 180px;
+  z-index: 1050;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.3s ease;
+}
+
+.profile-dropdown-figma.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.profile-header {
+  padding: 16px;
+  text-align: center;
+  border-bottom: 1px solid #e9ecef;
+  background: #f8f9fa;
+  border-radius: 12px 12px 0 0;
+}
+
+.profile-avatar {
+  width: 48px;
+  height: 48px;
+  background: #6A93B2;
+  border-radius: 50%;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.profile-dropdown-item {
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  padding: 12px 16px;
+  color: #2F4653;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: block;
+}
+
+.profile-dropdown-item:hover {
+  background: rgba(106, 147, 178, 0.1);
+  color: #6A93B2;
+}
+
+.profile-dropdown-item.logout {
+  color: #dc3545;
+}
+
+.profile-dropdown-item.logout:hover {
+  background: rgba(220, 53, 69, 0.1);
+  color: #dc3545;
+}
+
+.profile-divider {
+  height: 1px;
+  background: #e9ecef;
+  margin: 8px 0;
+}
+
+.profile-dropdown-item:last-of-type {
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+}
+
 /* Banner personalizado */
 .hero-banner-custom {
   background: linear-gradient(135deg, #d4c5a9 0%, #f4e4c1 100%);
@@ -247,54 +327,150 @@
   object-fit: cover;
 }
 
+/* Botón de guardados actualizado */
 .save-btn-custom {
   top: 15px !important;
   right: 15px !important;
-  background: rgba(255, 255, 255, 0.9) !important;
+  background: rgba(255, 255, 255, 0.95) !important;
   border: none !important;
-  border-radius: 50% !important;
-  width: 40px;
-  height: 40px;
-  color: #666;
+  border-radius: 8px !important;
+  width: 36px;
+  height: 36px;
+  color: #6c757d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 .save-btn-custom:hover {
-  background: #ff6b6b !important;
-  color: white !important;
+  background: rgba(106, 147, 178, 0.2) !important;
+  color: #6A93B2 !important;
+  transform: scale(1.05);
 }
 
-/* Botones personalizados */
-.btn-custom-primary {
-  background: #2F4653 !important;
-  border-color: #2F4653 !important;
-  color: white !important;
-}
-
-.btn-custom-primary:hover {
-  background: #1a252f !important;
-  border-color: #1a252f !important;
-}
-
-.btn-custom-info {
-  background: #87ACC5 !important;
-  border-color: #87ACC5 !important;
-  color: white !important;
-}
-
-.btn-custom-info:hover {
+/* Estado activo del botón de guardados */
+.save-btn-custom.saved-active {
   background: #6A93B2 !important;
-  border-color: #6A93B2 !important;
+  color: white !important;
+  box-shadow: 0 4px 12px rgba(106, 147, 178, 0.4) !important;
 }
 
-.btn-custom-success {
-  background: #28a745 !important;
-  border-color: #28a745 !important;
+.save-btn-custom.saved-active:hover {
+  background: #2F4653 !important;
+  color: white !important;
+  transform: scale(1.05);
+}
+
+/* Color del SVG cuando está guardado */
+.save-btn-custom.saved-active svg {
   color: white !important;
 }
 
-.btn-custom-success:hover {
-  background: #218838 !important;
-  border-color: #218838 !important;
+/* Badges de tipo de libro */
+.book-type-badge {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.badge-venta {
+  background: linear-gradient(135deg, #6A93B2, #87ACC5);
+  color: white;
+  box-shadow: 0 2px 4px rgba(106, 147, 178, 0.3);
+}
+
+.badge-donacion {
+  background: linear-gradient(135deg, #007bff, #6610f2);
+  color: white;
+  box-shadow: 0 2px 4px rgba(0, 123, 255, 0.3);
+}
+
+.badge-intercambio {
+  background: linear-gradient(135deg, #fd7e14, #e83e8c);
+  color: white;
+  box-shadow: 0 2px 4px rgba(253, 126, 20, 0.3);
+}
+
+/* Sección de descripción y precio */
+.book-description {
+  font-size: 0.9rem;
+  color: #666;
+  line-height: 1.4;
+}
+
+.price-section {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.price-label {
+  font-size: 0.9rem;
+  color: #666;
+  font-weight: 500;
+}
+
+.price-amount {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #6A93B2;
+}
+
+/* Botones personalizados por tipo */
+.btn-custom-venta {
+  background: linear-gradient(135deg, #6A93B2, #87ACC5) !important;
+  border: none !important;
+  color: white !important;
+  font-weight: 600 !important;
+  padding: 12px 20px !important;
+  border-radius: 8px !important;
+  transition: all 0.3s ease !important;
+}
+
+.btn-custom-venta:hover {
+  background: linear-gradient(135deg, #2F4653, #6A93B2) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 12px rgba(106, 147, 178, 0.3) !important;
+}
+
+.btn-custom-donacion {
+  background: linear-gradient(135deg, #007bff, #6610f2) !important;
+  border: none !important;
+  color: white !important;
+  font-weight: 600 !important;
+  padding: 12px 20px !important;
+  border-radius: 8px !important;
+  transition: all 0.3s ease !important;
+}
+
+.btn-custom-donacion:hover {
+  background: linear-gradient(135deg, #0056b3, #520dc2) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3) !important;
+}
+
+.btn-custom-intercambio {
+  background: linear-gradient(135deg, #fd7e14, #e83e8c) !important;
+  border: none !important;
+  color: white !important;
+  font-weight: 600 !important;
+  padding: 12px 20px !important;
+  border-radius: 8px !important;
+  transition: all 0.3s ease !important;
+}
+
+.btn-custom-intercambio:hover {
+  background: linear-gradient(135deg, #e8650e, #d91a72) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 12px rgba(253, 126, 20, 0.3) !important;
 }
 
 /* Responsive */
