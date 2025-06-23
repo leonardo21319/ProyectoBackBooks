@@ -20,6 +20,7 @@ export class BookExchangeOfferComponent implements OnInit {
   savedItems = 0;
   bookId: string | null = null;
   offerText: string = '';
+  showSuccessPopup: boolean = false; // ✨ Control del popup
   
   // Datos del libro para el cual se hace la oferta
   book = {
@@ -135,8 +136,7 @@ export class BookExchangeOfferComponent implements OnInit {
     // 🔌 AQUÍ INTEGRAR BACKEND - Enviar oferta
     // this.exchangeService.sendOffer(offerData).subscribe({
     //   next: (response) => {
-    //     this.showSuccessMessage('Oferta enviada exitosamente');
-    //     this.router.navigate(['/exchange', this.book.id]);
+    //     this.showSuccessPopup = true;
     //   },
     //   error: (error) => {
     //     console.error('Error enviando oferta:', error);
@@ -144,10 +144,14 @@ export class BookExchangeOfferComponent implements OnInit {
     //   }
     // });
 
-    // Simulación del éxito
-    alert(`¡Oferta enviada exitosamente!\n\nTu mensaje ha sido enviado a ${this.book.owner}.\nRecibirás una notificación cuando responda.`);
-    
-    // Regresar a la página del libro
+    // ✨ Mostrar popup de éxito
+    this.showSuccessPopup = true;
+  }
+
+  // ✨ NUEVO MÉTODO - Cerrar popup y regresar
+  closeSuccessPopup() {
+    this.showSuccessPopup = false;
+    // Regresar a la página del libro después de cerrar el popup
     this.router.navigate(['/exchange', this.book.id]);
   }
 

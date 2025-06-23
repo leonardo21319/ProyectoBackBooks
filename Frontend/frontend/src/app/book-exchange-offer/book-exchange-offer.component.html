@@ -107,4 +107,17 @@
       </div>
     </div>
   </main>
+
+  <!-- ✨ POPUP DE ÉXITO -->
+  <div class="popup-overlay" [class.show]="showSuccessPopup" (click)="closeSuccessPopup()">
+    <div class="success-popup" (click)="$event.stopPropagation()">
+      <div class="popup-content">
+        <h2 class="popup-title">¡Oferta enviada!</h2>
+        <p class="popup-message">
+          Te notificaremos si el otro usuario acepta realizar el intercambio.
+        </p>
+      </div>
+    </div>
+  </div>
+
 </div>
