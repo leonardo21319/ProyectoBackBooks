@@ -1,0 +1,110 @@
+<!-- ============================================ -->
+<!-- 📁 src/app/book-exchange-offer/book-exchange-offer.component.html -->
+<!-- ============================================ -->
+
+<div class="bookstore-container">
+  
+  <!-- Header compartido -->
+  <app-header 
+    [cartItems]="cartItems" 
+    [savedItems]="savedItems" 
+    currentPage="book-exchange-offer"
+    (searchPerformed)="onSearchPerformed($event)">
+  </app-header>
+
+  <!-- Contenido principal -->
+  <main class="offer-main">
+    <div class="container">
+      
+      <!-- Contenedor centrado del formulario de oferta -->
+      <div class="offer-container">
+        
+        <!-- Título principal -->
+        <div class="offer-header">
+          <h1 class="offer-title">Hacer oferta</h1>
+        </div>
+
+        <!-- Descripción -->
+        <div class="offer-description">
+          <p>Tu oferta será enviada directamente al dueño del libro.</p>
+        </div>
+
+        <!-- Información del libro (opcional, para contexto) -->
+        <div class="book-context" *ngIf="book">
+          <div class="book-mini-card">
+            <img [src]="book.image" [alt]="book.title" class="book-mini-image">
+            <div class="book-mini-info">
+              <h3 class="book-mini-title">{{book.title}}</h3>
+              <p class="book-mini-author">por {{book.author}}</p>
+              <p class="book-mini-owner">Propietario: {{book.owner}}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Formulario de oferta -->
+        <form class="offer-form" (ngSubmit)="sendOffer()">
+          
+          <!-- Campo de texto para la oferta -->
+          <div class="form-group">
+            <label for="offerText" class="form-label">Ingresa tu oferta</label>
+            <textarea 
+              id="offerText"
+              class="form-control offer-textarea"
+              [(ngModel)]="offerText"
+              name="offerText"
+              placeholder="Escribe aquí qué libro o libros ofreces a cambio, tu propuesta de intercambio, condiciones, etc."
+              rows="6"
+              required>
+            </textarea>
+            <div class="char-counter">
+              <small class="text-muted">{{offerText.length}} caracteres</small>
+            </div>
+          </div>
+
+          <!-- Botones de acción -->
+          <div class="form-actions">
+            <button 
+              type="button" 
+              class="btn btn-cancel"
+              (click)="cancel()">
+              Cancelar
+            </button>
+            
+            <button 
+              type="submit" 
+              class="btn btn-send-offer"
+              [disabled]="!offerText.trim()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="me-2">
+                <path d="M22 2L11 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              Enviar oferta
+            </button>
+          </div>
+
+        </form>
+
+        <!-- Información adicional -->
+        <div class="offer-info">
+          <div class="info-card">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="info-icon">
+              <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+              <path d="M12 16V12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M12 8H12.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <div class="info-text">
+              <h4>¿Cómo funciona?</h4>
+              <ul>
+                <li>Tu oferta será enviada al propietario del libro</li>
+                <li>Recibirás una notificación cuando responda</li>
+                <li>Podrán coordinar los detalles del intercambio</li>
+                <li>El intercambio se realiza directamente entre usuarios</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>

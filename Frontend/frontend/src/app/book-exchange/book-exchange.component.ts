@@ -152,18 +152,9 @@ export class BookExchangeComponent implements OnInit {
   }
 
   makeOffer() {
-    console.log('Haciendo oferta para:', this.book.title);
-    this.showSuccessMessage(`Oferta enviada para "${this.book.title}"`);
-    
-    // Mostrar modal o formulario de oferta
-    const offerMessage = `¡Hola ${this.book.owner}!\n\nMe interesa intercambiar tu libro "${this.book.title}".\n\n¿Qué tipo de libro estarías buscando a cambio?\n\nGracias.`;
-    
-    const shouldMakeOffer = confirm(`¿Enviar oferta de intercambio a ${this.book.owner}?\n\nSe abrirá un chat para discutir los detalles del intercambio.`);
-    
-    if (shouldMakeOffer) {
-      // 🔌 AQUÍ INTEGRAR BACKEND - Sistema de ofertas/chat
-      alert(`Oferta enviada a ${this.book.owner}:\n\n${offerMessage}`);
-    }
+    console.log('Navegando a página de hacer oferta para:', this.book.title);
+    // Navegar a la página de hacer oferta
+    this.router.navigate(['/exchange', this.book.id, 'offer']);
   }
 
   toggleSaveBook() {
