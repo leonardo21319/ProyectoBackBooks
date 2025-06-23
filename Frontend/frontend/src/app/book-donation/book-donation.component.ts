@@ -19,6 +19,8 @@ export class BookDonationComponent implements OnInit {
   cartItems = 0;
   savedItems = 0;
   bookId: string | null = null;
+  showSuccessPopup: boolean = false; // ✨ Control del popup de éxito
+  showErrorPopup: boolean = false; // ✨ Control del popup de error
   
   // ✨ SOLO LIBROS DE DONACIÓN - Datos simulados
   book = {
@@ -37,7 +39,8 @@ export class BookDonationComponent implements OnInit {
     editorial: 'ANAYA Multimedia',
     transaction: 'Donación',
     synopsis: 'Manual completo para aprender programación en Java desde cero. Incluye conceptos básicos, estructuras de datos, programación orientada a objetos y desarrollo de aplicaciones.',
-    details: 'Este libro está diseñado para estudiantes y profesionales que desean dominar Java. Incluye ejercicios prácticos, ejemplos de código y proyectos reales para consolidar el aprendizaje.'
+    details: 'Este libro está diseñado para estudiantes y profesionales que desean dominar Java. Incluye ejercicios prácticos, ejemplos de código y proyectos reales para consolidar el aprendizaje.',
+    isAvailable: true // ✨ Por defecto disponible
   };
 
   constructor(private router: Router, private route: ActivatedRoute) {}
@@ -100,7 +103,8 @@ export class BookDonationComponent implements OnInit {
         editorial: 'ANAYA Multimedia',
         transaction: 'Donación',
         synopsis: 'Manual completo para aprender programación en Java desde cero. Incluye conceptos básicos, estructuras de datos, programación orientada a objetos y desarrollo de aplicaciones.',
-        details: 'Este libro está diseñado para estudiantes y profesionales que desean dominar Java. Incluye ejercicios prácticos, ejemplos de código y proyectos reales para consolidar el aprendizaje.'
+        details: 'Este libro está diseñado para estudiantes y profesionales que desean dominar Java. Incluye ejercicios prácticos, ejemplos de código y proyectos reales para consolidar el aprendizaje.',
+        isAvailable: true // ✨ Disponible
       },
       8: {
         id: 8,
@@ -118,7 +122,8 @@ export class BookDonationComponent implements OnInit {
         editorial: 'O\'Reilly Media',
         transaction: 'Donación',
         synopsis: 'Guía completa para aprender Python desde cero. Cubre desde conceptos básicos hasta técnicas avanzadas de programación en Python.',
-        details: 'Ideal para principiantes y programadores experimentados que quieren aprender Python. Incluye ejemplos prácticos y casos de uso reales.'
+        details: 'Ideal para principiantes y programadores experimentados que quieren aprender Python. Incluye ejemplos prácticos y casos de uso reales.',
+        isAvailable: true // ✨ Disponible
       },
       9: {
         id: 9,
@@ -136,7 +141,8 @@ export class BookDonationComponent implements OnInit {
         editorial: 'Limusa Wiley',
         transaction: 'Donación',
         synopsis: 'Texto completo de matemáticas avanzadas para estudiantes de ingeniería. Incluye álgebra lineal, cálculo diferencial e integral, y ecuaciones diferenciales.',
-        details: 'Reconocido mundialmente como uno de los mejores textos de matemáticas para ingeniería. Contiene teoría, ejemplos resueltos y ejercicios graduados.'
+        details: 'Reconocido mundialmente como uno de los mejores textos de matemáticas para ingeniería. Contiene teoría, ejemplos resueltos y ejercicios graduados.',
+        isAvailable: false // ✨ Ya reclamado
       }
     };
 
@@ -153,17 +159,43 @@ export class BookDonationComponent implements OnInit {
 
   requestBook() {
     console.log('Solicitando libro:', this.book.title);
-    this.showSuccessMessage(`Solicitud enviada para "${this.book.title}"`);
     
-    // Mostrar modal o formulario de solicitud
-    const requestMessage = `¡Hola ${this.book.donor}!\n\nMe interesa solicitar tu libro "${this.book.title}" que has puesto disponible para donación.\n\n¿Podrías confirmar si aún está disponible?\n\nGracias por tu generosidad.`;
-    
-    const shouldRequest = confirm(`¿Enviar solicitud de donación a ${this.book.donor}?\n\nSe abrirá un chat para coordinar la entrega del libro.`);
-    
-    if (shouldRequest) {
-      // 🔌 AQUÍ INTEGRAR BACKEND - Sistema de solicitudes
-      alert(`Solicitud enviada a ${this.book.donor}:\n\n${requestMessage}`);
+    // ✨ Verificar disponibilidad del libro
+    if (this.book.isAvailable === false) {
+      // Libro ya reclamado - mostrar mensaje de error
+      this.showErrorPopup = true;
+      return;
     }
+
+    // ✨ Libro disponible - mostrar mensaje de éxito
+    this.showSuccessPopup = true;
+
+    // 🔌 AQUÍ INTEGRAR BACKEND - Procesar solicitud
+    // this.donationService.requestBook(this.book.id).subscribe({
+    //   next: (response) => {
+    //     if (response.success) {
+    //       this.showSuccessPopup = true;
+    //     } else {
+    //       this.showErrorPopup = true;
+    //     }
+    //   },
+    //   error: (error) => {
+    //     console.error('Error solicitando libro:', error);
+    //     this.showErrorPopup = true;
+    //   }
+    // });
+  }
+
+  // ✨ NUEVO MÉTODO - Cerrar popup de éxito y regresar
+  closeSuccessPopup() {
+    this.showSuccessPopup = false;
+    this.router.navigate(['/donation', this.book.id]);
+  }
+
+  // ✨ NUEVO MÉTODO - Cerrar popup de error y regresar
+  closeErrorPopup() {
+    this.showErrorPopup = false;
+    this.router.navigate(['/donation', this.book.id]);
   }
 
   toggleSaveBook() {
