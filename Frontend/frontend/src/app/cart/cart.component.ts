@@ -1,8 +1,8 @@
 // src/app/cart/cart.component.ts - SIMPLIFICADO CON HEADER COMPARTIDO
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { HeaderComponent } from '../shared/header/header.component'; // Importar header compartido
 
 @Component({
@@ -12,7 +12,7 @@ import { HeaderComponent } from '../shared/header/header.component'; // Importar
   templateUrl: './cart.component.html',
   styleUrls: ['./cart.component.css']
 })
-export class CartComponent {
+export class CartComponent implements OnInit {
   cartItems = 1; // Número para el badge
   savedItems = 0;
 
@@ -28,8 +28,30 @@ export class CartComponent {
     }
   ];
 
-  constructor(private router: Router) {
+  constructor(private router: Router, private route: ActivatedRoute) {
     this.updateCartCount();
+  }
+
+  ngOnInit() {
+    // Verificar si hay parámetros de categoría en la URL
+    this.route.queryParams.subscribe(params => {
+      if (params['category']) {
+        // Si se selecciona una categoría desde cart, navegar a home
+        console.log('Categoría seleccionada desde cart:', params['category']);
+        this.router.navigate(['/home'], { 
+          queryParams: { category: params['category'] },
+          replaceUrl: true 
+        });
+      }
+      if (params['search']) {
+        // Si se hace una búsqueda desde cart, navegar a home
+        console.log('Búsqueda desde cart:', params['search']);
+        this.router.navigate(['/home'], { 
+          queryParams: { search: params['search'] },
+          replaceUrl: true 
+        });
+      }
+    });
   }
 
   // Métodos del carrito

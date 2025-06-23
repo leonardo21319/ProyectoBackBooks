@@ -1,8 +1,8 @@
 // src/app/home/home.component.ts - USANDO HEADER COMPARTIDO
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { HeaderComponent } from '../shared/header/header.component'; // Importar header compartido
 
 @Component({
@@ -12,7 +12,7 @@ import { HeaderComponent } from '../shared/header/header.component'; // Importar
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit {
   cartItems = 0;
   savedItems = 0;
   selectedCategory = 'Todas';
@@ -56,7 +56,23 @@ export class HomeComponent {
     }
   ];
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private route: ActivatedRoute) {}
+
+  ngOnInit() {
+    // Verificar si hay parámetros de categoría o búsqueda en la URL
+    this.route.queryParams.subscribe(params => {
+      if (params['category']) {
+        this.selectedCategory = params['category'];
+        console.log('Categoría desde URL:', params['category']);
+      }
+      if (params['search']) {
+        // Aquí puedes manejar la búsqueda si es necesario
+        console.log('Búsqueda desde URL:', params['search']);
+        // this.searchTerm = params['search'];
+        // this.performSearch(params['search']);
+      }
+    });
+  }
 
   // Getter para libros filtrados
   get books() {
@@ -70,6 +86,18 @@ export class HomeComponent {
   onCategorySelected(category: string) {
     this.selectedCategory = category;
     console.log('Categoría seleccionada:', category);
+    
+    // Actualizar la URL para reflejar la categoría seleccionada
+    if (category === 'Todas') {
+      // Si es "Todas", limpiar los query params
+      this.router.navigate(['/home'], { replaceUrl: true });
+    } else {
+      // Actualizar URL con la categoría
+      this.router.navigate(['/home'], { 
+        queryParams: { category: category },
+        replaceUrl: true 
+      });
+    }
   }
 
   onCartClicked() {
@@ -78,8 +106,14 @@ export class HomeComponent {
 
   onSearchPerformed(searchTerm: string) {
     console.log('Búsqueda desde header:', searchTerm);
-    // 🔌 AQUÍ INTEGRAR BACKEND - Búsqueda
-    // Aquí puedes filtrar los libros por el término de búsqueda
+    // 🔌 AQUÍ INTEGRAR BACKEND - Búsqueda local
+    // Puedes filtrar los libros por el término de búsqueda
+    
+    // Actualizar URL con el término de búsqueda
+    this.router.navigate(['/home'], { 
+      queryParams: { search: searchTerm },
+      replaceUrl: true 
+    });
   }
 
   addToCart(book: any) {
@@ -185,7 +219,17 @@ export class HomeComponent {
 
   selectCategory(category: string) {
     this.selectedCategory = category;
-    console.log('Categoría seleccionada:', category);
+    console.log('Categoría seleccionada directamente:', category);
+    
+    // Actualizar URL
+    if (category === 'Todas') {
+      this.router.navigate(['/home'], { replaceUrl: true });
+    } else {
+      this.router.navigate(['/home'], { 
+        queryParams: { category: category },
+        replaceUrl: true 
+      });
+    }
   }
 
   closeDropdownOnOutsideClick(event: Event) {

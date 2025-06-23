@@ -78,11 +78,27 @@ export class ProfileShooperComponent implements OnInit {
   constructor(private router: Router, private route: ActivatedRoute) {}
 
   ngOnInit() {
-    // Verificar si hay un parámetro de sección en la URL
+    // Verificar si hay parámetros en la URL
     this.route.queryParams.subscribe(params => {
       if (params['section']) {
         this.activeMenuItem = params['section'];
         console.log('Navegando a sección:', params['section']);
+      }
+      if (params['category']) {
+        // Si se selecciona una categoría desde profile, navegar a home
+        console.log('Categoría seleccionada desde profile:', params['category']);
+        this.router.navigate(['/home'], { 
+          queryParams: { category: params['category'] },
+          replaceUrl: true 
+        });
+      }
+      if (params['search']) {
+        // Si se hace una búsqueda desde profile, navegar a home
+        console.log('Búsqueda desde profile:', params['search']);
+        this.router.navigate(['/home'], { 
+          queryParams: { search: params['search'] },
+          replaceUrl: true 
+        });
       }
     });
   }
