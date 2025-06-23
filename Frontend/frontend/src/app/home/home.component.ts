@@ -69,10 +69,23 @@ export class HomeComponent {
     return this.allBooks.filter(book => book.category === this.selectedCategory);
   }
 
-  // ✨ NUEVO MÉTODO - Navegación al detalle del libro
-  viewBookDetail(bookId: number) {
-    console.log('Navegando al detalle del libro ID:', bookId);
-    this.router.navigate(['/book', bookId]);
+  // ✨ MÉTODO ACTUALIZADO - Navegación según tipo de libro
+  viewBookDetail(book: any) {
+    console.log('Navegando al detalle del libro:', book.title, 'Tipo:', book.type);
+    
+    if (book.type === 'Venta') {
+      // Libros de venta van a book-sale
+      this.router.navigate(['/book', book.id]);
+    } else if (book.type === 'Intercambio') {
+      // Libros de intercambio van a book-exchange
+      this.router.navigate(['/exchange', book.id]);
+    } else if (book.type === 'Donación') {
+      // Libros de donación irían a book-donation (cuando se implemente)
+      console.log('Funcionalidad de donación por implementar');
+      // this.router.navigate(['/donation', book.id]);
+    } else {
+      console.warn('Tipo de libro no reconocido:', book.type);
+    }
   }
 
   // Métodos para eventos del header

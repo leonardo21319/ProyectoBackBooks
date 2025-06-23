@@ -1,5 +1,5 @@
 // ============================================
-// 📁 src/app/routes.ts - CÓDIGO COMPLETO ACTUALIZADO
+// 📁 src/app/routes.ts - ACTUALIZADO CON BOOK-EXCHANGE
 // ============================================
 
 import { Routes } from '@angular/router';
@@ -8,7 +8,8 @@ import { HomeComponent } from './home/home.component';
 import { SaveComponent } from './save/save.component';
 import { CartComponent } from './cart/cart.component';
 import { ProfileShooperComponent } from './profile-shooper/profile-shooper.component';
-import { BookSaleComponent } from './book-sale/book-sale.component'; // ✨ Importación del componente
+import { BookSaleComponent } from './book-sale/book-sale.component';
+import { BookExchangeComponent } from './book-exchange/book-exchange.component'; // ✨ Nueva importación
 
 export const routes: Routes = [
   { path: '', component: LoginComponent },
@@ -17,6 +18,7 @@ export const routes: Routes = [
   { path: 'saved', component: SaveComponent },
   { path: 'cart', component: CartComponent },
   { path: 'profile', component: ProfileShooperComponent },
-  { path: 'book/:id', component: BookSaleComponent }, // ✨ Ruta del detalle con parámetro dinámico
-  { path: '**', redirectTo: '' } // Redirección para rutas no encontradas
+  { path: 'book/:id', component: BookSaleComponent }, // Para libros de venta
+  { path: 'exchange/:id', component: BookExchangeComponent }, // ✨ Para libros de intercambio
+  { path: '**', redirectTo: '' }
 ];
