@@ -224,14 +224,43 @@
               </div>
             </div>
 
-            <div *ngIf="activeMenuItem === 'Reportes'" class="coming-soon">
-              <div class="coming-soon-icon">
-                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M9 17H13M9 13H13M9 9H10M21 20L17.5 17.5L14 21L10.5 17.5L7 21L3 17V4C3 3.46957 3.21071 2.96086 3.58579 2.58579C3.96086 2.21071 4.46957 2 5 2H19C19.5304 2 20.0391 2.21071 20.4142 2.58579C20.7893 2.96086 21 3.46957 21 4V17Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
+            <div *ngIf="activeMenuItem === 'Reportes'" class="reports-section">
+              <div *ngIf="reports.length === 0" class="coming-soon">
+                <div class="coming-soon-icon">
+                  <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M9 17H13M9 13H13M9 9H10M21 20L17.5 17.5L14 21L10.5 17.5L7 21L3 17V4C3 3.46957 3.21071 2.96086 3.58579 2.58579C3.96086 2.21071 4.46957 2 5 2H19C19.5304 2 20.0391 2.21071 20.4142 2.58579C20.7893 2.96086 21 3.46957 21 4V17Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+                <h3>No tienes reportes</h3>
+                <p>Cuando reportes algún usuario o situación, aparecerá aquí.</p>
               </div>
-              <h3>Reportes</h3>
-              <p>Accede a reportes detallados de tus actividades y estadísticas.</p>
+
+              <!-- Tabla de reportes -->
+              <div *ngIf="reports.length > 0" class="reports-table-container">
+                <div class="reports-table">
+                  <!-- Header de la tabla -->
+                  <div class="reports-table-header">
+                    <div class="table-header-cell">Fecha</div>
+                    <div class="table-header-cell">Usuario</div>
+                    <div class="table-header-cell">Motivo</div>
+                  </div>
+
+                  <!-- Filas de reportes -->
+                  <div class="reports-table-row" *ngFor="let report of reports">
+                    <div class="table-cell date-cell">
+                      <span class="report-date">{{report.date}}</span>
+                    </div>
+                    
+                    <div class="table-cell user-cell">
+                      <span class="reported-user">{{report.reportedUser}}</span>
+                    </div>
+                    
+                    <div class="table-cell reason-cell">
+                      <span class="report-reason">{{report.reason}}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>

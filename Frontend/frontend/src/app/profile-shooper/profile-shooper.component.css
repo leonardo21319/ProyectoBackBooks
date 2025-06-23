@@ -431,6 +431,144 @@
   }
 }
 
+/* === ESTILOS PARA TABLA DE REPORTES === */
+
+.reports-section {
+  width: 100%;
+}
+
+.reports-table-container {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.reports-table {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header de la tabla de reportes */
+.reports-table-header {
+  display: grid;
+  grid-template-columns: 1fr 2fr 3fr;
+  gap: 1rem;
+  padding: 1.5rem 2rem;
+  background: #87ACC5;
+  color: white;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+/* Filas de la tabla de reportes */
+.reports-table-row {
+  display: grid;
+  grid-template-columns: 1fr 2fr 3fr;
+  gap: 1rem;
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid #f1f3f4;
+  transition: background-color 0.3s ease;
+}
+
+.reports-table-row:hover {
+  background-color: #f8f9fa;
+}
+
+.reports-table-row:last-child {
+  border-bottom: none;
+}
+
+/* Celdas específicas de reportes */
+.report-date {
+  color: #6c757d;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.reported-user {
+  font-weight: 600;
+  color: #2F4653;
+  font-size: 1rem;
+}
+
+.report-reason {
+  color: #495057;
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+/* Responsive para tabla de reportes */
+@media (max-width: 992px) {
+  .reports-table-header,
+  .reports-table-row {
+    grid-template-columns: 1fr;
+    gap: 0;
+    padding: 1rem;
+  }
+  
+  .reports-table-header {
+    display: none;
+  }
+  
+  .reports-table-row {
+    display: block;
+    padding: 1.5rem;
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    margin-bottom: 1rem;
+    background: white;
+  }
+  
+  .table-cell {
+    justify-content: flex-start;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #f1f3f4;
+  }
+  
+  .table-cell:last-child {
+    border-bottom: none;
+  }
+  
+  /* Agregar etiquetas en mobile para reportes */
+  .date-cell::before {
+    content: "Fecha: ";
+    font-weight: 600;
+    color: #6c757d;
+    display: block;
+    margin-bottom: 0.25rem;
+  }
+  
+  .user-cell::before {
+    content: "Usuario reportado: ";
+    font-weight: 600;
+    color: #6c757d;
+    display: block;
+    margin-bottom: 0.25rem;
+  }
+  
+  .reason-cell::before {
+    content: "Motivo: ";
+    font-weight: 600;
+    color: #6c757d;
+    display: block;
+    margin-bottom: 0.25rem;
+  }
+  
+  .report-date,
+  .reported-user,
+  .report-reason {
+    display: block;
+    width: 100%;
+  }
+}
+
+/* Clase auxiliar para iconos */
+.me-2 {
+  margin-right: 0.5rem;
+}
+
 /* Responsive Design */
 @media (max-width: 992px) {
   .profile-main {

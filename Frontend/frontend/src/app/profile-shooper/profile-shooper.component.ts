@@ -58,6 +58,22 @@ export class ProfileShooperComponent {
     }
   ];
 
+  // Datos de reportes simulados
+  reports = [
+    {
+      id: 1,
+      date: '08-06-2025',
+      reportedUser: 'Bugambilio Jacarando Cruz',
+      reason: 'El usuario hizo una oferta con una palabra antisocial'
+    },
+    {
+      id: 2,
+      date: '07-06-2025',
+      reportedUser: 'Margarita Flores Hortencia',
+      reason: 'El usuario me llamo hambreado'
+    }
+  ];
+
   constructor(private router: Router) {}
 
   // Métodos del sidebar
@@ -152,5 +168,11 @@ export class ProfileShooperComponent {
   viewOrderDetails(order: any) {
     console.log('Ver detalles del pedido:', order);
     // 🔌 AQUÍ INTEGRAR BACKEND - Navegar a detalles
+  }
+
+  // Métodos para reportes
+  viewReportDetails(report: any) {
+    console.log('Ver detalles del reporte:', report);
+    // 🔌 AQUÍ INTEGRAR BACKEND - Ver detalles del reporte
   }
 }
