@@ -1,5 +1,5 @@
 // ============================================
-// 📁 src/app/routes.ts - ACTUALIZADO CON BOOK-EXCHANGE
+// 📁 src/app/routes.ts - ACTUALIZADO CON TODAS LAS PÁGINAS
 // ============================================
 
 import { Routes } from '@angular/router';
@@ -9,7 +9,8 @@ import { SaveComponent } from './save/save.component';
 import { CartComponent } from './cart/cart.component';
 import { ProfileShooperComponent } from './profile-shooper/profile-shooper.component';
 import { BookSaleComponent } from './book-sale/book-sale.component';
-import { BookExchangeComponent } from './book-exchange/book-exchange.component'; // ✨ Nueva importación
+import { BookExchangeComponent } from './book-exchange/book-exchange.component';
+import { BookDonationComponent } from './book-donation/book-donation.component'; // ✨ Nueva importación
 
 export const routes: Routes = [
   { path: '', component: LoginComponent },
@@ -19,6 +20,7 @@ export const routes: Routes = [
   { path: 'cart', component: CartComponent },
   { path: 'profile', component: ProfileShooperComponent },
   { path: 'book/:id', component: BookSaleComponent }, // Para libros de venta
-  { path: 'exchange/:id', component: BookExchangeComponent }, // ✨ Para libros de intercambio
+  { path: 'exchange/:id', component: BookExchangeComponent }, // Para libros de intercambio
+  { path: 'donation/:id', component: BookDonationComponent }, // ✨ Para libros de donación
   { path: '**', redirectTo: '' }
 ];

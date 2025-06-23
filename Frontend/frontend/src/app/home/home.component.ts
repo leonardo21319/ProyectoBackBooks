@@ -80,9 +80,8 @@ export class HomeComponent {
       // Libros de intercambio van a book-exchange
       this.router.navigate(['/exchange', book.id]);
     } else if (book.type === 'Donación') {
-      // Libros de donación irían a book-donation (cuando se implemente)
-      console.log('Funcionalidad de donación por implementar');
-      // this.router.navigate(['/donation', book.id]);
+      // Libros de donación van a book-donation
+      this.router.navigate(['/donation', book.id]);
     } else {
       console.warn('Tipo de libro no reconocido:', book.type);
     }
