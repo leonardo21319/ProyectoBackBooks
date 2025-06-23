@@ -1,18 +1,21 @@
-// src/app/home/home.component.ts - USANDO HEADER COMPARTIDO
-import { Component, OnInit } from '@angular/core';
+// ============================================
+// 📁 src/app/home/home.component.ts - CÓDIGO COMPLETO ACTUALIZADO
+// ============================================
+
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
-import { HeaderComponent } from '../shared/header/header.component'; // Importar header compartido
+import { Router } from '@angular/router';
+import { HeaderComponent } from '../shared/header/header.component';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, FormsModule, HeaderComponent], // Agregar HeaderComponent
+  imports: [CommonModule, FormsModule, HeaderComponent],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent {
   cartItems = 0;
   savedItems = 0;
   selectedCategory = 'Todas';
@@ -56,23 +59,7 @@ export class HomeComponent implements OnInit {
     }
   ];
 
-  constructor(private router: Router, private route: ActivatedRoute) {}
-
-  ngOnInit() {
-    // Verificar si hay parámetros de categoría o búsqueda en la URL
-    this.route.queryParams.subscribe(params => {
-      if (params['category']) {
-        this.selectedCategory = params['category'];
-        console.log('Categoría desde URL:', params['category']);
-      }
-      if (params['search']) {
-        // Aquí puedes manejar la búsqueda si es necesario
-        console.log('Búsqueda desde URL:', params['search']);
-        // this.searchTerm = params['search'];
-        // this.performSearch(params['search']);
-      }
-    });
-  }
+  constructor(private router: Router) {}
 
   // Getter para libros filtrados
   get books() {
@@ -82,22 +69,16 @@ export class HomeComponent implements OnInit {
     return this.allBooks.filter(book => book.category === this.selectedCategory);
   }
 
+  // ✨ NUEVO MÉTODO - Navegación al detalle del libro
+  viewBookDetail(bookId: number) {
+    console.log('Navegando al detalle del libro ID:', bookId);
+    this.router.navigate(['/book', bookId]);
+  }
+
   // Métodos para eventos del header
   onCategorySelected(category: string) {
     this.selectedCategory = category;
     console.log('Categoría seleccionada:', category);
-    
-    // Actualizar la URL para reflejar la categoría seleccionada
-    if (category === 'Todas') {
-      // Si es "Todas", limpiar los query params
-      this.router.navigate(['/home'], { replaceUrl: true });
-    } else {
-      // Actualizar URL con la categoría
-      this.router.navigate(['/home'], { 
-        queryParams: { category: category },
-        replaceUrl: true 
-      });
-    }
   }
 
   onCartClicked() {
@@ -106,14 +87,7 @@ export class HomeComponent implements OnInit {
 
   onSearchPerformed(searchTerm: string) {
     console.log('Búsqueda desde header:', searchTerm);
-    // 🔌 AQUÍ INTEGRAR BACKEND - Búsqueda local
-    // Puedes filtrar los libros por el término de búsqueda
-    
-    // Actualizar URL con el término de búsqueda
-    this.router.navigate(['/home'], { 
-      queryParams: { search: searchTerm },
-      replaceUrl: true 
-    });
+    // 🔌 AQUÍ INTEGRAR BACKEND - Búsqueda
   }
 
   addToCart(book: any) {
@@ -219,17 +193,7 @@ export class HomeComponent implements OnInit {
 
   selectCategory(category: string) {
     this.selectedCategory = category;
-    console.log('Categoría seleccionada directamente:', category);
-    
-    // Actualizar URL
-    if (category === 'Todas') {
-      this.router.navigate(['/home'], { replaceUrl: true });
-    } else {
-      this.router.navigate(['/home'], { 
-        queryParams: { category: category },
-        replaceUrl: true 
-      });
-    }
+    console.log('Categoría seleccionada:', category);
   }
 
   closeDropdownOnOutsideClick(event: Event) {
@@ -244,13 +208,5 @@ export class HomeComponent implements OnInit {
     this.closeCartSidebar();
     this.router.navigate(['/cart']);
     console.log('Navegando a la página completa del carrito');
-  }
-
-  // Método para navegar a pedidos si se necesita desde home
-  goToOrders() {
-    console.log('Ir a Mis pedidos desde home');
-    this.router.navigate(['/profile'], { 
-      queryParams: { section: 'Mis pedidos' } 
-    });
   }
 }

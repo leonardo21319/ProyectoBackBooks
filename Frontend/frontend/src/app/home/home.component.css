@@ -1,16 +1,27 @@
+/* ============================================ */
+/* 📁 src/app/home/home.component.css - COLORES ORIGINALES CORRECTOS */
+/* ============================================ */
+
 .bookstore-container {
   min-height: 100vh;
   background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
   font-family: "Segoe UI", sans-serif;
 }
 
-/* Banner personalizado */
-.hero-banner-custom {
-  background: linear-gradient(135deg, #d4c5a9 0%, #f4e4c1 100%);
-}
-
 .text-custom-dark {
   color: #2F4653 !important;
+}
+
+/* === BANNER PRINCIPAL - COLORES ORIGINALES === */
+.hero-section {
+  margin: 2rem 0;
+}
+
+.hero-banner-custom {
+  background: linear-gradient(135deg, #d4c5a9 0%, #f4e4c1 100%);
+  color: #2F4653;
+  border-radius: 15px !important;
+  box-shadow: 0 8px 25px rgba(212, 197, 169, 0.3);
 }
 
 .banner-subtitle {
@@ -28,7 +39,7 @@
   opacity: 0.7;
 }
 
-/* Título de categoría */
+/* === CATEGORÍA SELECCIONADA === */
 .category-title {
   padding: 0 2rem;
   margin-bottom: 2rem;
@@ -55,13 +66,18 @@
   font-weight: 500;
 }
 
-/* Tarjetas de libros */
+/* === CARDS DE LIBROS === */
+.books-section {
+  padding-bottom: 3rem;
+}
+
 .book-card-custom {
   border: none !important;
   border-radius: 15px !important;
   overflow: hidden;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background: white;
 }
 
 .book-card-custom:hover {
@@ -69,12 +85,49 @@
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
 }
 
+/* ✨ IMÁGENES CLICKEABLES */
 .book-img-custom {
   height: 300px;
   object-fit: cover;
+  cursor: pointer !important;
+  transition: all 0.3s ease;
+  position: relative;
 }
 
-/* Botón de guardados */
+.book-img-custom:hover {
+  transform: scale(1.02);
+  filter: brightness(0.9);
+}
+
+/* Efecto overlay en hover */
+.book-card-custom:hover .book-img-custom::after {
+  content: "👁️ Ver detalles";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(47, 70, 83, 0.9);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.book-card-custom:hover .book-img-custom {
+  position: relative;
+}
+
+.book-card-custom:hover .book-img-custom::after {
+  opacity: 1;
+}
+
+/* === BOTÓN DE GUARDADOS === */
 .save-btn-custom {
   top: 15px !important;
   right: 15px !important;
@@ -89,6 +142,8 @@
   justify-content: center;
   transition: all 0.3s ease;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  z-index: 5;
 }
 
 .save-btn-custom:hover {
@@ -113,7 +168,7 @@
   color: white !important;
 }
 
-/* Badges de tipo de libro */
+/* === BADGES DE TIPO - COLORES ORIGINALES === */
 .book-type-badge {
   position: absolute;
   top: 15px;
@@ -124,6 +179,7 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  z-index: 5;
 }
 
 .badge-venta {
@@ -144,17 +200,35 @@
   box-shadow: 0 2px 4px rgba(253, 126, 20, 0.3);
 }
 
-/* Sección de descripción y precio */
+/* === CONTENIDO DE LA CARD === */
+.card-body {
+  padding: 1.5rem;
+}
+
+.card-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
 .book-description {
   font-size: 0.9rem;
   color: #666;
   line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
+/* === SECCIÓN DE PRECIO === */
 .price-section {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  padding: 0.75rem 0;
+  border-top: 1px solid #f1f3f4;
 }
 
 .price-label {
@@ -169,7 +243,7 @@
   color: #6A93B2;
 }
 
-/* Botones personalizados por tipo */
+/* === BOTONES DE ACCIÓN - COLORES ORIGINALES === */
 .btn-custom-venta {
   background: linear-gradient(135deg, #6A93B2, #87ACC5) !important;
   border: none !important;
@@ -184,6 +258,7 @@
   background: linear-gradient(135deg, #2F4653, #6A93B2) !important;
   transform: translateY(-2px) !important;
   box-shadow: 0 4px 12px rgba(106, 147, 178, 0.3) !important;
+  color: white !important;
 }
 
 .btn-custom-donacion {
@@ -200,6 +275,7 @@
   background: linear-gradient(135deg, #0056b3, #520dc2) !important;
   transform: translateY(-2px) !important;
   box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3) !important;
+  color: white !important;
 }
 
 .btn-custom-intercambio {
@@ -216,10 +292,10 @@
   background: linear-gradient(135deg, #e8650e, #d91a72) !important;
   transform: translateY(-2px) !important;
   box-shadow: 0 4px 12px rgba(253, 126, 20, 0.3) !important;
+  color: white !important;
 }
 
 /* === SIDEBAR DEL CARRITO === */
-
 .cart-overlay {
   position: fixed;
   top: 0;
@@ -324,6 +400,7 @@
   border-radius: 12px;
   background: #fff;
   transition: box-shadow 0.3s ease;
+  align-items: center;
 }
 
 .cart-item:hover {
@@ -386,6 +463,7 @@
   cursor: pointer;
   font-weight: bold;
   transition: background 0.3s ease;
+  font-size: 0.8rem;
 }
 
 .qty-btn:hover {
@@ -408,6 +486,7 @@
   border-radius: 50%;
   transition: all 0.3s ease;
   align-self: flex-start;
+  flex-shrink: 0;
 }
 
 .remove-item-btn:hover {
@@ -427,6 +506,7 @@
   margin-bottom: 1rem;
   font-size: 1.1rem;
   font-weight: 600;
+  color: #2F4653;
 }
 
 .total-amount {
@@ -440,24 +520,42 @@
   gap: 0.5rem;
 }
 
-.cart-actions .btn {
+/* === MENSAJES VACÍOS === */
+.text-center {
+  text-align: center;
+}
+
+.py-5 {
+  padding: 3rem 0;
+}
+
+.mb-4 {
+  margin-bottom: 1.5rem;
+}
+
+.text-muted {
+  color: #6c757d !important;
+}
+
+.btn-primary {
+  background: #6A93B2;
+  border-color: #6A93B2;
+  color: white;
   font-weight: 600;
-  padding: 12px;
+  padding: 12px 24px;
   border-radius: 8px;
+  cursor: pointer;
   transition: all 0.3s ease;
 }
 
-.cart-actions .btn-primary {
-  background: #6A93B2;
-  border-color: #6A93B2;
-}
-
-.cart-actions .btn-primary:hover {
+.btn-primary:hover {
   background: #2F4653;
   border-color: #2F4653;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(106, 147, 178, 0.4);
+  color: white;
 }
 
-/* Botón para ir a carrito completo en el sidebar */
 .btn-outline-primary {
   border-color: #6A93B2 !important;
   color: #6A93B2 !important;
@@ -468,6 +566,9 @@
   justify-content: center;
   transition: all 0.3s ease;
   border-width: 2px !important;
+  padding: 12px 24px;
+  border-radius: 8px;
+  cursor: pointer;
 }
 
 .btn-outline-primary:hover {
@@ -478,23 +579,191 @@
   box-shadow: 0 4px 12px rgba(106, 147, 178, 0.3);
 }
 
-.me-2 {
-  margin-right: 0.5rem;
+.w-100 {
+  width: 100% !important;
 }
 
-/* Responsive */
+.mb-2 {
+  margin-bottom: 0.5rem !important;
+}
+
+.me-2 {
+  margin-right: 0.5rem !important;
+}
+
+/* === RESPONSIVE DESIGN === */
 @media (max-width: 768px) {
-  .banner-content {
-    grid-template-columns: 1fr;
+  .cart-sidebar {
+    width: 100%;
+  }
+
+  .hero-banner-custom {
     text-align: center;
   }
-  
-  .banner-text h1 {
-    font-size: 1.8rem;
+
+  .hero-banner-custom .display-4 {
+    font-size: 2rem;
   }
-  
-  .books-grid {
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1rem;
+
+  .category-header {
+    flex-direction: column;
+    gap: 0.5rem;
+    text-align: center;
   }
+
+  .book-img-custom {
+    height: 250px;
+  }
+
+  .card-body {
+    padding: 1rem;
+  }
+
+  .price-section {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+  }
+
+  .cart-item {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .item-image {
+    width: 80px;
+    height: 100px;
+    align-self: center;
+  }
+
+  .quantity-controls {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 576px) {
+  .books-illustration {
+    font-size: 3rem;
+  }
+
+  .banner-subtitle {
+    font-size: 1rem;
+  }
+
+  .book-img-custom {
+    height: 220px;
+  }
+
+  .card-title {
+    font-size: 1.1rem;
+  }
+
+  .book-description {
+    font-size: 0.85rem;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+  }
+
+  .hero-banner-custom {
+    padding: 2rem 1rem !important;
+  }
+
+  .category-header {
+    padding: 1rem;
+  }
+
+  .cart-sidebar {
+    width: 100vw;
+  }
+
+  .book-card-custom:hover .book-img-custom::after {
+    font-size: 0.75rem;
+    padding: 6px 12px;
+  }
+
+  .save-btn-custom {
+    width: 32px;
+    height: 32px;
+  }
+
+  .book-type-badge {
+    font-size: 0.7rem;
+    padding: 3px 6px;
+  }
+}
+
+/* === UTILIDADES ADICIONALES === */
+.position-relative {
+  position: relative !important;
+}
+
+.position-absolute {
+  position: absolute !important;
+}
+
+.d-flex {
+  display: flex !important;
+}
+
+.flex-column {
+  flex-direction: column !important;
+}
+
+.align-items-center {
+  align-items: center !important;
+}
+
+.justify-content-center {
+  justify-content: center !important;
+}
+
+.justify-content-between {
+  justify-content: space-between !important;
+}
+
+.mt-auto {
+  margin-top: auto !important;
+}
+
+.h-100 {
+  height: 100% !important;
+}
+
+.rounded-4 {
+  border-radius: 1.5rem !important;
+}
+
+/* === EFECTOS DE CARGA === */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.book-card-custom {
+  animation: fadeIn 0.5s ease-out;
+}
+
+/* === SCROLLBAR PERSONALIZADO === */
+.cart-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.cart-content::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.cart-content::-webkit-scrollbar-thumb {
+  background: #6A93B2;
+  border-radius: 3px;
+}
+
+.cart-content::-webkit-scrollbar-thumb:hover {
+  background: #2F4653;
 }

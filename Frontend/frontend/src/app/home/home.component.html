@@ -1,3 +1,7 @@
+<!-- ============================================ -->
+<!-- 📁 src/app/home/home.component.html - CÓDIGO CORREGIDO -->
+<!-- ============================================ -->
+
 <div class="bookstore-container" (click)="closeDropdownOnOutsideClick($event)">
   
   <!-- Header compartido con eventos -->
@@ -49,7 +53,12 @@
         <div class="col-12 col-sm-6 col-lg-4" *ngFor="let book of books">
           <div class="card book-card-custom h-100">
             <div class="position-relative">
-              <img [src]="book.image" [alt]="book.title" class="card-img-top book-img-custom">
+              <!-- ✨ IMAGEN ACTUALIZADA - Ahora es clickeable -->
+              <img [src]="book.image" 
+                   [alt]="book.title" 
+                   class="card-img-top book-img-custom"
+                   (click)="viewBookDetail(book.id)"
+                   title="Ver detalles del libro">
               
               <!-- Botón de guardados con estado dinámico -->
               <button class="btn save-btn-custom position-absolute" 
