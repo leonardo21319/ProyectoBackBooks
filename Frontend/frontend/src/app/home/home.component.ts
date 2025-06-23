@@ -1,3 +1,4 @@
+// src/app/home/home.component.ts - USANDO HEADER COMPARTIDO
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -199,5 +200,13 @@ export class HomeComponent {
     this.closeCartSidebar();
     this.router.navigate(['/cart']);
     console.log('Navegando a la página completa del carrito');
+  }
+
+  // Método para navegar a pedidos si se necesita desde home
+  goToOrders() {
+    console.log('Ir a Mis pedidos desde home');
+    this.router.navigate(['/profile'], { 
+      queryParams: { section: 'Mis pedidos' } 
+    });
   }
 }

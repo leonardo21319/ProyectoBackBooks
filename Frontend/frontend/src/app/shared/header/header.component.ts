@@ -124,7 +124,10 @@ export class HeaderComponent {
   goToOrders() {
     this.showProfileDropdown = false;
     console.log('Ir a Mis pedidos');
-    // 🔌 AQUÍ INTEGRAR BACKEND - Navegar a pedidos
+    // Navegar al perfil con el apartado de "Mis pedidos" activo
+    this.router.navigate(['/profile'], { 
+      queryParams: { section: 'Mis pedidos' } 
+    });
   }
 
   goToLogin() {

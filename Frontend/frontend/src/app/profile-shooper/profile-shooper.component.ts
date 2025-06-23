@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+// src/app/profile-shooper/profile-shooper.component.ts
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { HeaderComponent } from '../shared/header/header.component'; // Importar header compartido
 
 @Component({
@@ -11,7 +12,7 @@ import { HeaderComponent } from '../shared/header/header.component'; // Importar
   templateUrl: './profile-shooper.component.html',
   styleUrls: ['./profile-shooper.component.css']
 })
-export class ProfileShooperComponent {
+export class ProfileShooperComponent implements OnInit {
   cartItems = 0;
   savedItems = 0;
   
@@ -74,7 +75,17 @@ export class ProfileShooperComponent {
     }
   ];
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private route: ActivatedRoute) {}
+
+  ngOnInit() {
+    // Verificar si hay un parámetro de sección en la URL
+    this.route.queryParams.subscribe(params => {
+      if (params['section']) {
+        this.activeMenuItem = params['section'];
+        console.log('Navegando a sección:', params['section']);
+      }
+    });
+  }
 
   // Métodos del sidebar
   setActiveMenuItem(menuItem: string) {
@@ -86,8 +97,7 @@ export class ProfileShooperComponent {
         break;
       case 'Mis pedidos':
         console.log('Navegando a Mis pedidos');
-        // 🔌 AQUÍ INTEGRAR BACKEND - Navegar a pedidos
-        // this.router.navigate(['/orders']);
+        // Ya estamos en el apartado de pedidos, solo cambiar la vista
         break;
       case 'Reportes':
         console.log('Navegando a Reportes');

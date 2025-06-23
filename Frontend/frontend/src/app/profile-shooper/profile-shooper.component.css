@@ -279,10 +279,12 @@
   letter-spacing: 0.5px;
 }
 
-.type-venta {
+
+.type-venta .type-donacion .type-intercambio {
   color: #6A93B2;
 }
 
+/*
 .type-donacion {
   color: #007bff;
 }
@@ -290,6 +292,7 @@
 .type-intercambio {
   color: #fd7e14;
 }
+*/
 
 /* Badges de estatus */
 .order-status {
