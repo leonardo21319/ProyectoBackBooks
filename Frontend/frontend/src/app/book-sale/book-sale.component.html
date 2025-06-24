@@ -1,0 +1,144 @@
+<!-- ============================================ -->
+<!-- 📁 src/app/book-sale/book-sale.component.html - REDISEÑADO -->
+<!-- ============================================ -->
+
+<div class="bookstore-container">
+  
+  <!-- Header compartido -->
+  <app-header 
+    [cartItems]="cartItems" 
+    [savedItems]="savedItems" 
+    currentPage="book-sale"
+    (searchPerformed)="onSearchPerformed($event)">
+  </app-header>
+
+  <!-- Contenido principal del libro -->
+  <main class="book-detail-main">
+    <div class="container">
+      
+      <!-- Botón de regreso -->
+      <div class="back-button-container">
+        <button class="btn-back" (click)="goBack()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M19 12H5M12 19L5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Regresar
+        </button>
+      </div>
+
+      <!-- Layout centrado de la información -->
+      <div class="book-detail-container">
+        
+        <!-- Imagen del libro - tamaño reducido -->
+        <div class="book-image-section">
+          <div class="book-image-container">
+            <img [src]="book.image" [alt]="book.title" class="book-detail-image">
+          </div>
+        </div>
+
+        <!-- Información principal del libro - centrada -->
+        <div class="book-info-section">
+          <div class="book-info">
+            
+            <!-- Título y precio -->
+            <div class="book-header">
+              <h1 class="book-title">{{book.title}}</h1>
+              <div class="book-price">${{book.price}}</div>
+            </div>
+
+            <!-- Autor -->
+            <p class="book-author">{{book.author}}</p>
+
+            <!-- Vendedor -->
+            <div class="seller-info">
+              <span class="seller-label">Vendido por:</span>
+              <span class="seller-name">{{book.seller}}</span>
+            </div>
+
+            <!-- Estado -->
+            <div class="book-condition">
+              <span class="condition-label">Estado:</span>
+              <span class="condition-value">{{book.condition}}</span>
+            </div>
+
+            <!-- Botones de acción -->
+            <div class="action-buttons">
+              <button class="btn-save" 
+                      [class.saved]="isBookSaved()"
+                      (click)="toggleSaveBook()"
+                      title="Guardar libro">
+                <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M19 21L12 16L5 21V5C5 4.46957 5.21071 3.96086 5.58579 3.58579C5.96086 3.21071 6.46957 3 7 3H17C17.5304 3 18.0391 3.21071 18.4142 3.58579C18.7893 3.96086 19 4.46957 19 5V21Z" 
+                        [attr.fill]="isBookSaved() ? '#6A93B2' : 'none'"
+                        stroke="currentColor" 
+                        stroke-width="2" 
+                        stroke-linecap="round" 
+                        stroke-linejoin="round"/>
+                </svg>
+              </button>
+
+              <button class="btn-add-cart" (click)="addToCart()">
+                Añadir al carrito
+              </button>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Separador más cerca -->
+      <hr class="section-divider">
+
+      <!-- Información detallada en dos columnas más cercanas -->
+      <div class="details-container">
+        
+        <!-- Sinopsis -->
+        <div class="info-section">
+          <h3 class="section-title">Sinopsis</h3>
+          <p class="section-content">{{book.synopsis}}</p>
+          <div class="details-continuation">
+            <p class="section-content">{{book.details}}</p>
+          </div>
+        </div>
+
+        <!-- Detalles del producto -->
+        <div class="info-section">
+          <h3 class="section-title">Detalles del producto</h3>
+          
+          <div class="details-list">
+            <div class="detail-item">
+              <span class="detail-label">Número de páginas:</span>
+              <span class="detail-value">{{book.pages}} páginas</span>
+            </div>
+            
+            <div class="detail-item">
+              <span class="detail-label">Fecha de publicación:</span>
+              <span class="detail-value">{{book.publishDate}}</span>
+            </div>
+            
+            <div class="detail-item">
+              <span class="detail-label">ISBN:</span>
+              <span class="detail-value">{{book.isbn}}</span>
+            </div>
+            
+            <div class="detail-item">
+              <span class="detail-label">Editorial:</span>
+              <span class="detail-value">{{book.editorial}}</span>
+            </div>
+            
+            <div class="detail-item">
+              <span class="detail-label">Categoría:</span>
+              <span class="detail-value">{{book.category}}</span>
+            </div>
+            
+            <div class="detail-item">
+              <span class="detail-label">Transacción:</span>
+              <span class="detail-value transaction-type">{{book.transaction}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
