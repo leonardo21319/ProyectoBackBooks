@@ -40,10 +40,11 @@ class Seguridad {
   }
 
   static verificarTokenBlacklist(token) {
-    return Seguridad.blacklist.has(token); // Verifica si el token está en la blacklist
+    return Seguridad.blacklist.has(token);
   }
 
-  static limpiarBlacklist(token) {
+  static limpiarBlacklist() {
+    const sql = "DELETE FROM token_blacklist WHERE fecha_expiracion < NOW()";
     Seguridad.blacklist.clear();
   }
 }

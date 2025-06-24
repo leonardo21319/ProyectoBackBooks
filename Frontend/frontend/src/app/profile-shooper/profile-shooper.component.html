@@ -1,10 +1,10 @@
 <div class="bookstore-container">
-  
   <!-- Header compartido -->
-  <app-header 
-    [cartItems]="cartItems" 
-    [savedItems]="savedItems" 
-    currentPage="profile">
+  <app-header
+    [cartItems]="cartItems"
+    [savedItems]="savedItems"
+    currentPage="profile"
+  >
   </app-header>
 
   <!-- Contenido principal con sidebar -->
@@ -15,48 +15,104 @@
         <div class="col-lg-3 col-md-4">
           <div class="profile-sidebar">
             <nav class="profile-nav">
-              <button 
-                class="profile-nav-item" 
+              <button
+                class="profile-nav-item"
                 [class.active]="activeMenuItem === 'Mi cuenta'"
                 (click)="setActiveMenuItem('Mi cuenta')"
               >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                  <circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <circle
+                    cx="12"
+                    cy="7"
+                    r="4"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
                 </svg>
                 <span>Mi cuenta</span>
               </button>
 
-              <button 
-                class="profile-nav-item" 
+              <button
+                class="profile-nav-item"
                 [class.active]="activeMenuItem === 'Mis pedidos'"
                 (click)="setActiveMenuItem('Mis pedidos')"
               >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M16 4H18C18.5304 4 19.0391 4.21071 19.4142 4.58579C19.7893 4.96086 20 5.46957 20 6V20C20 20.5304 19.7893 21.0391 19.4142 21.4142C19.0391 21.7893 18.5304 22 18 22H6C5.46957 22 4.96086 21.7893 4.58579 21.4142C4.21071 21.0391 4 20.5304 4 20V6C4 5.46957 4.21071 4.96086 4.58579 4.58579C4.96086 4.21071 5.46957 4 6 4H8M16 4C16 2.89543 15.1046 2 14 2H10C8.89543 2 8 2.89543 8 4M16 4C16 5.10457 15.1046 6 14 6H10C8.89543 6 8 5.10457 8 4M9 12L11 14L15 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M16 4H18C18.5304 4 19.0391 4.21071 19.4142 4.58579C19.7893 4.96086 20 5.46957 20 6V20C20 20.5304 19.7893 21.0391 19.4142 21.4142C19.0391 21.7893 18.5304 22 18 22H6C5.46957 22 4.96086 21.7893 4.58579 21.4142C4.21071 21.0391 4 20.5304 4 20V6C4 5.46957 4.21071 4.96086 4.58579 4.58579C4.96086 4.21071 5.46957 4 6 4H8M16 4C16 2.89543 15.1046 2 14 2H10C8.89543 2 8 2.89543 8 4M16 4C16 5.10457 15.1046 6 14 6H10C8.89543 6 8 5.10457 8 4M9 12L11 14L15 10"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
                 </svg>
                 <span>Mis pedidos</span>
               </button>
 
-              <button 
-                class="profile-nav-item" 
+              <button
+                class="profile-nav-item"
                 [class.active]="activeMenuItem === 'Reportes'"
                 (click)="setActiveMenuItem('Reportes')"
               >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M9 17H13M9 13H13M9 9H10M21 20L17.5 17.5L14 21L10.5 17.5L7 21L3 17V4C3 3.46957 3.21071 2.96086 3.58579 2.58579C3.96086 2.21071 4.46957 2 5 2H19C19.5304 2 20.0391 2.21071 20.4142 2.58579C20.7893 2.96086 21 3.46957 21 4V17Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M9 17H13M9 13H13M9 9H10M21 20L17.5 17.5L14 21L10.5 17.5L7 21L3 17V4C3 3.46957 3.21071 2.96086 3.58579 2.58579C3.96086 2.21071 4.46957 2 5 2H19C19.5304 2 20.0391 2.21071 20.4142 2.58579C20.7893 2.96086 21 3.46957 21 4V17Z"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
                 </svg>
                 <span>Reportes</span>
               </button>
 
               <div class="profile-nav-divider"></div>
 
-              <button 
-                class="profile-nav-item logout-item" 
+              <button
+                class="profile-nav-item logout-item"
                 (click)="setActiveMenuItem('Cerrar sesión')"
               >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M9 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H9M16 17L21 12M21 12L16 7M21 12H9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M9 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H9M16 17L21 12M21 12L16 7M21 12H9"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
                 </svg>
                 <span>Cerrar sesión</span>
               </button>
@@ -69,80 +125,92 @@
           <div class="profile-content">
             <!-- Título de la página -->
             <div class="page-header">
-              <h1 class="page-title">{{activeMenuItem}}</h1>
+              <h1 class="page-title">{{ activeMenuItem }}</h1>
             </div>
 
             <!-- Formulario de Mi cuenta -->
-            <div *ngIf="activeMenuItem === 'Mi cuenta'" class="profile-form-container">
+            <div
+              *ngIf="activeMenuItem === 'Mi cuenta'"
+              class="profile-form-container"
+            >
               <form class="profile-form" (ngSubmit)="saveChanges()">
                 <!-- Primera fila: Nombre, Apellido paterno, Apellido materno -->
                 <div class="form-row">
                   <div class="form-group">
                     <label for="firstName" class="form-label">Nombre</label>
-                    <input 
-                      type="text" 
+                    <input
+                      type="text"
                       id="firstName"
                       class="form-control profile-input"
                       [(ngModel)]="userProfile.firstName"
                       name="firstName"
                       required
-                    >
+                    />
                   </div>
 
                   <div class="form-group">
-                    <label for="lastName" class="form-label">Apellido paterno</label>
-                    <input 
-                      type="text" 
+                    <label for="lastName" class="form-label"
+                      >Apellido paterno</label
+                    >
+                    <input
+                      type="text"
                       id="lastName"
                       class="form-control profile-input"
                       [(ngModel)]="userProfile.lastName"
                       name="lastName"
                       required
-                    >
+                    />
                   </div>
 
                   <div class="form-group">
-                    <label for="motherLastName" class="form-label">Apellido materno</label>
-                    <input 
-                      type="text" 
+                    <label for="motherLastName" class="form-label"
+                      >Apellido materno</label
+                    >
+                    <input
+                      type="text"
                       id="motherLastName"
                       class="form-control profile-input"
                       [(ngModel)]="userProfile.motherLastName"
                       name="motherLastName"
-                    >
+                    />
                   </div>
                 </div>
 
                 <!-- Segunda fila: Correo y Teléfono -->
                 <div class="form-row">
                   <div class="form-group">
-                    <label for="email" class="form-label">Correo electrónico</label>
-                    <input 
-                      type="email" 
+                    <label for="email" class="form-label"
+                      >Correo electrónico</label
+                    >
+                    <input
+                      type="email"
                       id="email"
                       class="form-control profile-input"
                       [(ngModel)]="userProfile.email"
                       name="email"
                       required
-                    >
+                    />
                   </div>
 
                   <div class="form-group">
                     <label for="phone" class="form-label">Teléfono</label>
-                    <input 
-                      type="tel" 
+                    <input
+                      type="tel"
                       id="phone"
                       class="form-control profile-input"
                       [(ngModel)]="userProfile.phone"
                       name="phone"
                       placeholder="Ingresa tu teléfono"
-                    >
+                    />
                   </div>
                 </div>
 
                 <!-- Botón de guardar -->
                 <div class="form-actions">
-                  <button type="submit" class="btn btn-primary save-changes-btn">
+                  <button
+                    type="submit"
+                    class="btn btn-primary save-changes-btn"
+                  >
                     Guardar cambios
                   </button>
                 </div>
@@ -150,11 +218,26 @@
             </div>
 
             <!-- Contenido para Mis pedidos -->
-            <div *ngIf="activeMenuItem === 'Mis pedidos'" class="orders-section">
+            <div
+              *ngIf="activeMenuItem === 'Mis pedidos'"
+              class="orders-section"
+            >
               <div *ngIf="orders.length === 0" class="coming-soon">
                 <div class="coming-soon-icon">
-                  <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M16 4H18C18.5304 4 19.0391 4.21071 19.4142 4.58579C19.7893 4.96086 20 5.46957 20 6V20C20 20.5304 19.7893 21.0391 19.4142 21.4142C19.0391 21.7893 18.5304 22 18 22H6C5.46957 22 4.96086 21.7893 4.58579 21.4142C4.21071 21.0391 4 20.5304 4 20V6C4 5.46957 4.21071 4.96086 4.58579 4.58579C4.96086 4.21071 5.46957 4 6 4H8M16 4C16 2.89543 15.1046 2 14 2H10C8.89543 2 8 2.89543 8 4M16 4C16 5.10457 15.1046 6 14 6H10C8.89543 6 8 5.10457 8 4M9 12L11 14L15 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <svg
+                    width="64"
+                    height="64"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M16 4H18C18.5304 4 19.0391 4.21071 19.4142 4.58579C19.7893 4.96086 20 5.46957 20 6V20C20 20.5304 19.7893 21.0391 19.4142 21.4142C19.0391 21.7893 18.5304 22 18 22H6C5.46957 22 4.96086 21.7893 4.58579 21.4142C4.21071 21.0391 4 20.5304 4 20V6C4 5.46957 4.21071 4.96086 4.58579 4.58579C4.96086 4.21071 5.46957 4 6 4H8M16 4C16 2.89543 15.1046 2 14 2H10C8.89543 2 8 2.89543 8 4M16 4C16 5.10457 15.1046 6 14 6H10C8.89543 6 8 5.10457 8 4M9 12L11 14L15 10"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
                   </svg>
                 </div>
                 <h3>No tienes pedidos</h3>
@@ -177,45 +260,56 @@
                   <!-- Filas de pedidos -->
                   <div class="orders-table-row" *ngFor="let order of orders">
                     <div class="table-cell product-name-cell">
-                      <span class="product-name">{{order.bookTitle}}</span>
+                      <span class="product-name">{{ order.bookTitle }}</span>
                     </div>
-                    
+
                     <div class="table-cell date-cell">
-                      <span class="order-date">{{order.date}}</span>
+                      <span class="order-date">{{ order.date }}</span>
                     </div>
-                    
+
                     <div class="table-cell type-cell">
-                      <span class="order-type" [ngClass]="getTypeClass(order.type)">
-                        {{order.type}}
+                      <span
+                        class="order-type"
+                        [ngClass]="getTypeClass(order.type)"
+                      >
+                        {{ order.type }}
                       </span>
                     </div>
-                    
+
                     <div class="table-cell status-cell">
-                      <span class="order-status" [ngClass]="getStatusClass(order.status)">
-                        {{order.status}}
+                      <span
+                        class="order-status"
+                        [ngClass]="getStatusClass(order.status)"
+                      >
+                        {{ order.status }}
                       </span>
                     </div>
-                    
+
                     <div class="table-cell total-cell">
-                      <span class="order-total" *ngIf="order.type === 'Venta'; else noPrice">
-                        ${{order.total}}
+                      <span
+                        class="order-total"
+                        *ngIf="order.type === 'Venta'; else noPrice"
+                      >
+                        ${{ order.total }}
                       </span>
                       <ng-template #noPrice>
                         <span class="no-price">—</span>
                       </ng-template>
                     </div>
-                    
+
                     <div class="table-cell action-cell">
-                      <button 
-                        *ngIf="order.canRate" 
+                      <button
+                        *ngIf="order.canRate"
                         class="action-btn rate-btn"
-                        (click)="rateOrder(order)">
+                        (click)="rateOrder(order)"
+                      >
                         Calificar
                       </button>
-                      <button 
-                        *ngIf="!order.canRate" 
+                      <button
+                        *ngIf="!order.canRate"
                         class="action-btn view-btn"
-                        (click)="viewOrderDetails(order)">
+                        (click)="viewOrderDetails(order)"
+                      >
                         Ver detalles
                       </button>
                     </div>
@@ -227,12 +321,26 @@
             <div *ngIf="activeMenuItem === 'Reportes'" class="reports-section">
               <div *ngIf="reports.length === 0" class="coming-soon">
                 <div class="coming-soon-icon">
-                  <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M9 17H13M9 13H13M9 9H10M21 20L17.5 17.5L14 21L10.5 17.5L7 21L3 17V4C3 3.46957 3.21071 2.96086 3.58579 2.58579C3.96086 2.21071 4.46957 2 5 2H19C19.5304 2 20.0391 2.21071 20.4142 2.58579C20.7893 2.96086 21 3.46957 21 4V17Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <svg
+                    width="64"
+                    height="64"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M9 17H13M9 13H13M9 9H10M21 20L17.5 17.5L14 21L10.5 17.5L7 21L3 17V4C3 3.46957 3.21071 2.96086 3.58579 2.58579C3.96086 2.21071 4.46957 2 5 2H19C19.5304 2 20.0391 2.21071 20.4142 2.58579C20.7893 2.96086 21 3.46957 21 4V17Z"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
                   </svg>
                 </div>
                 <h3>No tienes reportes</h3>
-                <p>Cuando reportes algún usuario o situación, aparecerá aquí.</p>
+                <p>
+                  Cuando reportes algún usuario o situación, aparecerá aquí.
+                </p>
               </div>
 
               <!-- Tabla de reportes -->
@@ -248,15 +356,17 @@
                   <!-- Filas de reportes -->
                   <div class="reports-table-row" *ngFor="let report of reports">
                     <div class="table-cell date-cell">
-                      <span class="report-date">{{report.date}}</span>
+                      <span class="report-date">{{ report.date }}</span>
                     </div>
-                    
+
                     <div class="table-cell user-cell">
-                      <span class="reported-user">{{report.reportedUser}}</span>
+                      <span class="reported-user">{{
+                        report.reportedUser
+                      }}</span>
                     </div>
-                    
+
                     <div class="table-cell reason-cell">
-                      <span class="report-reason">{{report.reason}}</span>
+                      <span class="report-reason">{{ report.reason }}</span>
                     </div>
                   </div>
                 </div>

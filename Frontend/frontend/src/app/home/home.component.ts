@@ -1,16 +1,17 @@
-// src/app/home/home.component.ts - USANDO HEADER COMPARTIDO
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { HeaderComponent } from '../shared/header/header.component'; // Importar header compartido
+import { ApiService } from '../servicios/api.service';
+import { Book } from '../models/Book.model'; // Asegúrate de que la ruta del modelo esté correcta
 
 @Component({
   selector: 'app-home',
   standalone: true,
   imports: [CommonModule, FormsModule, HeaderComponent], // Agregar HeaderComponent
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.css']
+  styleUrls: ['./home.component.css'],
 })
 export class HomeComponent implements OnInit {
   cartItems = 0;
@@ -18,49 +19,23 @@ export class HomeComponent implements OnInit {
   selectedCategory = 'Todas';
   showCartSidebar = false;
   savedBooksIds: Set<number> = new Set();
-
-  // Carrito de compras
   cartBooks: any[] = [];
 
-  // 3 libros de muestra con diferentes tipos
-  allBooks = [
-    {
-      id: 1,
-      title: 'Drácula',
-      author: 'Bram Stoker',
-      price: 250,
-      type: 'Venta',
-      image: 'https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=300&h=400&fit=crop',
-      category: 'Literatura',
-      description: 'Clásico de la literatura gótica que ha inspirado generaciones.'
-    },
-    {
-      id: 2,
-      title: 'Fundamentos de programación Java',
-      author: 'Varios Autores',
-      price: 0,
-      type: 'Donación',
-      image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=400&fit=crop',
-      category: 'Ciencias y tecnología',
-      description: 'Manual completo para aprender programación en Java desde cero.'
-    },
-    {
-      id: 3,
-      title: 'El Arte de la Guerra',
-      author: 'Sun Tzu',
-      price: 0,
-      type: 'Intercambio',
-      image: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=300&h=400&fit=crop',
-      category: 'Historia y filosofía',
-      description: 'Tratado sobre estrategia militar y filosofía antigua china.'
-    }
-  ];
+  // Variable para almacenar los libros obtenidos
+  allBooks: Book[] = [];
 
-  constructor(private router: Router, private route: ActivatedRoute) {}
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute,
+    private ApiService: ApiService
+  ) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
+    // Llamada para obtener los libros
+    this.obtenerLibros();
+
     // Verificar si hay parámetros de categoría o búsqueda en la URL
-    this.route.queryParams.subscribe(params => {
+    this.route.queryParams.subscribe((params) => {
       if (params['category']) {
         this.selectedCategory = params['category'];
         console.log('Categoría desde URL:', params['category']);
@@ -68,10 +43,38 @@ export class HomeComponent implements OnInit {
       if (params['search']) {
         // Aquí puedes manejar la búsqueda si es necesario
         console.log('Búsqueda desde URL:', params['search']);
-        // this.searchTerm = params['search'];
-        // this.performSearch(params['search']);
       }
     });
+  }
+
+  obtenerLibros() {
+    this.ApiService.obtenerLibros().subscribe(
+      (data: Book[]) => {
+        // Transformar la propiedad portada y asegurar que la imagen sea utilizable
+        this.allBooks = data.map((book: Book) => {
+          // Convertir Buffer a base64 para la portada
+          const portadaBase64 = this.bufferToBase64(book.portada);
+          return {
+            ...book,
+            portada: portadaBase64, // Se asegura de que la propiedad portada sea de tipo string
+          };
+        });
+        console.log('Libros obtenidos:', this.allBooks);
+      },
+      (error) => {
+        console.error('Error al obtener los libros:', error);
+      }
+    );
+  }
+
+  // Convertir el buffer de portada a base64
+  bufferToBase64(buffer: any): string {
+    if (buffer && buffer.data) {
+      return `data:image/png;base64,${Buffer.from(buffer.data).toString(
+        'base64'
+      )}`;
+    }
+    return '';
   }
 
   // Getter para libros filtrados
@@ -79,23 +82,25 @@ export class HomeComponent implements OnInit {
     if (this.selectedCategory === 'Todas') {
       return this.allBooks;
     }
-    return this.allBooks.filter(book => book.category === this.selectedCategory);
+    return this.allBooks.filter(
+      (book) => book.categoria_nombre === this.selectedCategory // Corrige a categoria_nombre si es necesario
+    );
   }
 
   // Métodos para eventos del header
   onCategorySelected(category: string) {
     this.selectedCategory = category;
     console.log('Categoría seleccionada:', category);
-    
+
     // Actualizar la URL para reflejar la categoría seleccionada
     if (category === 'Todas') {
       // Si es "Todas", limpiar los query params
-      this.router.navigate(['/home'], { replaceUrl: true });
+      this.router.navigate(['/'], { replaceUrl: true });
     } else {
       // Actualizar URL con la categoría
-      this.router.navigate(['/home'], { 
+      this.router.navigate(['/'], {
         queryParams: { category: category },
-        replaceUrl: true 
+        replaceUrl: true,
       });
     }
   }
@@ -108,36 +113,39 @@ export class HomeComponent implements OnInit {
     console.log('Búsqueda desde header:', searchTerm);
     // 🔌 AQUÍ INTEGRAR BACKEND - Búsqueda local
     // Puedes filtrar los libros por el término de búsqueda
-    
+
     // Actualizar URL con el término de búsqueda
-    this.router.navigate(['/home'], { 
+    this.router.navigate(['/'], {
       queryParams: { search: searchTerm },
-      replaceUrl: true 
+      replaceUrl: true,
     });
   }
 
+  // Métodos para gestionar el carrito
   addToCart(book: any) {
-    const existingBook = this.cartBooks.find(item => item.id === book.id);
-    
+    const existingBook = this.cartBooks.find((item) => item.id === book.id);
     if (existingBook) {
       existingBook.quantity += 1;
     } else {
       this.cartBooks.push({
         ...book,
-        quantity: 1
+        quantity: 1,
       });
     }
-    
-    this.cartItems = this.cartBooks.reduce((total, item) => total + item.quantity, 0);
-    console.log('Agregado al carrito:', book.title);
+    this.cartItems = this.cartBooks.reduce(
+      (total, item) => total + item.quantity,
+      0
+    );
   }
 
   removeFromCart(book: any) {
-    const index = this.cartBooks.findIndex(item => item.id === book.id);
+    const index = this.cartBooks.findIndex((item) => item.id === book.id);
     if (index > -1) {
       this.cartBooks.splice(index, 1);
-      this.cartItems = this.cartBooks.reduce((total, item) => total + item.quantity, 0);
-      console.log('Libro removido del carrito:', book.title);
+      this.cartItems = this.cartBooks.reduce(
+        (total, item) => total + item.quantity,
+        0
+      );
     }
   }
 
@@ -145,16 +153,22 @@ export class HomeComponent implements OnInit {
     if (quantity <= 0) {
       this.removeFromCart(book);
     } else {
-      const cartBook = this.cartBooks.find(item => item.id === book.id);
+      const cartBook = this.cartBooks.find((item) => item.id === book.id);
       if (cartBook) {
         cartBook.quantity = quantity;
-        this.cartItems = this.cartBooks.reduce((total, item) => total + item.quantity, 0);
+        this.cartItems = this.cartBooks.reduce(
+          (total, item) => total + item.quantity,
+          0
+        );
       }
     }
   }
 
   getCartSubtotal(): number {
-    return this.cartBooks.reduce((total, item) => total + (item.price * item.quantity), 0);
+    return this.cartBooks.reduce(
+      (total, item) => total + item.price * item.quantity,
+      0
+    );
   }
 
   toggleCartSidebar() {
@@ -165,6 +179,30 @@ export class HomeComponent implements OnInit {
     this.showCartSidebar = false;
   }
 
+  // Función para manejar libros guardados
+  addToSaved(book: any) {
+    if (this.isBookSaved(book.id)) {
+      this.savedBooksIds.delete(book.id);
+      this.savedItems = this.savedBooksIds.size;
+    } else {
+      this.savedBooksIds.add(book.id);
+      this.savedItems = this.savedBooksIds.size;
+    }
+  }
+
+  isBookSaved(bookId: number): boolean {
+    return this.savedBooksIds.has(bookId);
+  }
+
+  closeDropdownOnOutsideClick(event: Event) {
+    const target = event.target as HTMLElement;
+    if (
+      !target.closest('.cart-sidebar') &&
+      !target.closest('.nav-item-figma')
+    ) {
+      this.showCartSidebar = false;
+    }
+  }
   requestBook(book: any) {
     console.log('Solicitando donación de libro:', book.title);
     alert(`Solicitud enviada para: ${book.title}`);
@@ -173,70 +211,44 @@ export class HomeComponent implements OnInit {
   makeOffer(book: any) {
     console.log('Hacer oferta para:', book.title);
   }
-
-  addToSaved(book: any) {
-    if (this.isBookSaved(book.id)) {
-      this.savedBooksIds.delete(book.id);
-      this.savedItems = this.savedBooksIds.size;
-      console.log('✅ Libro removido de guardados:', book.title);
-    } else {
-      this.savedBooksIds.add(book.id);
-      this.savedItems = this.savedBooksIds.size;
-      console.log('⭐ Libro agregado a guardados:', book.title);
-    }
-  }
-
-  isBookSaved(bookId: number): boolean {
-    return this.savedBooksIds.has(bookId);
-  }
-
-  getButtonText(type: string): string {
-    switch(type) {
-      case 'Venta': 
-        return 'Añadir al carrito';
-      case 'Donación': 
-        return 'Solicitar libro';
-      case 'Intercambio': 
-        return 'Hacer oferta';
-      default: 
-        return 'Acción';
-    }
-  }
-
   getButtonAction(book: any) {
-    switch(book.type) {
-      case 'Venta': 
+    switch (book.type) {
+      case 'Venta':
         this.addToCart(book);
         break;
-      case 'Donación': 
+      case 'Donación':
         this.requestBook(book);
         break;
-      case 'Intercambio': 
+      case 'Intercambio':
         this.makeOffer(book);
         break;
+    }
+  }
+  getButtonText(type: string): string {
+    switch (type) {
+      case 'Venta':
+        return 'Añadir al carrito';
+      case 'Donación':
+        return 'Solicitar libro';
+      case 'Intercambio':
+        return 'Hacer oferta';
+      default:
+        return 'Acción';
     }
   }
 
   selectCategory(category: string) {
     this.selectedCategory = category;
     console.log('Categoría seleccionada directamente:', category);
-    
+
     // Actualizar URL
     if (category === 'Todas') {
       this.router.navigate(['/home'], { replaceUrl: true });
     } else {
-      this.router.navigate(['/home'], { 
+      this.router.navigate(['/home'], {
         queryParams: { category: category },
-        replaceUrl: true 
+        replaceUrl: true,
       });
-    }
-  }
-
-  closeDropdownOnOutsideClick(event: Event) {
-    const target = event.target as HTMLElement;
-    if (!target.closest('.cart-sidebar') &&
-        !target.closest('.nav-item-figma')) {
-      this.showCartSidebar = false;
     }
   }
 
@@ -249,8 +261,8 @@ export class HomeComponent implements OnInit {
   // Método para navegar a pedidos si se necesita desde home
   goToOrders() {
     console.log('Ir a Mis pedidos desde home');
-    this.router.navigate(['/profile'], { 
-      queryParams: { section: 'Mis pedidos' } 
+    this.router.navigate(['/profile'], {
+      queryParams: { section: 'Mis pedidos' },
     });
   }
 }

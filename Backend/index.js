@@ -5,7 +5,7 @@ import cors from "cors";
 import testConnection from "./src/config/test.js";
 import indexRutas from "./src/modules/login/LoginRoutes.js";
 import IntercambioRutas from "./src/modules/Intercambio/LibroRoutes.js";
-
+import DocumentacionApi from "./src/config/DocumentacionApi.js";
 const app = express();
 
 //Configuraciones
@@ -15,6 +15,7 @@ const puerto = process.env.PORT || 3000;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+DocumentacionApi(app);
 //Middleware para la autenticación
 app.use(
   cors({

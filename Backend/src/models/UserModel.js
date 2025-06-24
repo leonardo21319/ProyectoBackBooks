@@ -2,7 +2,10 @@ import e from "express";
 import pool from "../config/configDB.js";
 import crypto from "crypto";
 import Seguridad from "../classes/Seguridad.js";
+// Importar la clase de usuario
+import Usuario from "../classes/Usuario.js";
 
+// Función para guardar un usuario en la base de datos
 export const guardarUsuarioDB = async (usuario) => {
   const contrasenaHasheada = await usuario.hash(usuario.contrasena);
   const { valor: correoEncriptado } = Seguridad.cifrar(
@@ -36,7 +39,7 @@ export const guardarUsuarioDB = async (usuario) => {
     throw error;
   }
 };
-
+// Función para obtener un usuario por correo electrónico
 export const obtenerUsuarioPorCorreo = async (correoTextoPlano) => {
   try {
     const resultado = await pool.query(

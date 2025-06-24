@@ -3,13 +3,16 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { ApiService } from '../../servicios/api.service';
+import { lastValueFrom } from 'rxjs';
+import { MatSnackBar } from '@angular/material/snack-bar'; // Importar MatSnackBar
 
 @Component({
   selector: 'app-header',
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './header.component.html',
-  styleUrls: ['./header.component.css']
+  styleUrls: ['./header.component.css'],
 })
 export class HeaderComponent {
   @Input() cartItems: number = 0;
@@ -40,20 +43,23 @@ export class HeaderComponent {
     'Deportes y aventura',
     'Religión y espiritualidad',
     'Entretenimiento y hobbies',
-    'Ciencia ficción'
+    'Ciencia ficción',
   ];
 
-  constructor(private router: Router) {}
-
+  constructor(
+    private ApiService: ApiService,
+    private router: Router,
+    private snackBar: MatSnackBar // Agregar MatSnackBar para mostrar mensajes
+  ) {}
   onSearch() {
     if (this.searchTerm.trim()) {
       console.log('Buscando:', this.searchTerm);
       this.searchPerformed.emit(this.searchTerm);
-      
+
       // Si no estamos en home, navegar a home con búsqueda
       if (this.currentPage !== 'home') {
-        this.router.navigate(['/home'], { 
-          queryParams: { search: this.searchTerm } 
+        this.router.navigate(['/home'], {
+          queryParams: { search: this.searchTerm },
         });
       }
     }
@@ -93,8 +99,10 @@ export class HeaderComponent {
 
   closeDropdownOnOutsideClick(event: Event) {
     const target = event.target as HTMLElement;
-    if (!target.closest('.dropdown-container') && 
-        !target.closest('.profile-btn-figma')) {
+    if (
+      !target.closest('.dropdown-container') &&
+      !target.closest('.profile-btn-figma')
+    ) {
       this.showCategoriesDropdown = false;
       this.showProfileDropdown = false;
     }
@@ -103,14 +111,14 @@ export class HeaderComponent {
   selectCategory(category: string) {
     this.showCategoriesDropdown = false;
     console.log('Categoría seleccionada:', category);
-    
+
     if (this.currentPage === 'home') {
       // En home, emitir evento para filtrar
       this.categorySelected.emit(category);
     } else {
       // En otras páginas, navegar a home con categoría
-      this.router.navigate(['/home'], { 
-        queryParams: { category: category } 
+      this.router.navigate(['/home'], {
+        queryParams: { category: category },
       });
     }
   }
@@ -125,8 +133,8 @@ export class HeaderComponent {
     this.showProfileDropdown = false;
     console.log('Ir a Mis pedidos');
     // Navegar al perfil con el apartado de "Mis pedidos" activo
-    this.router.navigate(['/profile'], { 
-      queryParams: { section: 'Mis pedidos' } 
+    this.router.navigate(['/profile'], {
+      queryParams: { section: 'Mis pedidos' },
     });
   }
 
@@ -135,7 +143,17 @@ export class HeaderComponent {
     this.router.navigate(['/']);
   }
 
-  // Métodos para verificar página activa
+  private limpiarYRedirigir(): void {
+    // Limpiar todo rastro de sesión
+    localStorage.clear();
+    sessionStorage.clear();
+
+    // Redirigir a login con reemplazo de historial
+    this.router.navigate(['/login'], {
+      replaceUrl: true,
+      queryParams: { sessionEnded: true },
+    });
+  }
   isActivePage(page: string): boolean {
     return this.currentPage === page;
   }
@@ -143,9 +161,38 @@ export class HeaderComponent {
   isProfileActive(): boolean {
     return this.currentPage === 'profile';
   }
-
-  // Método para verificar si una categoría está activa
   isCategoryActive(category: string): boolean {
     return this.selectedCategory === category;
+  }
+
+  async cerrarSesion() {
+    this.showProfileDropdown = false;
+    const token = this.ApiService.obtenerToken();
+
+    if (!token) {
+      this.limpiarYRedirigir();
+      return;
+    }
+
+    try {
+      // Intentar cerrar sesión en el backend con timeout
+      await Promise.race([
+        lastValueFrom(this.ApiService.cerrarSesion(token)),
+        new Promise((_, reject) =>
+          setTimeout(() => reject(new Error('Timeout al cerrar sesión')), 5000)
+        ),
+      ]);
+
+      this.snackBar.open('Sesión cerrada con éxito', 'Cerrar', {
+        duration: 3000,
+      });
+    } catch (error) {
+      console.error('Error al cerrar sesión:', error);
+      this.snackBar.open('Error al cerrar sesión', 'Cerrar', {
+        duration: 3000,
+      });
+    } finally {
+      this.limpiarYRedirigir();
+    }
   }
 }
