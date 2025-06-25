@@ -37,7 +37,7 @@ export const guardarLibroDB = async (libro) => {
   }
 };
 // Función para agregar un marcador de libro a la base de datos
-export const agregarMarcadorLibroDB = async (idUsuario, idLibro) => {
+export const agregarMarcadorLibroDB = async (idLibro, idUsuario) => {
   const sql = `
     INSERT INTO marcadores (user_id, book_id)
     VALUES ($1, $2)
