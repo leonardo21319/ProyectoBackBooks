@@ -139,3 +139,18 @@ export const obtenerLibroPorId = async (id) => {
     throw error;
   }
 };
+
+export const eliminarLibroPorId = async (id) => {
+  const sql = `
+    DELETE FROM libros
+    WHERE id = $1
+  `;
+
+  try {
+    const resultado = await pool.query(sql, [id]);
+    return resultado.rowCount > 0; // Retorna true si se eliminó correctamente
+  } catch (error) {
+    console.error("Error al eliminar libro por ID:", error);
+    throw error;
+  }
+};

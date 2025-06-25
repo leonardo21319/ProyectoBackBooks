@@ -3,6 +3,10 @@ import {
   guardarLibroDB,
   obtenerLibroPorId,
   obtenerTodosLosLibros,
+  eliminarLibroPorId,
+  agregarMarcadorLibroDB,
+  eliminarMarcador,
+  obtenerMarcadoresPorUsuario,
 } from "../../models/LibroModel.js";
 
 /**
@@ -229,6 +233,156 @@ export const actualizarLibroControlador = async (req, res) => {
     res.json({ message: "Libro actualizado exitosamente", libro });
   } catch (error) {
     console.error("Error al actualizar el libro:", error);
+    res.status(500).json({ error: "Error interno del servidor" });
+  }
+};
+
+/**
+ * @swagger
+ * /intercambio/eliminarlibro/{id}:
+ *   delete:
+ *     summary: Elimina un libro del sistema.
+ *     description: Permite eliminar un libro específico utilizando su ID.
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID del libro a eliminar.
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Libro eliminado exitosamente.
+ *       404:
+ *         description: Libro no encontrado.
+ *       500:
+ *         description: Error en el servidor al procesar la solicitud.
+ */
+export const eliminarLibroControlador = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const libro = await obtenerLibroPorId(id);
+    if (!libro) {
+      return res.status(404).json({ error: "Libro no encontrado" });
+    }
+    await eliminarLibroPorId(id);
+    res.json({ message: "Libro eliminado exitosamente" });
+  } catch (error) {
+    console.error("Error al eliminar el libro:", error);
+    res.status(500).json({ error: "Error interno del servidor" });
+  }
+};
+
+/**
+ * @swagger
+ * /intercambio/agregarmarcador:
+ *   post:
+ *     summary: Agrega un marcador a un libro.
+ *     description: Permite agregar un marcador a un libro específico por ID de libro y usuario.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               idLibro:
+ *                 type: integer
+ *                 description: ID del libro al que se agregará el marcador.
+ *               idUsuario:
+ *                 type: integer
+ *                 description: ID del usuario que marca el libro.
+ *     responses:
+ *       200:
+ *         description: Marcador agregado exitosamente.
+ *       500:
+ *         description: Error en el servidor.
+ */
+export const agregarMarcadorLibroControlador = async (req, res) => {
+  const { idLibro, idUsuario } = req.body;
+
+  try {
+    const resultado = await agregarMarcadorLibroDB(idLibro, idUsuario);
+    res.json({ message: "Marcador agregado exitosamente", resultado });
+  } catch (error) {
+    console.error("Error al agregar marcador:", error);
+    res.status(500).json({ error: "Error interno del servidor" });
+  }
+};
+
+/**
+ * @swagger
+ * /intercambio/eliminarmarcador:
+ *   post:
+ *     summary: Elimina un marcador de un libro.
+ *     description: Permite eliminar un marcador de un libro específico utilizando el ID de libro y usuario.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               idLibro:
+ *                 type: integer
+ *                 description: ID del libro del que se eliminará el marcador.
+ *               idUsuario:
+ *                 type: integer
+ *                 description: ID del usuario que desea eliminar el marcador.
+ *     responses:
+ *       200:
+ *         description: Marcador eliminado exitosamente.
+ *       404:
+ *         description: Marcador no encontrado.
+ *       500:
+ *         description: Error en el servidor.
+ */
+export const eliminarMarcadorLibroControlador = async (req, res) => {
+  const { idLibro, idUsuario } = req.body;
+
+  try {
+    const resultado = await eliminarMarcador(idUsuario, idLibro);
+    if (resultado) {
+      res.json({ message: "Marcador eliminado exitosamente" });
+    } else {
+      res.status(404).json({ error: "Marcador no encontrado" });
+    }
+  } catch (error) {
+    console.error("Error al eliminar marcador:", error);
+    res.status(500).json({ error: "Error interno del servidor" });
+  }
+};
+
+/**
+ * @swagger
+ * /intercambio/obtenermarcadores/{idUsuario}:
+ *   get:
+ *     summary: Obtiene todos los marcadores de un usuario.
+ *     description: Recupera la lista de todos los marcadores asociados a un usuario específico por su ID.
+ *     parameters:
+ *       - in: path
+ *         name: idUsuario
+ *         required: true
+ *         description: ID del usuario cuyos marcadores serán recuperados.
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Lista de marcadores obtenida con éxito.
+ *       404:
+ *         description: No se encontraron marcadores para este usuario.
+ *       500:
+ *         description: Error al obtener los marcadores.
+ */
+export const obtenerMarcadoresPorUsuarioControlador = async (req, res) => {
+  const { idUsuario } = req.params;
+
+  try {
+    const marcadores = await obtenerMarcadoresPorUsuario(idUsuario);
+    res.json(marcadores);
+  } catch (error) {
+    console.error("Error al obtener marcadores:", error);
     res.status(500).json({ error: "Error interno del servidor" });
   }
 };

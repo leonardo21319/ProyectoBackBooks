@@ -4,6 +4,10 @@ import {
   obtenerLibrosControlador,
   obtenerLibroPorIdControlador,
   actualizarLibroControlador,
+  eliminarLibroControlador,
+  agregarMarcadorLibroControlador,
+  eliminarMarcadorLibroControlador,
+  obtenerMarcadoresPorUsuarioControlador,
 } from "../Intercambio/LibroController.js";
 
 const router = express.Router();
@@ -165,5 +169,109 @@ router.get("/obtenerlibros/:id", obtenerLibroPorIdControlador);
  *         description: Error en el servidor
  */
 router.put("/actualizarlibro/:id", actualizarLibroControlador);
+/**
+ * @swagger
+ * /intercambio/eliminarlibro/{id}:
+ *   delete:
+ *     summary: Elimina un libro del sistema.
+ *     description: Permite eliminar un libro específico utilizando su ID.
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID del libro a eliminar.
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Libro eliminado exitosamente.
+ *       404:
+ *         description: Libro no encontrado.
+ *       500:
+ *         description: Error en el servidor al procesar la solicitud.
+ */
+router.delete("/eliminarlibro/:id", eliminarLibroControlador);
+
+/**
+ * @swagger
+ * /intercambio/agregarmarcador:
+ *   post:
+ *     summary: Agrega un marcador a un libro.
+ *     description: Permite agregar un marcador a un libro específico por ID de libro y usuario.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               idLibro:
+ *                 type: integer
+ *                 description: ID del libro al que se agregará el marcador.
+ *               idUsuario:
+ *                 type: integer
+ *                 description: ID del usuario que marca el libro.
+ *     responses:
+ *       200:
+ *         description: Marcador agregado exitosamente.
+ *       500:
+ *         description: Error en el servidor.
+ */
+router.post("/agregarmarcador", agregarMarcadorLibroControlador);
+
+/**
+ * @swagger
+ * /intercambio/eliminarmarcador:
+ *   post:
+ *     summary: Elimina un marcador de un libro.
+ *     description: Permite eliminar un marcador de un libro específico utilizando el ID de libro y usuario.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               idLibro:
+ *                 type: integer
+ *                 description: ID del libro del que se eliminará el marcador.
+ *               idUsuario:
+ *                 type: integer
+ *                 description: ID del usuario que desea eliminar el marcador.
+ *     responses:
+ *       200:
+ *         description: Marcador eliminado exitosamente.
+ *       404:
+ *         description: Marcador no encontrado.
+ *       500:
+ *         description: Error en el servidor.
+ */
+router.post("/eliminarmarcador", eliminarMarcadorLibroControlador);
+
+/**
+ * @swagger
+ * /intercambio/obtenermarcadores/{idUsuario}:
+ *   get:
+ *     summary: Obtiene todos los marcadores de un usuario.
+ *     description: Recupera la lista de todos los marcadores asociados a un usuario específico por su ID.
+ *     parameters:
+ *       - in: path
+ *         name: idUsuario
+ *         required: true
+ *         description: ID del usuario cuyos marcadores serán recuperados.
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Lista de marcadores obtenida con éxito.
+ *       404:
+ *         description: No se encontraron marcadores para este usuario.
+ *       500:
+ *         description: Error al obtener los marcadores.
+ */
+router.get(
+  "/obtenermarcadores/:idUsuario",
+  obtenerMarcadoresPorUsuarioControlador
+);
 
 export default router;
