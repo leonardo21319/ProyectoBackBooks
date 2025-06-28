@@ -45,11 +45,14 @@ export class LoginComponent {
           // Redirección según el rol
           if (userRole === 1) {
             this.router.navigate(['/admin']);
-          } else if (userRole === 3) {
-            this.router.navigate(['/home']);
           } else if (userRole === 2) {
-            this.error = 'Rol de usuario no reconocido';
+            this.router.navigate(['/home']); //ruta comprador
+          } else if (userRole === 3) {
+            this.router.navigate(['/saleshome']);// ruta vendedor
           }
+          /*else if (userRole === 4) {
+            this.router.navigate(['/saleshome'])
+          } */
         } else {
           this.error = 'Error al decodificar el token';
         }

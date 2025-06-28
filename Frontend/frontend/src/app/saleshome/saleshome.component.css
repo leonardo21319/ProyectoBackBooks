@@ -1,0 +1,753 @@
+/* ============================================ */
+/* 📁 saleshome.component.css - Estilos para vendedor */
+/* ============================================ */
+
+.vendor-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  font-family: "Segoe UI", sans-serif;
+}
+
+.text-vendor-dark {
+  color: #2F4653 !important;
+}
+
+/* === BANNER DE VENDEDOR === */
+.vendor-hero-section {
+  margin: 2rem 0;
+}
+
+.vendor-banner {
+  background: linear-gradient(135deg, #6A93B2 0%, #87ACC5 100%);
+  color: white;
+  border-radius: 15px !important;
+  box-shadow: 0 8px 25px rgba(106, 147, 178, 0.3);
+}
+
+.vendor-subtitle {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 25px;
+  font-size: 1.1rem;
+  display: inline-block;
+  font-weight: 500;
+  backdrop-filter: blur(10px);
+}
+
+.btn-add-book {
+  background: rgba(255, 255, 255, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.btn-add-book:hover {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.5);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 255, 255, 0.2);
+}
+
+/* === ESTADÍSTICAS DEL VENDEDOR === */
+.vendor-stats-section {
+  padding: 0 0 2rem 0;
+}
+
+.stat-card {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  text-align: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  border: none;
+  height: 100%;
+}
+
+.stat-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.stat-icon {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.stat-number {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 0.25rem;
+}
+
+.stat-label {
+  font-size: 0.9rem;
+  color: #6c757d;
+  font-weight: 500;
+}
+
+.stat-total .stat-number {
+  color: #6A93B2;
+}
+
+.stat-active .stat-number {
+  color: #28a745;
+}
+
+.stat-sold .stat-number {
+  color: #fd7e14;
+}
+
+.stat-orders .stat-number {
+  color: #007bff;
+}
+
+/* === CONTROLES DE FILTRADO === */
+.controls-section {
+  padding: 0 0 2rem 0;
+}
+
+.filter-controls,
+.sort-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.filter-label {
+  font-weight: 600;
+  color: #2F4653;
+  white-space: nowrap;
+  margin: 0;
+}
+
+.filter-select {
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-weight: 500;
+  background: white;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.filter-select:focus {
+  border-color: #6A93B2;
+  box-shadow: 0 0 0 0.2rem rgba(106, 147, 178, 0.25);
+}
+
+/* === FILTROS ACTIVOS === */
+.active-filters {
+  padding: 0 0 2rem 0;
+}
+
+.filters-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 0;
+  border-bottom: 2px solid #e9ecef;
+}
+
+.filters-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #2F4653;
+  margin: 0;
+}
+
+.books-count {
+  font-size: 1rem;
+  color: #6c757d;
+  font-weight: 500;
+}
+
+/* === CARDS DE LIBROS DEL VENDEDOR === */
+.vendor-books-section {
+  padding-bottom: 3rem;
+}
+
+.vendor-book-card {
+  border: none !important;
+  border-radius: 15px !important;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  background: white;
+}
+
+.vendor-book-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.vendor-book-img {
+  height: 300px;
+  object-fit: cover;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.vendor-book-img:hover {
+  filter: brightness(0.9);
+}
+
+/* === BADGES DE ESTADO === */
+.book-status-badge {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  z-index: 5;
+}
+
+.status-active {
+  background: linear-gradient(135deg, #28a745, #20c997);
+  color: white;
+  box-shadow: 0 2px 4px rgba(40, 167, 69, 0.3);
+}
+
+.status-sold {
+  background: linear-gradient(135deg, #fd7e14, #ffc107);
+  color: white;
+  box-shadow: 0 2px 4px rgba(253, 126, 20, 0.3);
+}
+
+.status-paused {
+  background: linear-gradient(135deg, #6c757d, #adb5bd);
+  color: white;
+  box-shadow: 0 2px 4px rgba(108, 117, 125, 0.3);
+}
+
+.status-default {
+  background: linear-gradient(135deg, #dee2e6, #f8f9fa);
+  color: #6c757d;
+  box-shadow: 0 2px 4px rgba(222, 226, 230, 0.3);
+}
+
+/* === BOTONES DE ACCIÓN RÁPIDA === */
+.quick-actions {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  display: flex;
+  gap: 8px;
+  z-index: 5;
+}
+
+.btn-edit,
+.btn-toggle {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.btn-edit {
+  background: rgba(255, 255, 255, 0.95);
+  color: #6A93B2;
+}
+
+.btn-edit:hover {
+  background: #6A93B2;
+  color: white;
+  transform: scale(1.05);
+}
+
+.btn-pause {
+  background: rgba(255, 193, 7, 0.95);
+  color: white;
+}
+
+.btn-pause:hover {
+  background: #ffc107;
+  transform: scale(1.05);
+}
+
+.btn-activate {
+  background: rgba(40, 167, 69, 0.95);
+  color: white;
+}
+
+.btn-activate:hover {
+  background: #28a745;
+  transform: scale(1.05);
+}
+
+/* === INFORMACIÓN DEL LIBRO === */
+.book-info {
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.25rem;
+  border-bottom: 1px solid #f1f3f4;
+}
+
+.info-row:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.info-label {
+  font-weight: 600;
+  color: #6c757d;
+}
+
+.info-value {
+  color: #2F4653;
+  font-weight: 500;
+}
+
+.info-value.price {
+  color: #6A93B2;
+  font-weight: bold;
+}
+
+/* === ACCIONES DEL LIBRO === */
+.book-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.book-actions .btn {
+  flex: 1;
+  padding: 8px 12px;
+  font-size: 0.85rem;
+  border-radius: 6px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-outline-primary {
+  border-color: #6A93B2 !important;
+  color: #6A93B2 !important;
+  background: transparent !important;
+}
+
+.btn-outline-primary:hover {
+  background: #6A93B2 !important;
+  border-color: #6A93B2 !important;
+  color: white !important;
+}
+
+.btn-outline-danger {
+  border-color: #dc3545 !important;
+  color: #dc3545 !important;
+  background: transparent !important;
+}
+
+.btn-outline-danger:hover {
+  background: #dc3545 !important;
+  border-color: #dc3545 !important;
+  color: white !important;
+}
+
+/* === ENLACES RÁPIDOS === */
+.quick-links-section {
+  background: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(10px);
+}
+
+.quick-link-card {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  text-align: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  border: 2px solid transparent;
+}
+
+.quick-link-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  border-color: #6A93B2;
+}
+
+.quick-link-icon {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.quick-link-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #2F4653;
+}
+
+/* === MODAL DE DETALLES === */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 2rem;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 15px;
+  max-width: 800px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  border-bottom: 1px solid #e9ecef;
+  background: #f8f9fa;
+  border-radius: 15px 15px 0 0;
+}
+
+.modal-header h3 {
+  margin: 0;
+  color: #2F4653;
+  font-weight: 600;
+}
+
+.btn-close {
+  background: none;
+  border: none;
+  color: #6c757d;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.btn-close:hover {
+  background: #e9ecef;
+  color: #2F4653;
+}
+
+.modal-body {
+  padding: 2rem;
+}
+
+.book-details p {
+  margin-bottom: 1rem;
+  line-height: 1.5;
+}
+
+.book-details strong {
+  color: #2F4653;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  padding: 1.5rem;
+  border-top: 1px solid #e9ecef;
+  background: #f8f9fa;
+  border-radius: 0 0 15px 15px;
+}
+
+/* === MENSAJES VACÍOS === */
+.text-center {
+  text-align: center;
+}
+
+.py-5 {
+  padding: 3rem 0;
+}
+
+.mb-4 {
+  margin-bottom: 1.5rem;
+}
+
+.text-muted {
+  color: #6c757d !important;
+}
+
+.empty-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn-primary {
+  background: #6A93B2;
+  border-color: #6A93B2;
+  color: white;
+  font-weight: 600;
+  padding: 12px 24px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+}
+
+.btn-primary:hover {
+  background: #2F4653;
+  border-color: #2F4653;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(106, 147, 178, 0.4);
+  color: white;
+}
+
+.btn-outline-primary {
+  border-color: #6A93B2 !important;
+  color: #6A93B2 !important;
+  background: transparent !important;
+  font-weight: 600;
+  padding: 12px 24px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-width: 2px !important;
+}
+
+.btn-outline-primary:hover {
+  background: #6A93B2 !important;
+  border-color: #6A93B2 !important;
+  color: white !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(106, 147, 178, 0.3);
+}
+
+.btn-outline-secondary {
+  border-color: #6c757d !important;
+  color: #6c757d !important;
+  background: transparent !important;
+  font-weight: 600;
+  padding: 12px 24px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-width: 2px !important;
+}
+
+.btn-outline-secondary:hover {
+  background: #6c757d !important;
+  border-color: #6c757d !important;
+  color: white !important;
+}
+
+/* === UTILIDADES === */
+.position-relative {
+  position: relative !important;
+}
+
+.position-absolute {
+  position: absolute !important;
+}
+
+.d-flex {
+  display: flex !important;
+}
+
+.flex-column {
+  flex-direction: column !important;
+}
+
+.align-items-center {
+  align-items: center !important;
+}
+
+.justify-content-center {
+  justify-content: center !important;
+}
+
+.justify-content-between {
+  justify-content: space-between !important;
+}
+
+.mt-auto {
+  margin-top: auto !important;
+}
+
+.h-100 {
+  height: 100% !important;
+}
+
+.w-100 {
+  width: 100% !important;
+}
+
+.me-2 {
+  margin-right: 0.5rem !important;
+}
+
+.mb-2 {
+  margin-bottom: 0.5rem !important;
+}
+
+.rounded-4 {
+  border-radius: 1.5rem !important;
+}
+
+.img-fluid {
+  max-width: 100%;
+  height: auto;
+}
+
+.rounded {
+  border-radius: 0.375rem !important;
+}
+
+/* === RESPONSIVE DESIGN === */
+@media (max-width: 768px) {
+  .vendor-banner {
+    text-align: center;
+  }
+
+  .vendor-banner .display-5 {
+    font-size: 1.8rem;
+  }
+
+  .btn-add-book {
+    width: 100%;
+    margin-top: 1rem;
+  }
+
+  .filters-header {
+    flex-direction: column;
+    gap: 0.5rem;
+    text-align: center;
+  }
+
+  .filter-controls,
+  .sort-controls {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+  }
+
+  .book-actions {
+    flex-direction: column;
+  }
+
+  .empty-actions {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .quick-actions {
+    position: static;
+    justify-content: center;
+    margin-top: 1rem;
+    gap: 1rem;
+  }
+
+  .vendor-book-img {
+    height: 250px;
+  }
+
+  .modal-overlay {
+    padding: 1rem;
+  }
+
+  .modal-footer {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 576px) {
+  .vendor-banner {
+    padding: 2rem 1rem !important;
+  }
+
+  .vendor-subtitle {
+    font-size: 1rem;
+  }
+
+  .stat-card {
+    padding: 1rem;
+  }
+
+  .stat-number {
+    font-size: 1.5rem;
+  }
+
+  .vendor-book-img {
+    height: 220px;
+  }
+
+  .quick-link-card {
+    padding: 1rem;
+  }
+
+  .quick-link-icon {
+    font-size: 1.5rem;
+  }
+
+  .quick-link-title {
+    font-size: 0.8rem;
+  }
+
+  .book-status-badge {
+    font-size: 0.7rem;
+    padding: 4px 8px;
+  }
+
+  .quick-actions .btn {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+/* === EFECTOS DE CARGA === */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.vendor-book-card {
+  animation: fadeIn 0.5s ease-out;
+}
+
+.stat-card {
+  animation: fadeIn 0.5s ease-out;
+}
+
+.quick-link-card {
+  animation: fadeIn 0.5s ease-out;
+}

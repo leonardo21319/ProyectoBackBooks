@@ -1,0 +1,577 @@
+/* src/app/shared/sales-header/sales-header.component.css */
+
+/* Header personalizado para vendedor - Estilo Figma */
+.sales-header {
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%) !important;
+  box-shadow: 0 2px 8px rgba(106, 147, 178, 0.15);
+  border-bottom: 2px solid #87ACC5;
+}
+
+/* Logo con distintivo de vendedor */
+.logo-container.vendor-logo {
+  width: 140px;
+  height: 55px;
+  background: linear-gradient(135deg, #6A93B2, #87ACC5);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  color: white;
+}
+
+.logo-container.vendor-logo:hover {
+  background: linear-gradient(135deg, #2F4653, #6A93B2);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(106, 147, 178, 0.3);
+}
+
+.vendor-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: #f4d03f;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.logo-placeholder {
+  color: white !important;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+/* Buscador específico para vendedor */
+.search-container-figma.vendor-search {
+  background: #ffffff;
+  border: 2px solid #6A93B2;
+  border-radius: 30px;
+  max-width: 550px;
+  width: 100%;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(106, 147, 178, 0.2);
+}
+
+.search-container-figma.vendor-search:focus-within {
+  border-color: #2F4653;
+  box-shadow: 0 6px 20px rgba(47, 70, 83, 0.3);
+}
+
+.search-input-figma {
+  flex: 1;
+  border: none;
+  padding: 14px 24px;
+  font-size: 1rem;
+  outline: none;
+  background: transparent;
+  color: #2F4653;
+  font-weight: 500;
+}
+
+.search-input-figma::placeholder {
+  color: #6A93B2;
+  font-style: italic;
+}
+
+.search-btn-figma {
+  background: transparent;
+  border: none;
+  padding: 14px 20px;
+  color: #6A93B2;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.search-btn-figma:hover {
+  color: #2F4653;
+  background: rgba(106, 147, 178, 0.1);
+}
+
+/* Navegación específica para vendedor */
+.nav-item-figma.vendor-nav {
+  background: transparent;
+  border: 2px solid transparent;
+  color: #6A93B2;
+  font-size: 0.95rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.nav-item-figma.vendor-nav:hover {
+  background: rgba(106, 147, 178, 0.15);
+  border-color: rgba(106, 147, 178, 0.3);
+  color: #2F4653;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(106, 147, 178, 0.2);
+}
+
+.nav-item-figma.vendor-nav.active-nav {
+  background: rgba(106, 147, 178, 0.2);
+  border-color: #6A93B2;
+  color: #2F4653;
+  font-weight: 600;
+}
+
+.nav-item-figma.vendor-nav svg {
+  flex-shrink: 0;
+  transition: transform 0.3s ease;
+}
+
+.nav-item-figma.vendor-nav:hover svg {
+  transform: scale(1.1);
+}
+
+/* Botón especial para agregar libro */
+.add-book-btn {
+  background: linear-gradient(135deg, #28a745, #20c997) !important;
+  color: white !important;
+  border: 2px solid transparent !important;
+  font-weight: 600 !important;
+}
+
+.add-book-btn:hover {
+  background: linear-gradient(135deg, #218838, #1ea087) !important;
+  color: white !important;
+  border-color: rgba(255, 255, 255, 0.3) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4) !important;
+}
+
+/* Perfil de vendedor */
+.profile-btn-figma.vendor-profile {
+  background: linear-gradient(135deg, #6A93B2, #87ACC5);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  box-shadow: 0 4px 15px rgba(106, 147, 178, 0.3);
+}
+
+.profile-btn-figma.vendor-profile:hover {
+  background: linear-gradient(135deg, #2F4653, #6A93B2);
+  border-color: rgba(255, 255, 255, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(47, 70, 83, 0.4);
+}
+
+.profile-btn-figma.vendor-profile.active-nav {
+  background: linear-gradient(135deg, #2F4653, #6A93B2);
+  border-color: #f4d03f;
+}
+
+.vendor-indicator {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background: #f4d03f;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  border: 2px solid white;
+}
+
+/* Badges específicos para vendedor */
+.badge-figma.vendor-badge-offers {
+  background: linear-gradient(135deg, #f39c12, #e67e22);
+  color: white;
+  border-radius: 50%;
+  padding: 2px 6px;
+  font-size: 0.7rem;
+  font-weight: bold;
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  min-width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(243, 156, 18, 0.4);
+}
+
+.badge-figma.vendor-badge-publications {
+  background: linear-gradient(135deg, #3498db, #2980b9);
+  color: white;
+  border-radius: 50%;
+  padding: 2px 6px;
+  font-size: 0.7rem;
+  font-weight: bold;
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  min-width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(52, 152, 219, 0.4);
+}
+
+.badge-figma.vendor-badge-orders {
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
+  color: white;
+  border-radius: 50%;
+  padding: 2px 6px;
+  font-size: 0.7rem;
+  font-weight: bold;
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  min-width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(231, 76, 60, 0.4);
+}
+
+/* Dropdown de categorías (heredado pero con ajustes) */
+.dropdown-container {
+  position: relative;
+}
+
+.categories-dropdown-figma {
+  position: absolute;
+  top: calc(100% + 12px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: white;
+  border: 2px solid #6A93B2;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(106, 147, 178, 0.2);
+  min-width: 240px;
+  z-index: 1050;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(-50%) translateY(-10px);
+  transition: all 0.3s ease;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.categories-dropdown-figma.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
+.dropdown-item-figma {
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  padding: 14px 20px;
+  color: #2F4653;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: block;
+  font-weight: 500;
+}
+
+.dropdown-item-figma:hover {
+  background: rgba(106, 147, 178, 0.15);
+  color: #6A93B2;
+}
+
+.dropdown-item-figma.active {
+  background: #6A93B2;
+  color: white;
+  font-weight: 600;
+}
+
+.dropdown-item-figma:first-of-type {
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
+}
+
+.dropdown-item-figma:last-of-type {
+  border-bottom-left-radius: 15px;
+  border-bottom-right-radius: 15px;
+}
+
+/* Dropdown del perfil de vendedor */
+.profile-dropdown-figma.vendor-dropdown {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+  background: white;
+  border: 2px solid #6A93B2;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(106, 147, 178, 0.2);
+  min-width: 220px;
+  z-index: 1050;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.3s ease;
+}
+
+.profile-dropdown-figma.vendor-dropdown.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.profile-header.vendor-profile-header {
+  padding: 20px;
+  text-align: center;
+  border-bottom: 2px solid #e9ecef;
+  background: linear-gradient(135deg, #6A93B2, #87ACC5);
+  border-radius: 15px 15px 0 0;
+  color: white;
+}
+
+.profile-avatar.vendor-avatar {
+  width: 52px;
+  height: 52px;
+  background: rgba(255, 255, 255, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  margin: 0 auto 8px auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  backdrop-filter: blur(10px);
+}
+
+.vendor-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  opacity: 0.9;
+}
+
+.profile-dropdown-item {
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  padding: 14px 20px;
+  color: #2F4653;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: block;
+  font-weight: 500;
+}
+
+.profile-dropdown-item:hover {
+  background: rgba(106, 147, 178, 0.15);
+  color: #6A93B2;
+}
+
+.profile-dropdown-item.active {
+  background: #6A93B2;
+  color: white;
+}
+
+.profile-dropdown-item.logout {
+  color: #e74c3c;
+  font-weight: 600;
+}
+
+.profile-dropdown-item.logout:hover {
+  background: rgba(231, 76, 60, 0.1);
+  color: #c0392b;
+}
+
+.profile-divider {
+  height: 2px;
+  background: linear-gradient(135deg, #e9ecef, #dee2e6);
+  margin: 8px 0;
+}
+
+.profile-dropdown-item:last-of-type {
+  border-bottom-left-radius: 15px;
+  border-bottom-right-radius: 15px;
+}
+
+/* Scrollbar personalizado para dropdowns */
+.categories-dropdown-figma::-webkit-scrollbar {
+  width: 6px;
+}
+
+.categories-dropdown-figma::-webkit-scrollbar-track {
+  background: #f1f3f4;
+  border-radius: 3px;
+}
+
+.categories-dropdown-figma::-webkit-scrollbar-thumb {
+  background: #6A93B2;
+  border-radius: 3px;
+}
+
+.categories-dropdown-figma::-webkit-scrollbar-thumb:hover {
+  background: #2F4653;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .logo-container.vendor-logo {
+    width: 120px;
+    height: 50px;
+  }
+
+  .search-container-figma.vendor-search {
+    max-width: 100%;
+  }
+
+  .nav-item-figma.vendor-nav span {
+    display: none;
+  }
+
+  .nav-item-figma.vendor-nav {
+    padding: 12px;
+    min-width: 48px;
+    justify-content: center;
+  }
+
+  .profile-btn-figma.vendor-profile {
+    width: 45px;
+    height: 45px;
+  }
+
+  .vendor-indicator {
+    width: 18px;
+    height: 18px;
+    font-size: 0.6rem;
+  }
+
+  .categories-dropdown-figma,
+  .profile-dropdown-figma.vendor-dropdown {
+    min-width: 200px;
+  }
+}
+
+@media (max-width: 576px) {
+  .sales-header .container-fluid {
+    padding: 0 1rem;
+  }
+
+  .sales-header .row {
+    gap: 1rem;
+  }
+
+  .logo-container.vendor-logo {
+    width: 100px;
+    height: 45px;
+  }
+
+  .search-container-figma.vendor-search {
+    border-radius: 25px;
+  }
+
+  .search-input-figma {
+    padding: 12px 16px;
+    font-size: 0.9rem;
+  }
+
+  .search-btn-figma {
+    padding: 12px 16px;
+  }
+
+  .nav-item-figma.vendor-nav {
+    padding: 10px;
+    gap: 0;
+  }
+
+  .profile-btn-figma.vendor-profile {
+    width: 42px;
+    height: 42px;
+  }
+
+  .badge-figma.vendor-badge-offers,
+  .badge-figma.vendor-badge-publications,
+  .badge-figma.vendor-badge-orders {
+    min-width: 16px;
+    height: 16px;
+    font-size: 0.6rem;
+  }
+
+  .vendor-badge {
+    width: 20px;
+    height: 20px;
+    font-size: 0.7rem;
+  }
+}
+
+/* Animaciones adicionales */
+@keyframes vendorPulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(106, 147, 178, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(106, 147, 178, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(106, 147, 178, 0);
+  }
+}
+
+.add-book-btn:hover {
+  animation: vendorPulse 1.5s infinite;
+}
+
+/* Estados especiales */
+.nav-item-figma.vendor-nav.has-notifications {
+  position: relative;
+}
+
+.nav-item-figma.vendor-nav.has-notifications::after {
+  content: '';
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 8px;
+  height: 8px;
+  background: #e74c3c;
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px white;
+}
+
+/* Efectos hover mejorados */
+.nav-item-figma.vendor-nav:hover {
+  transform: translateY(-2px) scale(1.02);
+}
+
+.profile-btn-figma.vendor-profile:hover {
+  transform: translateY(-2px) scale(1.05);
+}
+
+.logo-container.vendor-logo:hover {
+  transform: translateY(-2px) scale(1.02);
+}
