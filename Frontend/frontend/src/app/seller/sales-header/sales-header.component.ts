@@ -143,9 +143,8 @@ export class SalesHeaderComponent {
   // Métodos del perfil de vendedor
   goToProfile() {
     this.showProfileDropdown = false;
-    console.log('Ir a perfil de vendedor');
-    // this.router.navigate(['/vendor-profile']);
-    alert('👤 Navegando a perfil de vendedor...');
+    this.router.navigate(['/seller-profile']);
+
   }
 
   goToVendorOrders() {

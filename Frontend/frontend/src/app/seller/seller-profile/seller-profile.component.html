@@ -32,6 +32,7 @@
       <!-- Contenido principal -->
       <div class="col-md-9">
         <div class="profile-content">
+          
           <!-- Sección Mi cuenta -->
           <div *ngIf="activeSection === 'Mi cuenta'" class="account-section">
             <h2 class="section-title">Mi cuenta</h2>
@@ -39,6 +40,7 @@
             <form [formGroup]="profileForm" class="profile-form">
               <!-- Información básica -->
               <div class="form-section">
+                <h4 class="subsection-title">Información personal</h4>
                 <div class="row">
                   <div class="col-md-4">
                     <div class="form-group">
@@ -126,7 +128,7 @@
               </div>
 
               <!-- Información de la tienda -->
-              <div class="form-section" *ngIf="activeSection === 'Mi cuenta'">
+              <div class="form-section">
                 <h4 class="subsection-title">Información de la tienda</h4>
                 
                 <div class="form-group">
@@ -195,7 +197,7 @@
               </div>
 
               <!-- Botones de acción -->
-              <div class="form-actions" *ngIf="activeSection === 'Mi cuenta'">
+              <div class="form-actions">
                 <div *ngIf="!isEditing">
                   <button 
                     type="button" 
@@ -247,8 +249,73 @@
 
           <!-- Sección Mi perfil -->
           <div *ngIf="activeSection === 'Mi perfil'" class="profile-section">
-            <h2 class="section-title">Mi perfil de vendedor</h2>
+            <h2 class="section-title">Mi perfil</h2>
             
+            <!-- Perfil del vendedor con foto y calificación -->
+            <div class="seller-profile-card">
+              <div class="profile-header">
+                <div class="profile-avatar">
+                  <div class="avatar-container" (click)="openImageUpload()">
+                    <img 
+                      [src]="sellerProfile.profileImage || 'assets/images/default-avatar.png'"
+                      [alt]="sellerProfile.nombre + ' ' + sellerProfile.apellidoPaterno"
+                      class="avatar-image"
+                      onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBmaWxsPSIjZjhmOWZhIi8+CjxjaXJjbGUgY3g9IjUwIiBjeT0iMzUiIHI9IjE1IiBmaWxsPSIjNmM3NTdkIi8+CjxwYXRoIGQ9Ik0yMCA4MEM2NSA4MCA4MCA2NSA4MCA2NUwyMCA2NVoiIGZpbGw9IiM2Yzc1N2QiLz4KPC9zdmc+'"
+                    />
+                    <div class="avatar-overlay">
+                      <span class="camera-icon">📷</span>
+                    </div>
+                  </div>
+                  <input 
+                    type="file" 
+                    #fileInput 
+                    accept="image/*" 
+                    style="display: none"
+                    (change)="onImageSelected($event)"
+                  />
+                </div>
+                
+                <div class="profile-info">
+                  <h3 class="profile-name">
+                    {{ sellerProfile.nombre }} {{ sellerProfile.apellidoPaterno }} {{ sellerProfile.apellidoMaterno }}
+                  </h3>
+                  
+                  <!-- Calificación con estrellas -->
+                  <div class="rating-container">
+                    <div class="stars-display">
+                      <span 
+                        *ngFor="let star of getStarsArray()" 
+                        class="star"
+                        [class.filled]="star <= sellerProfile.calificacionPromedio"
+                      >
+                        ⭐
+                      </span>
+                      <span class="rating-number">({{ sellerProfile.calificacionPromedio }}/5)</span>
+                    </div>
+                    <div class="rating-details">
+                      <span class="reviews-count">{{ sellerProfile.ventasRealizadas }} reseñas</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Información de contacto -->
+              <div class="contact-section">
+                <h4 class="contact-title">Contacto</h4>
+                <div class="contact-grid">
+                  <div class="contact-item">
+                    <span class="contact-label">Correo electrónico</span>
+                    <span class="contact-value">{{ sellerProfile.email }}</span>
+                  </div>
+                  <div class="contact-item">
+                    <span class="contact-label">Teléfono</span>
+                    <span class="contact-value">{{ sellerProfile.telefono }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Estadísticas adicionales -->
             <div class="profile-stats">
               <div class="row">
                 <div class="col-md-6">
@@ -268,8 +335,8 @@
               <div class="row mt-3">
                 <div class="col-md-6">
                   <div class="stat-card">
-                    <h5>⭐ Calificación promedio</h5>
-                    <p class="stat-number">{{ sellerProfile.calificacionPromedio }}/5</p>
+                    <h5>📈 Ventas totales</h5>
+                    <p class="stat-number">{{ sellerProfile.ventasRealizadas }}</p>
                   </div>
                 </div>
                 <div class="col-md-6">
@@ -281,6 +348,102 @@
               </div>
             </div>
           </div>
+
+          <!-- Sección Reportes -->
+          <div *ngIf="activeSection === 'Reportes'" class="reports-section">
+            <h2 class="section-title">Reportes</h2>
+            
+            <!-- Botón para crear nuevo reporte -->
+            <div class="reports-header">
+              <button 
+                type="button" 
+                class="btn btn-primary"
+                (click)="openNewReportModal()"
+              >
+                🚨 Reportar Usuario
+              </button>
+              <div class="reports-summary">
+                <span class="summary-item">
+                  <strong>{{ totalReports }}</strong> reportes totales
+                </span>
+                <span class="summary-item">
+                  <strong>{{ pendingReports }}</strong> en revisión
+                </span>
+              </div>
+            </div>
+
+            <!-- Lista de reportes -->
+            <div class="reports-list" *ngIf="userReports.length > 0; else noReports">
+              <div class="reports-table">
+                <div class="table-header">
+                  <div class="col-date">Fecha</div>
+                  <div class="col-user">Usuario</div>
+                  <div class="col-reason">Motivo</div>
+                  <div class="col-status">Estado</div>
+                  <div class="col-actions">Acciones</div>
+                </div>
+                
+                <div 
+                  class="table-row"
+                  *ngFor="let report of userReports; trackBy: trackByReportId"
+                >
+                  <div class="col-date">{{ formatDate(report.fecha) }}</div>
+                  <div class="col-user">
+                    <div class="user-info">
+                      <div class="user-avatar">
+                        <span>{{ getInitials(report.usuarioReportado) }}</span>
+                      </div>
+                      <span class="user-name">{{ report.usuarioReportado }}</span>
+                    </div>
+                  </div>
+                  <div class="col-reason">
+                    <span class="reason-badge" [ngClass]="getReasonClass(report.motivo)">
+                      {{ report.motivo }}
+                    </span>
+                  </div>
+                  <div class="col-status">
+                    <span class="status-badge" [ngClass]="getStatusClass(report.estado)">
+                      {{ getStatusText(report.estado) }}
+                    </span>
+                  </div>
+                  <div class="col-actions">
+                    <button 
+                      class="btn-action btn-view"
+                      (click)="viewReportDetails(report)"
+                      title="Ver detalles"
+                    >
+                      👁️
+                    </button>
+                    <button 
+                      class="btn-action btn-edit"
+                      (click)="editReport(report)"
+                      title="Editar reporte"
+                      [disabled]="report.estado !== 'pendiente'"
+                    >
+                      ✏️
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Mensaje cuando no hay reportes -->
+            <ng-template #noReports>
+              <div class="no-reports">
+                <div class="no-reports-icon">📋</div>
+                <h4>No tienes reportes</h4>
+                <p>Aquí aparecerán los reportes que hagas sobre usuarios problemáticos.</p>
+                <button 
+                  type="button" 
+                  class="btn btn-primary"
+                  (click)="openNewReportModal()"
+                >
+                  🚨 Crear primer reporte
+                </button>
+              </div>
+            </ng-template>
+          </div>
+
         </div>
       </div>
     </div>
@@ -328,10 +491,259 @@
   </div>
 </div>
 
+<!-- Modal para crear/editar reporte -->
+<div 
+  class="modal fade" 
+  [class.show]="showReportModal"
+  [style.display]="showReportModal ? 'block' : 'none'"
+  *ngIf="showReportModal"
+>
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          {{ editingReport ? '✏️ Editar Reporte' : '🚨 Reportar Usuario' }}
+        </h5>
+        <button 
+          type="button" 
+          class="btn-close" 
+          (click)="closeReportModal()"
+        ></button>
+      </div>
+      
+      <form [formGroup]="reportForm" (ngSubmit)="submitReport()">
+        <div class="modal-body">
+          <!-- Usuario a reportar -->
+          <div class="form-group">
+            <label class="form-label">Usuario a reportar *</label>
+            <input
+              type="text"
+              class="form-control"
+              formControlName="usuarioReportado"
+              placeholder="Nombre del usuario que quieres reportar"
+              [class.is-invalid]="isReportFieldInvalid('usuarioReportado')"
+            />
+            <div class="invalid-feedback" *ngIf="isReportFieldInvalid('usuarioReportado')">
+              {{ getReportFieldError('usuarioReportado') }}
+            </div>
+          </div>
+
+          <!-- Motivo del reporte -->
+          <div class="form-group">
+            <label class="form-label">Motivo del reporte *</label>
+            <select 
+              class="form-control"
+              formControlName="motivo"
+              [class.is-invalid]="isReportFieldInvalid('motivo')"
+            >
+              <option value="">Selecciona un motivo</option>
+              <option value="Oferta de mal gusto">Oferta de mal gusto</option>
+              <option value="Comentarios inapropiados">Comentarios inapropiados</option>
+              <option value="Intento de estafa">Intento de estafa</option>
+              <option value="No cumplió con el intercambio">No cumplió con el intercambio</option>
+              <option value="Spam o mensajes repetitivos">Spam o mensajes repetitivos</option>
+              <option value="Comportamiento abusivo">Comportamiento abusivo</option>
+              <option value="Otro">Otro</option>
+            </select>
+            <div class="invalid-feedback" *ngIf="isReportFieldInvalid('motivo')">
+              {{ getReportFieldError('motivo') }}
+            </div>
+          </div>
+
+          <!-- Descripción detallada -->
+          <div class="form-group">
+            <label class="form-label">Descripción detallada *</label>
+            <textarea
+              class="form-control"
+              rows="4"
+              formControlName="descripcion"
+              placeholder="Describe detalladamente lo que ocurrió..."
+              [class.is-invalid]="isReportFieldInvalid('descripcion')"
+            ></textarea>
+            <div class="form-help">
+              Proporciona todos los detalles posibles para ayudar en la investigación.
+            </div>
+            <div class="invalid-feedback" *ngIf="isReportFieldInvalid('descripcion')">
+              {{ getReportFieldError('descripcion') }}
+            </div>
+          </div>
+
+          <!-- Evidencia (opcional) -->
+          <div class="form-group">
+            <label class="form-label">Evidencia (opcional)</label>
+            <div class="file-upload-area" (click)="openFileSelector()">
+              <div class="upload-icon">📎</div>
+              <div class="upload-text">
+                <p><strong>Haz clic para subir capturas de pantalla</strong></p>
+                <p class="upload-help">PNG, JPG hasta 10MB</p>
+              </div>
+              <input 
+                type="file" 
+                #evidenceInput
+                accept="image/*" 
+                multiple
+                style="display: none"
+                (change)="onEvidenceSelected($event)"
+              />
+            </div>
+            
+            <!-- Lista de archivos seleccionados -->
+            <div class="selected-files" *ngIf="selectedFiles.length > 0">
+              <div 
+                class="file-item"
+                *ngFor="let file of selectedFiles; let i = index"
+              >
+                <span class="file-name">📄 {{ file.name }}</span>
+                <button 
+                  type="button" 
+                  class="btn-remove-file"
+                  (click)="removeFile(i)"
+                >
+                  ❌
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Nivel de gravedad -->
+          <div class="form-group">
+            <label class="form-label">Nivel de gravedad</label>
+            <div class="severity-selector">
+              <label class="severity-option">
+                <input 
+                  type="radio" 
+                  name="gravedad" 
+                  value="baja" 
+                  formControlName="gravedad"
+                />
+                <span class="severity-badge severity-low">🟢 Baja</span>
+              </label>
+              <label class="severity-option">
+                <input 
+                  type="radio" 
+                  name="gravedad" 
+                  value="media" 
+                  formControlName="gravedad"
+                />
+                <span class="severity-badge severity-medium">🟡 Media</span>
+              </label>
+              <label class="severity-option">
+                <input 
+                  type="radio" 
+                  name="gravedad" 
+                  value="alta" 
+                  formControlName="gravedad"
+                />
+                <span class="severity-badge severity-high">🔴 Alta</span>
+              </label>
+            </div>
+          </div>
+        </div>
+        
+        <div class="modal-footer">
+          <button 
+            type="button" 
+            class="btn btn-secondary" 
+            (click)="closeReportModal()"
+          >
+            Cancelar
+          </button>
+          <button 
+            type="submit" 
+            class="btn btn-primary"
+            [disabled]="reportForm.invalid"
+          >
+            {{ editingReport ? '💾 Actualizar Reporte' : '🚨 Enviar Reporte' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de detalles del reporte -->
+<div 
+  class="modal fade" 
+  [class.show]="showReportDetailsModal"
+  [style.display]="showReportDetailsModal ? 'block' : 'none'"
+  *ngIf="showReportDetailsModal && selectedReport"
+>
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">📋 Detalles del Reporte</h5>
+        <button 
+          type="button" 
+          class="btn-close" 
+          (click)="closeReportDetailsModal()"
+        ></button>
+      </div>
+      
+      <div class="modal-body">
+        <div class="report-details">
+          <div class="detail-group">
+            <h6>Usuario reportado</h6>
+            <p>{{ selectedReport.usuarioReportado }}</p>
+          </div>
+          
+          <div class="detail-group">
+            <h6>Motivo</h6>
+            <span class="reason-badge" [ngClass]="getReasonClass(selectedReport.motivo)">
+              {{ selectedReport.motivo }}
+            </span>
+          </div>
+          
+          <div class="detail-group">
+            <h6>Estado</h6>
+            <span class="status-badge" [ngClass]="getStatusClass(selectedReport.estado)">
+              {{ getStatusText(selectedReport.estado) }}
+            </span>
+          </div>
+          
+          <div class="detail-group">
+            <h6>Fecha del reporte</h6>
+            <p>{{ formatDate(selectedReport.fecha) }}</p>
+          </div>
+          
+          <div class="detail-group">
+            <h6>Descripción</h6>
+            <p class="description-text">{{ selectedReport.descripcion }}</p>
+          </div>
+          
+          <div class="detail-group" *ngIf="selectedReport.respuestaAdmin">
+            <h6>Respuesta del administrador</h6>
+            <div class="admin-response">
+              <p>{{ selectedReport.respuestaAdmin }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="modal-footer">
+        <button 
+          type="button" 
+          class="btn btn-secondary" 
+          (click)="closeReportDetailsModal()"
+        >
+          Cerrar
+        </button>
+        <button 
+          type="button" 
+          class="btn btn-primary"
+          (click)="editReportFromDetails()"
+          *ngIf="selectedReport.estado === 'pendiente'"
+        >
+          ✏️ Editar Reporte
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Overlay del modal -->
 <div 
   class="modal-backdrop fade"
-  [class.show]="showRoleChangeModal"
-  *ngIf="showRoleChangeModal"
-  (click)="closeRoleChangeModal()"
+  [class.show]="showReportModal || showReportDetailsModal || showRoleChangeModal"
+  *ngIf="showReportModal || showReportDetailsModal || showRoleChangeModal"
+  (click)="closeAllModals()"
 ></div>

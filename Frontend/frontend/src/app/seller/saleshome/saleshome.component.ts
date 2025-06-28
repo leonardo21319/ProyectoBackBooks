@@ -305,11 +305,10 @@ export class SaleshomeComponent implements OnInit {
     // this.router.navigate(['/vendor-analytics']);
   }
 
-  goToProfile() {
-    console.log('Ir a perfil de vendedor');
-    alert('👤 Ir a perfil de vendedor...');
-    // this.router.navigate(['/vendor-profile']);
-  }
+goToProfile() {
+  console.log('Ir a perfil de vendedor');
+  this.router.navigate(['/seller-profile']);
+}
 
   closeBookDetails() {
     this.showBookDetails = false;

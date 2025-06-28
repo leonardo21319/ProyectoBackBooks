@@ -9,6 +9,8 @@ import { BookSaleComponent } from './book-sale/book-sale.component';
 import { BookExchangeComponent } from './book-exchange/book-exchange.component';
 import { BookDonationComponent } from './book-donation/book-donation.component';
 import { BookExchangeOfferComponent } from './book-exchange-offer/book-exchange-offer.component';
+import { SellerProfileComponent } from './seller/seller-profile/seller-profile.component';
+
 
 export const routes: Routes = [
   { path: '', component: LoginComponent },
@@ -17,6 +19,8 @@ export const routes: Routes = [
   // 🏠 Páginas principales
   { path: 'home', component: HomeComponent },
   { path: 'saleshome', component: SaleshomeComponent }, // ✅ Página de vendedor
+  { path: 'seller-profile', component: SellerProfileComponent }, // ✅ Cambié de 'sellerprofile' a 'seller-profile'
+
   
   // 🛒 Funcionalidades de compra
   { path: 'saved', component: SaveComponent },
