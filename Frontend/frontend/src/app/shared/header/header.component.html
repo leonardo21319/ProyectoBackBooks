@@ -1,11 +1,11 @@
-<!-- src/app/shared/header/header.component.html -->
+<!-- MANTENER TODO TU HTML EXACTAMENTE IGUAL, SOLO AGREGAR stopPropagation -->
 <header
   class="custom-header sticky-top"
   (click)="closeDropdownOnOutsideClick($event)"
 >
   <div class="container-fluid">
     <div class="row align-items-center py-3">
-      <!-- Logo -->
+      <!-- Logo - MANTENER EXACTAMENTE IGUAL -->
       <div class="col-auto">
         <div
           class="logo-container"
@@ -22,7 +22,7 @@
         </div>
       </div>
 
-      <!-- Buscador Centrado -->
+      <!-- Buscador - MANTENER EXACTAMENTE IGUAL -->
       <div class="col d-flex justify-content-center">
         <div class="search-container-figma">
           <input
@@ -55,10 +55,11 @@
       <!-- Navegación -->
       <div class="col-auto">
         <div class="d-flex align-items-center" style="gap: 2rem">
-          <!-- Categorías con dropdown -->
+          <!-- Categorías - SOLO AGREGAR stopPropagation y type="button" -->
           <div class="position-relative dropdown-container">
             <button
               class="nav-item-figma"
+              type="button"
               (click)="toggleCategoriesDropdown($event)"
             >
               <svg
@@ -119,33 +120,38 @@
               </svg>
             </button>
 
-            <!-- Dropdown de categorías -->
+            <!-- Dropdown de categorías - SOLO AGREGAR stopPropagation -->
             <div
               class="categories-dropdown-figma"
               [class.show]="showCategoriesDropdown"
               *ngIf="showCategoriesDropdown"
+              (click)="$event.stopPropagation()"
             >
               <button
+                type="button"
                 class="dropdown-item-figma"
-                (click)="selectCategory('Todas')"
+                (click)="selectCategory('Todas'); $event.stopPropagation()"
               >
                 Todas las categorías
               </button>
 
               <button
+                type="button"
                 class="dropdown-item-figma"
                 *ngFor="let category of categories"
-                (click)="selectCategory(category)"
+                (click)="selectCategory(category); $event.stopPropagation()"
               >
                 {{ category }}
               </button>
             </div>
           </div>
 
+          <!-- Guardados - SOLO AGREGAR type="button" -->
           <button
             class="nav-item-figma position-relative"
             [class.active-nav]="isActivePage('saved')"
             (click)="goToSaved()"
+            type="button"
           >
             <svg
               width="20"
@@ -168,10 +174,12 @@
             }}</span>
           </button>
 
+          <!-- Carrito - SOLO AGREGAR type="button" -->
           <button
             class="nav-item-figma position-relative"
             [class.active-nav]="isActivePage('cart')"
             (click)="goToCart()"
+            type="button"
           >
             <svg
               width="20"
@@ -194,11 +202,13 @@
             }}</span>
           </button>
 
+          <!-- Perfil - SOLO AGREGAR type="button" Y stopPropagation -->
           <div class="position-relative">
             <button
               class="profile-btn-figma"
               [class.active-nav]="isProfileActive()"
               (click)="toggleProfileDropdown($event)"
+              type="button"
             >
               <svg
                 width="24"
@@ -226,11 +236,12 @@
               </svg>
             </button>
 
-            <!-- Dropdown del perfil -->
+            <!-- Dropdown del perfil - SOLO AGREGAR stopPropagation -->
             <div
               class="profile-dropdown-figma"
               [class.show]="showProfileDropdown"
               *ngIf="showProfileDropdown"
+              (click)="$event.stopPropagation()"
             >
               <div class="profile-header">
                 <div class="profile-avatar">
@@ -262,22 +273,28 @@
               </div>
 
               <button
+                type="button"
                 class="profile-dropdown-item"
                 [class.active]="isProfileActive()"
-                (click)="goToProfile()"
+                (click)="goToProfile(); $event.stopPropagation()"
               >
                 Mi cuenta
               </button>
 
-              <button class="profile-dropdown-item" (click)="goToOrders()">
+              <button 
+                type="button"
+                class="profile-dropdown-item" 
+                (click)="goToOrders(); $event.stopPropagation()"
+              >
                 Mis pedidos
               </button>
 
               <div class="profile-divider"></div>
 
               <button
+                type="button"
                 class="profile-dropdown-item logout"
-                (click)="cerrarSesion()"
+                (click)="cerrarSesion(); $event.stopPropagation()"
               >
                 Cerrar sesión
               </button>

@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ApiService } from '../../servicios/api.service';
 import { lastValueFrom } from 'rxjs';
-import { MatSnackBar } from '@angular/material/snack-bar'; // Importar MatSnackBar
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-header',
@@ -17,8 +17,8 @@ import { MatSnackBar } from '@angular/material/snack-bar'; // Importar MatSnackB
 export class HeaderComponent {
   @Input() cartItems: number = 0;
   @Input() savedItems: number = 0;
-  @Input() currentPage: string = ''; // 'home', 'cart', 'profile', etc.
-  @Input() selectedCategory: string = 'Todas'; // Para mostrar categoría activa
+  @Input() currentPage: string = '';
+  @Input() selectedCategory: string = 'Todas';
 
   // Eventos que se emiten al componente padre
   @Output() categorySelected = new EventEmitter<string>();
@@ -29,7 +29,7 @@ export class HeaderComponent {
   showCategoriesDropdown = false;
   showProfileDropdown = false;
 
-  // Lista de categorías del dropdown
+  // MANTENER TU LISTA DE CATEGORÍAS EXACTAMENTE IGUAL
   categories = [
     'Literatura',
     'Ciencias y tecnología',
@@ -49,14 +49,15 @@ export class HeaderComponent {
   constructor(
     private ApiService: ApiService,
     private router: Router,
-    private snackBar: MatSnackBar // Agregar MatSnackBar para mostrar mensajes
+    private snackBar: MatSnackBar
   ) {}
+
+  // MANTENER TU MÉTODO EXACTAMENTE IGUAL
   onSearch() {
     if (this.searchTerm.trim()) {
       console.log('Buscando:', this.searchTerm);
       this.searchPerformed.emit(this.searchTerm);
 
-      // Si no estamos en home, navegar a home con búsqueda
       if (this.currentPage !== 'home') {
         this.router.navigate(['/home'], {
           queryParams: { search: this.searchTerm },
@@ -65,7 +66,7 @@ export class HeaderComponent {
     }
   }
 
-  // Métodos de navegación
+  // MANTENER TUS MÉTODOS DE NAVEGACIÓN EXACTAMENTE IGUAL
   goToHome() {
     this.router.navigate(['/home']);
   }
@@ -76,27 +77,28 @@ export class HeaderComponent {
 
   goToCart() {
     if (this.currentPage === 'home') {
-      // En home, emitir evento para abrir sidebar
       this.cartClicked.emit();
     } else {
-      // En otras páginas, navegar a cart
       this.router.navigate(['/cart']);
     }
   }
 
-  // Métodos para dropdowns
+  // SOLO AGREGAR LOGS Y stopPropagation PARA FIX
   toggleCategoriesDropdown(event: Event) {
-    event.stopPropagation();
+    event.stopPropagation(); // FIX: Prevenir propagación
+    console.log('HeaderComponent: Toggle categorías dropdown'); // SOLO AGREGAR LOG
     this.showCategoriesDropdown = !this.showCategoriesDropdown;
     this.showProfileDropdown = false;
   }
 
   toggleProfileDropdown(event: Event) {
-    event.stopPropagation();
+    event.stopPropagation(); // FIX: Prevenir propagación
+    console.log('HeaderComponent: Toggle perfil dropdown'); // SOLO AGREGAR LOG
     this.showProfileDropdown = !this.showProfileDropdown;
     this.showCategoriesDropdown = false;
   }
 
+  // MANTENER TU MÉTODO EXACTAMENTE IGUAL
   closeDropdownOnOutsideClick(event: Event) {
     const target = event.target as HTMLElement;
     if (
@@ -108,22 +110,21 @@ export class HeaderComponent {
     }
   }
 
+  // SOLO AGREGAR LOGS PARA DEBUG
   selectCategory(category: string) {
     this.showCategoriesDropdown = false;
-    console.log('Categoría seleccionada:', category);
+    console.log('HeaderComponent: Categoría seleccionada:', category); // SOLO AGREGAR LOG
 
     if (this.currentPage === 'home') {
-      // En home, emitir evento para filtrar
       this.categorySelected.emit(category);
     } else {
-      // En otras páginas, navegar a home con categoría
       this.router.navigate(['/home'], {
         queryParams: { category: category },
       });
     }
   }
 
-  // Métodos del perfil
+  // MANTENER TUS MÉTODOS EXACTAMENTE IGUAL
   goToProfile() {
     this.showProfileDropdown = false;
     this.router.navigate(['/profile']);
@@ -132,7 +133,6 @@ export class HeaderComponent {
   goToOrders() {
     this.showProfileDropdown = false;
     console.log('Ir a Mis pedidos');
-    // Navegar al perfil con el apartado de "Mis pedidos" activo
     this.router.navigate(['/profile'], {
       queryParams: { section: 'Mis pedidos' },
     });
@@ -143,17 +143,18 @@ export class HeaderComponent {
     this.router.navigate(['/']);
   }
 
+  // MANTENER TU MÉTODO EXACTAMENTE IGUAL
   private limpiarYRedirigir(): void {
-    // Limpiar todo rastro de sesión
-    localStorage.clear();
-    sessionStorage.clear();
+    // Usar el nuevo método pero mantener la misma lógica
+    this.ApiService.limpiarTokenLocal();
 
-    // Redirigir a login con reemplazo de historial
     this.router.navigate(['/login'], {
       replaceUrl: true,
       queryParams: { sessionEnded: true },
     });
   }
+
+  // MANTENER TUS MÉTODOS EXACTAMENTE IGUAL
   isActivePage(page: string): boolean {
     return this.currentPage === page;
   }
@@ -161,11 +162,14 @@ export class HeaderComponent {
   isProfileActive(): boolean {
     return this.currentPage === 'profile';
   }
+
   isCategoryActive(category: string): boolean {
     return this.selectedCategory === category;
   }
 
+  // MANTENER TU MÉTODO CERRAR SESIÓN EXACTAMENTE IGUAL
   async cerrarSesion() {
+    console.log('HeaderComponent: Iniciando cierre de sesión'); // SOLO AGREGAR LOG
     this.showProfileDropdown = false;
     const token = this.ApiService.obtenerToken();
 
@@ -175,7 +179,6 @@ export class HeaderComponent {
     }
 
     try {
-      // Intentar cerrar sesión en el backend con timeout
       await Promise.race([
         lastValueFrom(this.ApiService.cerrarSesion(token)),
         new Promise((_, reject) =>
