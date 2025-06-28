@@ -1,18 +1,14 @@
-<!-- ============================================ -->
-<!-- 📁 src/app/home/home.component.html - CÓDIGO COMPLETO ACTUALIZADO -->
-<!-- ============================================ -->
-
 <div class="bookstore-container" (click)="closeDropdownOnOutsideClick($event)">
-  
   <!-- Header compartido con eventos -->
-  <app-header 
-    [cartItems]="cartItems" 
-    [savedItems]="savedItems" 
+  <app-header
+    [cartItems]="cartItems"
+    [savedItems]="savedItems"
     [selectedCategory]="selectedCategory"
     currentPage="home"
     (categorySelected)="onCategorySelected($event)"
     (cartClicked)="onCartClicked()"
-    (searchPerformed)="onSearchPerformed($event)">
+    (searchPerformed)="onSearchPerformed($event)"
+  >
   </app-header>
 
   <!-- Banner principal con Bootstrap -->
@@ -23,14 +19,10 @@
           <h1 class="display-4 fw-bold text-custom-dark mb-3">
             LOS LIBROS, COMO BUENOS AMIGOS:
           </h1>
-          <p class="banner-subtitle">
-            siempre están cuando los necesitas.
-          </p>
+          <p class="banner-subtitle">siempre están cuando los necesitas.</p>
         </div>
         <div class="col-md-4 text-center">
-          <div class="books-illustration">
-            📚📖📓📗📘📙
-          </div>
+          <div class="books-illustration">📚📖📓📗📘📙</div>
         </div>
       </div>
     </div>
@@ -40,8 +32,8 @@
   <section class="category-title" *ngIf="selectedCategory !== 'Todas'">
     <div class="container">
       <div class="category-header">
-        <h2 class="category-name">{{selectedCategory}}</h2>
-        <span class="books-count">{{books.length}} libro(s)</span>
+        <h2 class="category-name">{{ selectedCategory }}</h2>
+        <span class="books-count">{{ books.length }} libro(s)</span>
       </div>
     </div>
   </section>
@@ -54,60 +46,80 @@
           <div class="card book-card-custom h-100">
             <div class="position-relative">
               <!-- ✨ IMAGEN ACTUALIZADA - Navegación según tipo de libro -->
-              <img [src]="book.image" 
-                   [alt]="book.title" 
-                   class="card-img-top book-img-custom"
-                   (click)="viewBookDetail(book)"
-                   title="Ver detalles del libro">
-              
+              <img
+                [src]="book.portada"
+                [alt]="book.titulo"
+                class="card-img-top book-img-custom"
+                (click)="viewBookDetail(book)"
+                title="Ver detalles del libro"
+              />
+
               <!-- Botón de guardados con estado dinámico -->
-              <button class="btn save-btn-custom position-absolute" 
-                      [ngClass]="{'saved-active': isBookSaved(book.id)}"
-                      (click)="addToSaved(book)">
-                <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M19 21L12 16L5 21V5C5 4.46957 5.21071 3.96086 5.58579 3.58579C5.96086 3.21071 6.46957 3 7 3H17C17.5304 3 18.0391 3.21071 18.4142 3.58579C18.7893 3.96086 19 4.46957 19 5V21Z" 
-                        [attr.fill]="isBookSaved(book.id) ? '#6A93B2' : 'none'"
-                        stroke="currentColor" 
-                        stroke-width="2" 
-                        stroke-linecap="round" 
-                        stroke-linejoin="round"/>
+              <button
+                class="btn save-btn-custom position-absolute"
+                [ngClass]="{ 'saved-active': isBookSaved(book.id) }"
+                (click)="addToSaved(book)"
+              >
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M19 21L12 16L5 21V5C5 4.46957 5.21071 3.96086 5.58579 3.58579C5.96086 3.21071 6.46957 3 7 3H17C17.5304 3 18.0391 3.21071 18.4142 3.58579C18.7893 3.96086 19 4.46957 19 5V21Z"
+                    [attr.fill]="isBookSaved(book.id) ? '#6A93B2' : 'none'"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
                 </svg>
               </button>
-              
+
               <!-- Badge del tipo de libro -->
-              <div class="book-type-badge" 
-                   [ngClass]="{
-                     'badge-venta': book.type === 'Venta',
-                     'badge-donacion': book.type === 'Donación',
-                     'badge-intercambio': book.type === 'Intercambio'
-                   }">
-                {{book.type}}
-              </div>
+              <div
+                class="book-type-badge"
+                [ngClass]="{
+                  'badge-venta': book.tipo_transaccion_nombre === 'Venta',
+                  'badge-donacion': book.tipo_transaccion_nombre === 'Donación',
+                  'badge-intercambio':
+                    book.tipo_transaccion_nombre === 'Intercambio'
+                }"
+              ></div>
             </div>
-            
+
             <div class="card-body d-flex flex-column">
-              <h5 class="card-title text-custom-dark mb-2">{{book.title}}</h5>
-              <p class="card-text text-muted mb-2">{{book.author}}</p>
-              <p class="card-text book-description mb-3">{{book.description}}</p>
-              
+              <h5 class="card-title text-custom-dark mb-2">
+                {{ book.titulo }}
+              </h5>
+              <p class="card-text text-muted mb-2">{{ book.autor }}</p>
+              <p class="card-text book-description mb-3">
+                {{ book.descripcion }}
+              </p>
+
               <!-- Precio solo para ventas -->
-              <div class="price-section mb-3" *ngIf="book.type === 'Venta'">
+              <div
+                class="price-section mb-3"
+                *ngIf="book.tipo_transaccion_nombre === 'Venta'"
+              >
                 <span class="price-label">Precio:</span>
-                <span class="price-amount">${{book.price}}</span>
+                <span class="price-amount">${{ book.precio }}</span>
               </div>
-              
+
               <div class="mt-auto">
-                <button 
+                <button
                   class="btn btn-block w-100"
                   [ngClass]="{
-                    'btn-custom-venta': book.type === 'Venta',
-                    'btn-custom-donacion': book.type === 'Donación',
-                    'btn-custom-intercambio': book.type === 'Intercambio'
+                    'btn-custom-venta':
+                      book.tipo_transaccion_nombre === 'Venta',
+                    'btn-custom-donacion':
+                      book.tipo_transaccion_nombre === 'Donación',
+                    'btn-custom-intercambio':
+                      book.tipo_transaccion_nombre === 'Intercambio'
                   }"
                   (click)="getButtonAction(book)"
-                >
-                  {{getButtonText(book.type)}}
-                </button>
+                ></button>
               </div>
             </div>
           </div>
@@ -118,16 +130,51 @@
       <ng-template #noBooks>
         <div class="text-center py-5">
           <div class="mb-4">
-            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-muted">
-              <path d="M4 19.5C4 18.837 4.26339 18.2011 4.73223 17.7322C5.20107 17.2634 5.83696 17 6.5 17H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M6.5 2H20V22H6.5C5.83696 22 5.20107 21.7366 4.73223 21.2678C4.26339 20.7989 4 20.163 4 19.5V4.5C4 3.83696 4.26339 3.20107 4.73223 2.73223C5.20107 2.26339 5.83696 2 6.5 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M9 7H15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M9 11H15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <svg
+              width="64"
+              height="64"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              class="text-muted"
+            >
+              <path
+                d="M4 19.5C4 18.837 4.26339 18.2011 4.73223 17.7322C5.20107 17.2634 5.83696 17 6.5 17H20"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M6.5 2H20V22H6.5C5.83696 22 5.20107 21.7366 4.73223 21.2678C4.26339 20.7989 4 20.163 4 19.5V4.5C4 3.83696 4.26339 3.20107 4.73223 2.73223C5.20107 2.26339 5.83696 2 6.5 2Z"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M9 7H15"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M9 11H15"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
             </svg>
           </div>
           <h4 class="text-muted">No se encontraron libros</h4>
-          <p class="text-muted">No hay libros disponibles en la categoría "{{selectedCategory}}"</p>
-          <button class="btn btn-primary" (click)="selectCategory('Todas')">Ver todos los libros</button>
+          <p class="text-muted">
+            No hay libros disponibles en la categoría "{{ selectedCategory }}"
+          </p>
+          <button class="btn btn-primary" (click)="selectCategory('Todas')">
+            Ver todos los libros
+          </button>
         </div>
       </ng-template>
     </div>
@@ -135,43 +182,96 @@
 </div>
 
 <!-- Sidebar del carrito - MANTENIDO EN HOME -->
-<div class="cart-overlay" [class.show]="showCartSidebar" (click)="closeCartSidebar()"></div>
+<div
+  class="cart-overlay"
+  [class.show]="showCartSidebar"
+  (click)="closeCartSidebar()"
+></div>
 <div class="cart-sidebar" [class.show]="showCartSidebar">
   <div class="cart-header">
     <h3>Mi carrito</h3>
     <button class="close-cart-btn" (click)="closeCartSidebar()">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <svg
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M18 6L6 18M6 6L18 18"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
       </svg>
     </button>
   </div>
 
   <div class="cart-content">
     <div *ngIf="cartBooks.length === 0" class="empty-cart">
-      <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-muted">
-        <path d="M3 3H5L5.4 5M7 13H17L21 5H5.4M7 13L5.4 5M7 13L4.7 15.3C4.3 15.7 4.6 16.5 5.1 16.5H17M17 13V16.5M9 19.5C9.8 19.5 10.5 20.2 10.5 21S9.8 22.5 9 22.5 7.5 21.8 7.5 21 8.2 19.5 9 19.5ZM20 19.5C20.8 19.5 21.5 20.2 21.5 21S20.8 22.5 20 22.5 18.5 21.8 18.5 21 19.2 19.5 20 19.5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <svg
+        width="64"
+        height="64"
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        class="text-muted"
+      >
+        <path
+          d="M3 3H5L5.4 5M7 13H17L21 5H5.4M7 13L5.4 5M7 13L4.7 15.3C4.3 15.7 4.6 16.5 5.1 16.5H17M17 13V16.5M9 19.5C9.8 19.5 10.5 20.2 10.5 21S9.8 22.5 9 22.5 7.5 21.8 7.5 21 8.2 19.5 9 19.5ZM20 19.5C20.8 19.5 21.5 20.2 21.5 21S20.8 22.5 20 22.5 18.5 21.8 18.5 21 19.2 19.5 20 19.5Z"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
       </svg>
       <p>Tu carrito está vacío</p>
-      <button class="btn btn-primary" (click)="closeCartSidebar()">Seguir comprando</button>
+      <button class="btn btn-primary" (click)="closeCartSidebar()">
+        Seguir comprando
+      </button>
     </div>
 
     <div *ngIf="cartBooks.length > 0" class="cart-items">
       <div class="cart-item" *ngFor="let book of cartBooks">
         <div class="item-image">
-          <img [src]="book.image" [alt]="book.title">
+          <img [src]="book.portada" [alt]="book.titulo" />
         </div>
         <div class="item-details">
-          <h4>{{book.title}}</h4>
-          <p class="item-price">${{book.price}}</p>
+          <h4>{{ book.titulo }}</h4>
+          <p class="item-price">${{ book.precio }}</p>
           <div class="quantity-controls">
-            <button class="qty-btn" (click)="updateQuantity(book, book.quantity - 1)">-</button>
-            <span class="quantity">{{book.quantity}}</span>
-            <button class="qty-btn" (click)="updateQuantity(book, book.quantity + 1)">+</button>
+            <button
+              class="qty-btn"
+              (click)="updateQuantity(book, book.cantidad - 1)"
+            >
+              -
+            </button>
+            <span class="quantity">{{ book.cantidad }}</span>
+            <button
+              class="qty-btn"
+              (click)="updateQuantity(book, book.cantidad + 1)"
+            >
+              +
+            </button>
           </div>
         </div>
         <button class="remove-item-btn" (click)="removeFromCart(book)">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M3 6H5H21M8 6V4C8 3.46957 8.21071 2.96086 8.58579 2.58579C8.96086 2.21071 9.46957 2 10 2H14C14.5304 2 15.0391 2.21071 15.4142 2.58579C15.7893 2.96086 16 3.46957 16 4V6M19 6V20C19 20.5304 18.7893 21.0391 18.4142 21.4142C18.0391 21.7893 17.5304 22 17 22H7C6.46957 22 5.96086 21.7893 5.58579 21.4142C5.21071 21.0391 5 20.5304 5 20V6H19Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M3 6H5H21M8 6V4C8 3.46957 8.21071 2.96086 8.58579 2.58579C8.96086 2.21071 9.46957 2 10 2H14C14.5304 2 15.0391 2.21071 15.4142 2.58579C15.7893 2.96086 16 3.46957 16 4V6M19 6V20C19 20.5304 18.7893 21.0391 18.4142 21.4142C18.0391 21.7893 17.5304 22 17 22H7C6.46957 22 5.96086 21.7893 5.58579 21.4142C5.21071 21.0391 5 20.5304 5 20V6H19Z"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
           </svg>
         </button>
       </div>
@@ -181,18 +281,32 @@
   <div *ngIf="cartBooks.length > 0" class="cart-footer">
     <div class="subtotal">
       <span>Subtotal</span>
-      <span class="total-amount">${{getCartSubtotal()}}</span>
+      <span class="total-amount">${{ getCartSubtotal() }}</span>
     </div>
     <div class="cart-actions">
-      <button class="btn btn-outline-primary w-100 mb-2" (click)="goToCartPage()">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="me-2">
-          <path d="M3 3H5L5.4 5M7 13H17L21 5H5.4M7 13L5.4 5M7 13L4.7 15.3C4.3 15.7 4.6 16.5 5.1 16.5H17M17 13V16.5M9 19.5C9.8 19.5 10.5 20.2 10.5 21S9.8 22.5 9 22.5 7.5 21.8 7.5 21 8.2 19.5 9 19.5ZM20 19.5C20.8 19.5 21.5 20.2 21.5 21S20.8 22.5 20 22.5 18.5 21.8 18.5 21 19.2 19.5 20 19.5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <button
+        class="btn btn-outline-primary w-100 mb-2"
+        (click)="goToCartPage()"
+      >
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          class="me-2"
+        >
+          <path
+            d="M3 3H5L5.4 5M7 13H17L21 5H5.4M7 13L5.4 5M7 13L4.7 15.3C4.3 15.7 4.6 16.5 5.1 16.5H17M17 13V16.5M9 19.5C9.8 19.5 10.5 20.2 10.5 21S9.8 22.5 9 22.5 7.5 21.8 7.5 21 8.2 19.5 9 19.5ZM20 19.5C20.8 19.5 21.5 20.2 21.5 21S20.8 22.5 20 22.5 18.5 21.8 18.5 21 19.2 19.5 20 19.5Z"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
         </svg>
         Ver carrito completo
       </button>
-      <button class="btn btn-primary w-100">
-        Pagar ahora
-      </button>
+      <button class="btn btn-primary w-100">Pagar ahora</button>
     </div>
   </div>
 </div>

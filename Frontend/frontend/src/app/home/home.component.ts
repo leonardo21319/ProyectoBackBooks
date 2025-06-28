@@ -251,6 +251,10 @@ export class HomeComponent implements OnInit {
       });
     }
   }
+  viewBookDetail(book: Book): void {
+    console.log('Detalles del libro:', book);
+    this.router.navigate(['/book-detail', book.id]);
+  }
 
   goToCartPage() {
     this.closeCartSidebar();
