@@ -133,23 +133,6 @@ export const LoginControlador = async (req, res) => {
   res.status(200).json({ data: token });
 };
 
-// Controlador para cerrar sesión
-/**
- * @swagger
- * /auth/cerrarSesion:
- *   post:
- *     summary: Cierra la sesión del usuario invalidando el token JWT.
- *     description: Este endpoint permite cerrar sesión del usuario, invalidando el token JWT y evitando su uso posterior.
- *     security:
- *       - bearerAuth: []
- *     responses:
- *       200:
- *         description: Sesión cerrada con éxito.
- *       400:
- *         description: Token no válido o no proporcionado.
- *       500:
- *         description: Error en el servidor.
- */
 export const LogoutControlador = async (req, res) => {
   const token = req.headers["authorization"]?.split(" ")[1] || req.body.token;
 

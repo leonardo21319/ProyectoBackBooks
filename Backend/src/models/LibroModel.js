@@ -37,7 +37,7 @@ export const guardarLibroDB = async (libro) => {
   }
 };
 // Función para agregar un marcador de libro a la base de datos
-export const agregarMarcadorLibroDB = async (idUsuario, idLibro) => {
+export const agregarMarcadorLibroDB = async (idLibro, idUsuario) => {
   const sql = `
     INSERT INTO marcadores (user_id, book_id)
     VALUES ($1, $2)
@@ -136,6 +136,21 @@ export const obtenerLibroPorId = async (id) => {
     return resultado.rows[0];
   } catch (error) {
     console.error("Error al obtener libro por ID:", error);
+    throw error;
+  }
+};
+
+export const eliminarLibroPorId = async (id) => {
+  const sql = `
+    DELETE FROM libros
+    WHERE id = $1
+  `;
+
+  try {
+    const resultado = await pool.query(sql, [id]);
+    return resultado.rowCount > 0; // Retorna true si se eliminó correctamente
+  } catch (error) {
+    console.error("Error al eliminar libro por ID:", error);
     throw error;
   }
 };
