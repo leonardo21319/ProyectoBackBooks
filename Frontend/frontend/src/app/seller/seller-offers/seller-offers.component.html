@@ -1,0 +1,402 @@
+<!-- seller/seller-offers/seller-offers.component.html -->
+<div class="seller-offers-container">
+  <!-- Header del vendedor -->
+  <app-sales-header
+    [selectedCategory]="'Todas'"
+    currentPage="offers"
+    (categorySelected)="onCategorySelected($event)"
+    (searchPerformed)="onSearchPerformed($event)"
+  >
+  </app-sales-header>
+
+  <!-- Contenido principal -->
+  <div class="container-fluid py-4">
+    
+    <!-- Título y estadísticas -->
+    <div class="offers-header">
+      <div class="header-content">
+        <h1 class="page-title">Ofertas recibidas</h1>
+        <p class="page-subtitle">Gestiona las ofertas que han hecho los compradores por tus libros</p>
+      </div>
+      
+      <div class="offers-stats">
+        <div class="stat-item">
+          <span class="stat-number">{{ totalOffers }}</span>
+          <span class="stat-label">Total</span>
+        </div>
+        <div class="stat-item pending">
+          <span class="stat-number">{{ pendingOffers }}</span>
+          <span class="stat-label">Pendientes</span>
+        </div>
+        <div class="stat-item accepted">
+          <span class="stat-number">{{ acceptedOffers }}</span>
+          <span class="stat-label">Aceptadas</span>
+        </div>
+        <div class="stat-item rejected">
+          <span class="stat-number">{{ rejectedOffers }}</span>
+          <span class="stat-label">Rechazadas</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filtros y controles -->
+    <div class="filters-section">
+      <div class="filters-row">
+        <!-- Filtro por estado -->
+        <div class="filter-group">
+          <label class="filter-label">Estado:</label>
+          <select 
+            class="filter-select"
+            [(ngModel)]="filterStatus"
+            (change)="changeFilter('status', filterStatus)"
+          >
+            <option value="todas">Todas las ofertas</option>
+            <option value="pendiente">Pendientes</option>
+            <option value="aceptada">Aceptadas</option>
+            <option value="rechazada">Rechazadas</option>
+          </select>
+        </div>
+
+        <!-- Filtro por tipo -->
+        <div class="filter-group">
+          <label class="filter-label">Tipo:</label>
+          <select 
+            class="filter-select"
+            [(ngModel)]="filterType"
+            (change)="changeFilter('type', filterType)"
+          >
+            <option value="todos">Todos los tipos</option>
+            <option value="compra">Compra</option>
+            <option value="intercambio">Intercambio</option>
+            <option value="donacion">Donación</option>
+          </select>
+        </div>
+
+        <!-- Ordenamiento -->
+        <div class="filter-group">
+          <label class="filter-label">Ordenar por:</label>
+          <select 
+            class="filter-select"
+            [(ngModel)]="sortBy"
+            (change)="changeFilter('sort', sortBy)"
+          >
+            <option value="fecha_desc">Más recientes</option>
+            <option value="fecha_asc">Más antiguos</option>
+            <option value="urgencia">Por urgencia</option>
+          </select>
+        </div>
+
+        <!-- Buscador -->
+        <div class="filter-group search-group">
+          <input 
+            type="text" 
+            class="search-input"
+            placeholder="Buscar por comprador o libro..."
+            [(ngModel)]="searchTerm"
+            (input)="applyFilters()"
+          />
+          <button class="search-btn">🔍</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Lista de ofertas -->
+    <div class="offers-list" *ngIf="filteredOffers.length > 0; else noOffers">
+      <div class="offers-table">
+        <!-- Header de la tabla -->
+        <div class="table-header">
+          <div class="col-buyer">Usuario</div>
+          <div class="col-offer">Oferta</div>
+          <div class="col-book">Libro</div>
+          <div class="col-status">Estado</div>
+          <div class="col-actions">Acciones</div>
+        </div>
+
+        <!-- Filas de ofertas -->
+        <div 
+          class="table-row"
+          *ngFor="let offer of filteredOffers; trackBy: trackByOfferId"
+          [class]="getUrgencyClass(offer.urgency)"
+        >
+          <!-- Información del comprador -->
+          <div class="col-buyer">
+            <div class="buyer-info" (click)="viewBuyerInfo(offer)">
+              <div class="buyer-avatar">
+                <span>{{ getInitials(offer.buyerName) }}</span>
+              </div>
+              <div class="buyer-details">
+                <span class="buyer-name">{{ offer.buyerName }}</span>
+                <span class="buyer-date">{{ formatDate(offer.dateCreated) }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Detalles de la oferta -->
+          <div class="col-offer">
+            <div class="offer-details">
+              <span class="offer-type-badge" [ngClass]="getOfferTypeClass(offer.offerType)">
+                {{ getOfferTypeText(offer.offerType) }}
+              </span>
+              <span class="offer-value">{{ offer.offerDetails }}</span>
+              <p class="offer-message">{{ offer.message | slice:0:50 }}{{ offer.message.length > 50 ? '...' : '' }}</p>
+            </div>
+          </div>
+
+          <!-- Información del libro -->
+          <div class="col-book">
+            <div class="book-info" (click)="goToBookDetail(offer.bookId)">
+              <img [src]="offer.bookImage" [alt]="offer.bookTitle" class="book-thumbnail" />
+              <span class="book-title">{{ offer.bookTitle }}</span>
+            </div>
+          </div>
+
+          <!-- Estado -->
+          <div class="col-status">
+            <span class="status-badge" [ngClass]="getStatusClass(offer.status)">
+              {{ getStatusText(offer.status) }}
+            </span>
+          </div>
+
+          <!-- Acciones -->
+          <div class="col-actions">
+            <div class="action-buttons">
+              <button 
+                class="btn-action btn-view"
+                (click)="viewOfferDetails(offer)"
+                title="Ver detalles"
+              >
+                👁️
+              </button>
+              
+              <ng-container *ngIf="offer.status === 'pendiente'">
+                <button 
+                  class="btn-action btn-accept"
+                  (click)="acceptOffer(offer)"
+                  title="Aceptar oferta"
+                >
+                  ✅
+                </button>
+                <button 
+                  class="btn-action btn-reject"
+                  (click)="rejectOffer(offer)"
+                  title="Rechazar oferta"
+                >
+                  ❌
+                </button>
+              </ng-container>
+
+              <button 
+                class="btn-action btn-report"
+                (click)="reportBuyer(offer)"
+                title="Reportar usuario"
+              >
+                🚨
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mensaje cuando no hay ofertas -->
+    <ng-template #noOffers>
+      <div class="no-offers">
+        <div class="no-offers-icon">📬</div>
+        <h3>No hay ofertas</h3>
+        <p *ngIf="searchTerm || filterStatus !== 'todas' || filterType !== 'todos'">
+          No se encontraron ofertas con los filtros aplicados.
+        </p>
+        <p *ngIf="!searchTerm && filterStatus === 'todas' && filterType === 'todos'">
+          Aún no has recibido ofertas por tus libros. ¡Publica más libros para recibir ofertas!
+        </p>
+        <button class="btn btn-primary" (click)="goToDashboard()">
+          📚 Ver mis libros
+        </button>
+      </div>
+    </ng-template>
+
+  </div>
+</div>
+
+<!-- Modal de detalles de la oferta -->
+<div 
+  class="modal fade" 
+  [class.show]="showOfferDetailsModal"
+  [style.display]="showOfferDetailsModal ? 'block' : 'none'"
+  *ngIf="showOfferDetailsModal && selectedOffer"
+>
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">📋 Detalles de la Oferta</h5>
+        <button 
+          type="button" 
+          class="btn-close" 
+          (click)="closeOfferDetailsModal()"
+        ></button>
+      </div>
+      
+      <div class="modal-body">
+        <div class="offer-detail-content">
+          <!-- Información del libro -->
+          <div class="detail-section">
+            <h6 class="detail-title">📖 Libro solicitado</h6>
+            <div class="book-detail">
+              <img [src]="selectedOffer.bookImage" [alt]="selectedOffer.bookTitle" class="book-image-large" />
+              <div class="book-info-detail">
+                <h4>{{ selectedOffer.bookTitle }}</h4>
+                <button class="btn btn-outline-primary btn-sm" (click)="goToBookDetail(selectedOffer.bookId)">
+                  Ver libro completo
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Información del comprador -->
+          <div class="detail-section">
+            <h6 class="detail-title">👤 Información del comprador</h6>
+            <div class="buyer-detail">
+              <div class="buyer-avatar-large">
+                <span>{{ getInitials(selectedOffer.buyerName) }}</span>
+              </div>
+              <div class="buyer-info-detail">
+                <h5>{{ selectedOffer.buyerName }}</h5>
+                <p><strong>Email:</strong> {{ selectedOffer.buyerEmail }}</p>
+                <p><strong>Teléfono:</strong> {{ selectedOffer.buyerPhone }}</p>
+                <button class="btn btn-outline-info btn-sm" (click)="viewBuyerInfo(selectedOffer)">
+                  Ver perfil completo
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Detalles de la oferta -->
+          <div class="detail-section">
+            <h6 class="detail-title">💼 Detalles de la oferta</h6>
+            <div class="offer-info-detail">
+              <div class="offer-meta">
+                <span class="offer-type-badge-large" [ngClass]="getOfferTypeClass(selectedOffer.offerType)">
+                  {{ getOfferTypeText(selectedOffer.offerType) }}
+                </span>
+                <span class="offer-date">{{ formatDate(selectedOffer.dateCreated) }}</span>
+              </div>
+              
+              <div class="offer-value-display">
+                <h5>Ofrece: {{ selectedOffer.offerDetails }}</h5>
+                <div *ngIf="selectedOffer.offeredPrice" class="price-highlight">
+                  {{ formatPrice(selectedOffer.offeredPrice) }}
+                </div>
+                <div *ngIf="selectedOffer.offeredBooks && selectedOffer.offeredBooks.length > 0" class="offered-books">
+                  <p><strong>Libros para intercambio:</strong></p>
+                  <ul>
+                    <li *ngFor="let book of selectedOffer.offeredBooks">{{ book }}</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="offer-message-display">
+                <h6>Mensaje del comprador:</h6>
+                <p class="message-text">{{ selectedOffer.message }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="modal-footer">
+        <button 
+          type="button" 
+          class="btn btn-secondary" 
+          (click)="closeOfferDetailsModal()"
+        >
+          Cerrar
+        </button>
+        
+        <div *ngIf="selectedOffer.status === 'pendiente'" class="action-buttons-modal">
+          <button 
+            type="button" 
+            class="btn btn-success"
+            (click)="acceptOffer(selectedOffer); closeOfferDetailsModal()"
+          >
+            ✅ Aceptar Oferta
+          </button>
+          <button 
+            type="button" 
+            class="btn btn-danger"
+            (click)="rejectOffer(selectedOffer); closeOfferDetailsModal()"
+          >
+            ❌ Rechazar Oferta
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de información del comprador -->
+<div 
+  class="modal fade" 
+  [class.show]="showBuyerInfoModal"
+  [style.display]="showBuyerInfoModal ? 'block' : 'none'"
+  *ngIf="showBuyerInfoModal && selectedBuyer"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">👤 Información del comprador</h5>
+        <button 
+          type="button" 
+          class="btn-close" 
+          (click)="closeBuyerInfoModal()"
+        ></button>
+      </div>
+      
+      <div class="modal-body">
+        <div class="buyer-profile">
+          <div class="buyer-avatar-profile">
+            <span>{{ getInitials(selectedBuyer.buyerName) }}</span>
+          </div>
+          
+          <h4 class="buyer-name-profile">{{ selectedBuyer.buyerName }}</h4>
+          
+          <div class="contact-info">
+            <h6>Contacto</h6>
+            <div class="contact-item">
+              <span class="contact-label">Correo electrónico</span>
+              <span class="contact-value">{{ selectedBuyer.buyerEmail }}</span>
+            </div>
+            <div class="contact-item">
+              <span class="contact-label">Teléfono</span>
+              <span class="contact-value">{{ selectedBuyer.buyerPhone }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="modal-footer">
+        <button 
+          type="button" 
+          class="btn btn-secondary" 
+          (click)="closeBuyerInfoModal()"
+        >
+          Cerrar
+        </button>
+        <button 
+          type="button" 
+          class="btn btn-warning"
+          (click)="reportBuyer(selectedBuyer); closeBuyerInfoModal()"
+        >
+          🚨 Reportar este usuario
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Overlay del modal -->
+<div 
+  class="modal-backdrop fade"
+  [class.show]="showOfferDetailsModal || showBuyerInfoModal"
+  *ngIf="showOfferDetailsModal || showBuyerInfoModal"
+  (click)="closeAllModals()"
+></div>

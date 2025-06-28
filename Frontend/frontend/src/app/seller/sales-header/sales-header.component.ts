@@ -74,7 +74,7 @@ export class SalesHeaderComponent {
   goToOffers() {
     console.log('Ir a ofertas recibidas');
     // this.router.navigate(['/vendor-offers']);
-    alert('🎯 Navegando a ofertas recibidas...');
+    this.router.navigate(['/seller-offers']);
   }
 
   goToPublications() {
