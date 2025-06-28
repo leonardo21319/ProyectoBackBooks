@@ -1,0 +1,337 @@
+<!-- seller/seller-profile/seller-profile.component.html -->
+<div class="seller-profile-container">
+  <!-- Header del vendedor -->
+  <app-sales-header
+    [selectedCategory]="'Todas'"
+    currentPage="profile"
+    (categorySelected)="onCategorySelected($event)"
+    (searchPerformed)="onSearchPerformed($event)"
+  >
+  </app-sales-header>
+
+  <!-- Contenido principal -->
+  <div class="container-fluid py-4">
+    <div class="row">
+      <!-- Sidebar de navegación -->
+      <div class="col-md-3">
+        <div class="profile-sidebar">
+          <div class="sidebar-menu">
+            <div 
+              class="menu-item"
+              *ngFor="let option of menuOptions"
+              [class.active]="option.active"
+              (click)="selectMenuItem(option.label)"
+            >
+              <span class="menu-icon">{{ option.icon }}</span>
+              <span class="menu-label">{{ option.label }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contenido principal -->
+      <div class="col-md-9">
+        <div class="profile-content">
+          <!-- Sección Mi cuenta -->
+          <div *ngIf="activeSection === 'Mi cuenta'" class="account-section">
+            <h2 class="section-title">Mi cuenta</h2>
+            
+            <form [formGroup]="profileForm" class="profile-form">
+              <!-- Información básica -->
+              <div class="form-section">
+                <div class="row">
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label class="form-label">Nombre</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        [class.is-invalid]="isFieldInvalid('nombre')"
+                        formControlName="nombre"
+                        [readonly]="!isEditing"
+                      />
+                      <div class="invalid-feedback" *ngIf="isFieldInvalid('nombre')">
+                        {{ getFieldError('nombre') }}
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label class="form-label">Apellido paterno</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        [class.is-invalid]="isFieldInvalid('apellidoPaterno')"
+                        formControlName="apellidoPaterno"
+                        [readonly]="!isEditing"
+                      />
+                      <div class="invalid-feedback" *ngIf="isFieldInvalid('apellidoPaterno')">
+                        {{ getFieldError('apellidoPaterno') }}
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label class="form-label">Apellido materno</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        [class.is-invalid]="isFieldInvalid('apellidoMaterno')"
+                        formControlName="apellidoMaterno"
+                        [readonly]="!isEditing"
+                      />
+                      <div class="invalid-feedback" *ngIf="isFieldInvalid('apellidoMaterno')">
+                        {{ getFieldError('apellidoMaterno') }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label class="form-label">Correo electrónico</label>
+                      <input
+                        type="email"
+                        class="form-control"
+                        [class.is-invalid]="isFieldInvalid('email')"
+                        formControlName="email"
+                        [readonly]="!isEditing"
+                      />
+                      <div class="invalid-feedback" *ngIf="isFieldInvalid('email')">
+                        {{ getFieldError('email') }}
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label class="form-label">Teléfono</label>
+                      <input
+                        type="tel"
+                        class="form-control"
+                        [class.is-invalid]="isFieldInvalid('telefono')"
+                        formControlName="telefono"
+                        [readonly]="!isEditing"
+                        placeholder="+52 555 123 4567"
+                      />
+                      <div class="invalid-feedback" *ngIf="isFieldInvalid('telefono')">
+                        {{ getFieldError('telefono') }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Información de la tienda -->
+              <div class="form-section" *ngIf="activeSection === 'Mi cuenta'">
+                <h4 class="subsection-title">Información de la tienda</h4>
+                
+                <div class="form-group">
+                  <label class="form-label">Descripción de la tienda</label>
+                  <textarea
+                    class="form-control"
+                    rows="3"
+                    formControlName="descripcionTienda"
+                    [readonly]="!isEditing"
+                    placeholder="Describe tu tienda y especialidades..."
+                  ></textarea>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label class="form-label">Método de pago preferido</label>
+                      <select 
+                        class="form-control"
+                        formControlName="metodoPagoPreferido"
+                        [disabled]="!isEditing"
+                      >
+                        <option value="Transferencia bancaria">Transferencia bancaria</option>
+                        <option value="PayPal">PayPal</option>
+                        <option value="Efectivo">Efectivo</option>
+                        <option value="Tarjeta de crédito">Tarjeta de crédito</option>
+                      </select>
+                    </div>
+                  </div>
+                  
+                  <div class="col-md-6">
+                    <div class="stats-display">
+                      <div class="stat-item">
+                        <span class="stat-label">Ventas realizadas:</span>
+                        <span class="stat-value">{{ sellerProfile.ventasRealizadas }}</span>
+                      </div>
+                      <div class="stat-item">
+                        <span class="stat-label">Calificación:</span>
+                        <span class="stat-value">⭐ {{ sellerProfile.calificacionPromedio }}/5</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Dirección de envío</label>
+                  <textarea
+                    class="form-control"
+                    rows="2"
+                    formControlName="direccionEnvio"
+                    [readonly]="!isEditing"
+                    placeholder="Dirección completa para envíos..."
+                  ></textarea>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Políticas de devolución</label>
+                  <textarea
+                    class="form-control"
+                    rows="3"
+                    formControlName="politicasDevolucion"
+                    [readonly]="!isEditing"
+                    placeholder="Describe tus políticas de devolución..."
+                  ></textarea>
+                </div>
+              </div>
+
+              <!-- Botones de acción -->
+              <div class="form-actions" *ngIf="activeSection === 'Mi cuenta'">
+                <div *ngIf="!isEditing">
+                  <button 
+                    type="button" 
+                    class="btn btn-primary"
+                    (click)="enableEditing()"
+                  >
+                    ✏️ Editar perfil
+                  </button>
+                </div>
+                
+                <div *ngIf="isEditing" class="d-flex gap-2">
+                  <button 
+                    type="button" 
+                    class="btn btn-success"
+                    (click)="saveChanges()"
+                    [disabled]="profileForm.invalid"
+                  >
+                    💾 Guardar cambios
+                  </button>
+                  <button 
+                    type="button" 
+                    class="btn btn-secondary"
+                    (click)="cancelEditing()"
+                  >
+                    ❌ Cancelar
+                  </button>
+                </div>
+              </div>
+            </form>
+
+            <!-- Sección de cambio de rol -->
+            <div class="role-section">
+              <h4 class="subsection-title">Cambiar de rol</h4>
+              <div class="role-display">
+                <div class="current-role">
+                  <span class="role-label">Rol actual:</span>
+                  <span class="role-value">{{ sellerProfile.rol }}</span>
+                </div>
+                <button 
+                  type="button" 
+                  class="btn btn-outline-primary"
+                  (click)="openRoleChangeModal()"
+                >
+                  🔄 Cambiar
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sección Mi perfil -->
+          <div *ngIf="activeSection === 'Mi perfil'" class="profile-section">
+            <h2 class="section-title">Mi perfil de vendedor</h2>
+            
+            <div class="profile-stats">
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="stat-card">
+                    <h5>📚 Libros publicados</h5>
+                    <p class="stat-number">24</p>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="stat-card">
+                    <h5>💰 Ingresos del mes</h5>
+                    <p class="stat-number">$1,250.50</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="row mt-3">
+                <div class="col-md-6">
+                  <div class="stat-card">
+                    <h5>⭐ Calificación promedio</h5>
+                    <p class="stat-number">{{ sellerProfile.calificacionPromedio }}/5</p>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="stat-card">
+                    <h5>📅 Miembro desde</h5>
+                    <p class="stat-text">{{ formatDate(sellerProfile.fechaRegistro) }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal para cambio de rol -->
+<div 
+  class="modal fade" 
+  [class.show]="showRoleChangeModal"
+  [style.display]="showRoleChangeModal ? 'block' : 'none'"
+  *ngIf="showRoleChangeModal"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cambiar de rol</h5>
+        <button 
+          type="button" 
+          class="btn-close" 
+          (click)="closeRoleChangeModal()"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <p>¿Estás seguro de que quieres cambiar de <strong>Vendedor</strong> a <strong>Comprador</strong>?</p>
+        <p class="text-muted">Podrás cambiar de vuelta cuando desees.</p>
+      </div>
+      <div class="modal-footer">
+        <button 
+          type="button" 
+          class="btn btn-secondary" 
+          (click)="closeRoleChangeModal()"
+        >
+          Cancelar
+        </button>
+        <button 
+          type="button" 
+          class="btn btn-primary" 
+          (click)="changeRole()"
+        >
+          Cambiar rol
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Overlay del modal -->
+<div 
+  class="modal-backdrop fade"
+  [class.show]="showRoleChangeModal"
+  *ngIf="showRoleChangeModal"
+  (click)="closeRoleChangeModal()"
+></div>

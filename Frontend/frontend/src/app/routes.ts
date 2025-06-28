@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 import { LoginComponent } from './login/login.component';
 import { HomeComponent } from './home/home.component';
-import { SaleshomeComponent } from './saleshome/saleshome.component'; // ✅ Corregido el nombre del import
+import { SaleshomeComponent } from './seller/saleshome/saleshome.component';
 import { SaveComponent } from './save/save.component';
 import { CartComponent } from './cart/cart.component';
 import { ProfileShooperComponent } from './profile-shooper/profile-shooper.component';

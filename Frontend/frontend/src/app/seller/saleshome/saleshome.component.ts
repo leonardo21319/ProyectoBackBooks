@@ -2,8 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { SalesHeaderComponent } from '../shared/sales-header/sales-header.component';
-import { Book } from '../models/Book.model';
+import { SalesHeaderComponent } from '../sales-header/sales-header.component';
+
+import { Book } from '../../models/Book.model';
 
 // Interfaz simplificada para los libros del vendedor
 interface VendorBook {
