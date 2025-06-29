@@ -1,359 +1,174 @@
+/* ============================================ */
+/* 📁 ACTUALIZAR: src/app/save/save.component.css - COMPLETO */
+/* ============================================ */
+
 .bookstore-container {
   min-height: 100vh;
   background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
   font-family: "Segoe UI", sans-serif;
 }
 
-/* Header personalizado - Estilo Figma */
-.custom-header {
-  background: #ffffff !important;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  border-bottom: 1px solid #e9ecef;
+.text-custom-dark {
+  color: #2F4653 !important;
 }
 
-/* Logo */
-.logo-container {
-  width: 120px;
-  height: 50px;
-  background: #e9ecef;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
+/* === CONTENIDO PRINCIPAL === */
+.saved-main {
+  padding: 2rem 0;
+  min-height: calc(100vh - 120px);
 }
 
-.logo-img {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
-}
-
-.logo-placeholder {
-  color: #6c757d;
-  font-weight: 500;
-  font-size: 0.9rem;
-}
-
-/* Buscador estilo Figma */
-.search-container-figma {
-  display: flex;
-  align-items: center;
-  background: #ffffff;
-  border: 2px solid #87ACC5;
-  border-radius: 25px;
-  max-width: 500px;
-  width: 100%;
-  overflow: hidden;
-}
-
-.search-input-figma {
-  flex: 1;
-  border: none;
-  padding: 12px 20px;
-  font-size: 1rem;
-  outline: none;
-  background: transparent;
-  color: #2F4653;
-}
-
-.search-input-figma::placeholder {
-  color: #87ACC5;
-}
-
-.search-btn-figma {
-  background: transparent;
-  border: none;
-  padding: 12px 16px;
-  color: #87ACC5;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: color 0.3s ease;
-}
-
-.search-btn-figma:hover {
-  color: #6A93B2;
-}
-
-/* Navegación estilo Figma */
-.nav-item-figma {
-  background: transparent;
-  border: none;
-  color: #6A93B2;
-  font-size: 1rem;
-  font-weight: 400;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 12px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  position: relative;
-}
-
-.nav-item-figma:hover {
-  background: rgba(106, 147, 178, 0.1);
-  color: #2F4653;
-}
-
-.nav-item-figma svg {
-  flex-shrink: 0;
-}
-
-/* Estado activo para guardados */
-.nav-item-figma.nav-active {
-  background: rgba(106, 147, 178, 0.2);
-  color: #2F4653;
-  font-weight: 500;
-}
-
-.profile-btn-figma {
-  background: #6A93B2;
-  border: none;
-  color: white;
-  width: 45px;
-  height: 45px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  position: relative;
-}
-
-.profile-btn-figma:hover {
-  background: #2F4653;
-}
-
-.badge-figma {
-  background: #ff4757;
-  color: white;
-  border-radius: 50%;
-  padding: 2px 6px;
-  font-size: 0.7rem;
-  font-weight: bold;
-  position: absolute;
-  top: -2px;
-  right: -2px;
-  min-width: 18px;
-  height: 18px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* Dropdown de categorías estilo Figma */
-.dropdown-container {
-  position: relative;
-}
-
-.categories-dropdown-figma {
-  position: absolute;
-  top: calc(100% + 8px);
-  left: 50%;
-  transform: translateX(-50%);
-  background: white;
-  border: 1px solid #e9ecef;
-  border-radius: 12px;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-  min-width: 220px;
-  z-index: 1050;
-  opacity: 0;
-  visibility: hidden;
-  transform: translateX(-50%) translateY(-10px);
-  transition: all 0.3s ease;
-  max-height: 400px;
-  overflow-y: auto;
-}
-
-.categories-dropdown-figma.show {
-  opacity: 1;
-  visibility: visible;
-  transform: translateX(-50%) translateY(0);
-}
-
-.dropdown-item-figma {
-  width: 100%;
-  text-align: left;
-  background: none;
-  border: none;
-  padding: 12px 16px;
-  color: #2F4653;
-  font-size: 0.95rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  display: block;
-}
-
-.dropdown-item-figma:hover {
-  background: rgba(106, 147, 178, 0.1);
-  color: #6A93B2;
-}
-
-.dropdown-item-figma:first-of-type {
-  border-top-left-radius: 12px;
-  border-top-right-radius: 12px;
-}
-
-.dropdown-item-figma:last-of-type {
-  border-bottom-left-radius: 12px;
-  border-bottom-right-radius: 12px;
-}
-
-/* Dropdown del perfil */
-.profile-dropdown-figma {
-  position: absolute;
-  top: calc(100% + 8px);
-  right: 0;
-  background: white;
-  border: 1px solid #e9ecef;
-  border-radius: 12px;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-  min-width: 180px;
-  z-index: 1050;
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(-10px);
-  transition: all 0.3s ease;
-}
-
-.profile-dropdown-figma.show {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0);
-}
-
-.profile-header {
-  padding: 16px;
-  text-align: center;
-  border-bottom: 1px solid #e9ecef;
-  background: #f8f9fa;
-  border-radius: 12px 12px 0 0;
-}
-
-.profile-avatar {
-  width: 48px;
-  height: 48px;
-  background: #6A93B2;
-  border-radius: 50%;
-  margin: 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-}
-
-.profile-dropdown-item {
-  width: 100%;
-  text-align: left;
-  background: none;
-  border: none;
-  padding: 12px 16px;
-  color: #2F4653;
-  font-size: 0.95rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  display: block;
-}
-
-.profile-dropdown-item:hover {
-  background: rgba(106, 147, 178, 0.1);
-  color: #6A93B2;
-}
-
-.profile-dropdown-item.logout {
-  color: #dc3545;
-}
-
-.profile-dropdown-item.logout:hover {
-  background: rgba(220, 53, 69, 0.1);
-  color: #dc3545;
-}
-
-.profile-divider {
-  height: 1px;
-  background: #e9ecef;
-  margin: 8px 0;
-}
-
-.profile-dropdown-item:last-of-type {
-  border-bottom-left-radius: 12px;
-  border-bottom-right-radius: 12px;
-}
-
-/* Título de página - ESTILO GUARDADOS */
-.page-title {
-  padding: 2rem 2rem 1rem 2rem;
-}
-
+/* === HEADER DE LA PÁGINA === */
 .page-header {
+  margin-bottom: 2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-bottom: 1rem;
-  border-bottom: 2px solid #e9ecef;
+  flex-wrap: wrap;
+  gap: 1rem;
 }
 
-.page-name {
-  font-size: 2.2rem;
+.page-title {
+  font-size: 2.5rem;
   font-weight: 700;
   color: #2F4653;
   margin: 0;
 }
 
+.page-subtitle {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
 .books-count {
-  font-size: 1.1rem;
   color: #6c757d;
+  font-size: 1.1rem;
   font-weight: 500;
 }
 
-/* Tarjetas de libros */
-.book-card-custom {
+.btn-clear-all {
+  background: #dc3545;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+}
+
+.btn-clear-all:hover {
+  background: #c82333;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+}
+
+.me-2 {
+  margin-right: 0.5rem;
+}
+
+/* === FILTROS POR CATEGORÍA === */
+.filters-section {
+  margin-bottom: 2rem;
+}
+
+.category-filters {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  padding: 1rem;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.filter-btn {
+  background: transparent;
+  border: 2px solid #e9ecef;
+  color: #6c757d;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.filter-btn:hover {
+  border-color: #6A93B2;
+  color: #6A93B2;
+}
+
+.filter-btn.active {
+  background: #6A93B2;
+  border-color: #6A93B2;
+  color: white;
+  font-weight: 600;
+}
+
+/* === CARDS DE LIBROS GUARDADOS === */
+.saved-content {
+  margin-bottom: 3rem;
+}
+
+.saved-book-card {
   border: none !important;
   border-radius: 15px !important;
   overflow: hidden;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background: white;
 }
 
-.book-card-custom:hover {
+.saved-book-card:hover {
   transform: translateY(-5px);
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
 }
 
-.book-img-custom {
+/* === IMAGEN DEL LIBRO === */
+.book-img-saved {
   height: 300px;
   object-fit: cover;
+  cursor: pointer !important;
+  transition: all 0.3s ease;
 }
 
-/* Botón de eliminar de guardados */
-.remove-btn-custom {
+.book-img-saved:hover {
+  transform: scale(1.02);
+  filter: brightness(0.9);
+}
+
+/* === BOTÓN DE REMOVER === */
+.remove-saved-btn {
   top: 15px !important;
   right: 15px !important;
-  background: rgba(255, 255, 255, 0.95) !important;
+  background: rgba(220, 53, 69, 0.9) !important;
   border: none !important;
   border-radius: 8px !important;
   width: 36px;
   height: 36px;
-  color: #dc3545;
+  color: white;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+  cursor: pointer;
+  z-index: 5;
 }
 
-.remove-btn-custom:hover {
-  background: #dc3545 !important;
-  color: white !important;
+.remove-saved-btn:hover {
+  background: rgba(220, 53, 69, 1) !important;
   transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.5);
 }
 
-/* Badges de tipo de libro */
+/* === BADGES DE TIPO === */
 .book-type-badge {
   position: absolute;
   top: 15px;
@@ -364,6 +179,7 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  z-index: 5;
 }
 
 .badge-venta {
@@ -384,17 +200,35 @@
   box-shadow: 0 2px 4px rgba(253, 126, 20, 0.3);
 }
 
-/* Sección de descripción y precio */
+/* === CONTENIDO DE LA CARD === */
+.card-body {
+  padding: 1.5rem;
+}
+
+.card-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
 .book-description {
   font-size: 0.9rem;
   color: #666;
   line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
+/* === SECCIÓN DE PRECIO === */
 .price-section {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  padding: 0.75rem 0;
+  border-top: 1px solid #f1f3f4;
 }
 
 .price-label {
@@ -409,8 +243,60 @@
   color: #6A93B2;
 }
 
-/* Botones personalizados por tipo */
-.btn-custom-venta {
+/* === INFORMACIÓN DEL VENDEDOR === */
+.seller-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 0;
+  border-top: 1px solid #f1f3f4;
+}
+
+.seller-label {
+  font-size: 0.9rem;
+  color: #666;
+  font-weight: 500;
+}
+
+.seller-name {
+  font-size: 0.9rem;
+  color: #6A93B2;
+  font-weight: 600;
+}
+
+/* === VENDEDOR CLICKEABLE === */
+.clickable {
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+.clickable:hover {
+  background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+  color: #6A93B2;
+  transform: translateX(2px);
+  box-shadow: 0 2px 8px rgba(106, 147, 178, 0.2);
+}
+
+.external-link-icon {
+  opacity: 0.6;
+  transition: all 0.3s ease;
+  transform: scale(0.9);
+}
+
+.clickable:hover .external-link-icon {
+  opacity: 1;
+  transform: scale(1.1);
+  color: #6A93B2;
+}
+
+/* === BOTONES DE ACCIÓN === */
+.btn-saved-venta {
   background: linear-gradient(135deg, #6A93B2, #87ACC5) !important;
   border: none !important;
   color: white !important;
@@ -420,13 +306,14 @@
   transition: all 0.3s ease !important;
 }
 
-.btn-custom-venta:hover {
+.btn-saved-venta:hover {
   background: linear-gradient(135deg, #2F4653, #6A93B2) !important;
   transform: translateY(-2px) !important;
   box-shadow: 0 4px 12px rgba(106, 147, 178, 0.3) !important;
+  color: white !important;
 }
 
-.btn-custom-donacion {
+.btn-saved-donacion {
   background: linear-gradient(135deg, #007bff, #6610f2) !important;
   border: none !important;
   color: white !important;
@@ -436,13 +323,14 @@
   transition: all 0.3s ease !important;
 }
 
-.btn-custom-donacion:hover {
+.btn-saved-donacion:hover {
   background: linear-gradient(135deg, #0056b3, #520dc2) !important;
   transform: translateY(-2px) !important;
   box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3) !important;
+  color: white !important;
 }
 
-.btn-custom-intercambio {
+.btn-saved-intercambio {
   background: linear-gradient(135deg, #fd7e14, #e83e8c) !important;
   border: none !important;
   color: white !important;
@@ -452,21 +340,250 @@
   transition: all 0.3s ease !important;
 }
 
-.btn-custom-intercambio:hover {
+.btn-saved-intercambio:hover {
   background: linear-gradient(135deg, #e8650e, #d91a72) !important;
   transform: translateY(-2px) !important;
   box-shadow: 0 4px 12px rgba(253, 126, 20, 0.3) !important;
+  color: white !important;
 }
 
-/* Responsive */
+/* === ESTADO VACÍO === */
+.empty-saved-state {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.empty-icon {
+  margin-bottom: 2rem;
+  color: #87ACC5;
+}
+
+.empty-saved h3,
+.empty-category h3 {
+  color: #2F4653;
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.empty-saved p,
+.empty-category p {
+  color: #6c757d;
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+/* === BOTONES GENERALES === */
+.btn-primary {
+  background: #6A93B2;
+  border-color: #6A93B2;
+  color: white;
+  font-weight: 600;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+  background: #2F4653;
+  border-color: #2F4653;
+  transform: translateY(-1px);
+  color: white;
+}
+
+.btn-lg {
+  padding: 12px 24px;
+  font-size: 1.1rem;
+}
+
+/* === UTILIDADES === */
+.position-relative {
+  position: relative !important;
+}
+
+.position-absolute {
+  position: absolute !important;
+}
+
+.d-flex {
+  display: flex !important;
+}
+
+.flex-column {
+  flex-direction: column !important;
+}
+
+.h-100 {
+  height: 100% !important;
+}
+
+.w-100 {
+  width: 100% !important;
+}
+
+.mt-auto {
+  margin-top: auto !important;
+}
+
+.mb-2 {
+  margin-bottom: 0.5rem !important;
+}
+
+.mb-3 {
+  margin-bottom: 1rem !important;
+}
+
+.text-muted {
+  color: #6c757d !important;
+}
+
+/* === RESPONSIVE DESIGN === */
+@media (max-width: 992px) {
+  .saved-main {
+    padding: 1rem 0;
+  }
+
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .page-title {
+    font-size: 2rem;
+  }
+
+  .category-filters {
+    justify-content: center;
+  }
+}
+
 @media (max-width: 768px) {
   .page-header {
+    margin-bottom: 1.5rem;
+  }
+
+  .page-title {
+    font-size: 1.8rem;
+  }
+
+  .category-filters {
+    padding: 0.75rem;
+    gap: 0.5rem;
+  }
+
+  .filter-btn {
+    font-size: 0.85rem;
+    padding: 6px 12px;
+  }
+
+  .book-img-saved {
+    height: 250px;
+  }
+
+  .card-body {
+    padding: 1rem;
+  }
+
+  .empty-saved-state {
+    padding: 3rem 1rem;
+  }
+
+  .empty-saved h3,
+  .empty-category h3 {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .page-subtitle {
     flex-direction: column;
     align-items: flex-start;
     gap: 0.5rem;
   }
-  
-  .page-name {
-    font-size: 1.8rem;
+
+  .btn-clear-all {
+    font-size: 0.85rem;
+    padding: 6px 12px;
   }
+
+  .category-filters {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filter-btn {
+    text-align: center;
+  }
+
+  .book-img-saved {
+    height: 220px;
+  }
+
+  .card-title {
+    font-size: 1.1rem;
+  }
+
+  .book-description {
+    font-size: 0.85rem;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+  }
+
+  .remove-saved-btn {
+    width: 32px;
+    height: 32px;
+  }
+
+  .book-type-badge {
+    font-size: 0.7rem;
+    padding: 3px 6px;
+  }
+}
+
+/* === ANIMACIONES === */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.saved-book-card {
+  animation: fadeIn 0.5s ease-out;
+}
+
+/* === EFECTOS HOVER === */
+.saved-book-card:hover .book-img-saved::after {
+  content: "👁️ Ver detalles";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(47, 70, 83, 0.9);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.saved-book-card:hover .book-img-saved {
+  position: relative;
+}
+
+.saved-book-card:hover .book-img-saved::after {
+  opacity: 1;
 }

@@ -1,5 +1,5 @@
 // ============================================
-// 📁 ACTUALIZAR: src/app/app.routes.ts - COMPLETO
+// 📁 ACTUALIZAR: src/app/app.routes.ts - COMPLETO CORRECTO
 // ============================================
 
 import { Routes } from '@angular/router';
@@ -17,9 +17,9 @@ import { SellerProfileComponent } from './seller/seller-profile/seller-profile.c
 import { SellerOffersComponent } from './seller/seller-offers/seller-offers.component';
 import { SellerPublicationsComponent } from './seller/seller-publications/seller-publications.component';
 
-import { InfoSalesCustomerComponent } from './info-sales-customer/info-sales-customer.component'; // ✨ IMPORT EXISTENTE
-import { ReportSellerCustomerComponent } from './report-seller-customer/report-seller-customer.component'; // ✨ IMPORT REPORTE
-import { RateOrderComponent } from './rate-order/rate-order.component'; // ✨ NUEVO IMPORT CALIFICACIÓN
+import { InfoSalesCustomerComponent } from './info-sales-customer/info-sales-customer.component';
+import { ReportSellerCustomerComponent } from './report-seller-customer/report-seller-customer.component';
+import { RateOrderComponent } from './rate-order/rate-order.component';
 
 export const routes: Routes = [
   { path: '', component: LoginComponent },
@@ -44,11 +44,9 @@ export const routes: Routes = [
   { path: 'donation/:id', component: BookDonationComponent }, // Para libros de donación
   { path: 'exchange/:id/offer', component: BookExchangeOfferComponent }, // Para hacer ofertas de intercambio
   
-  // ✨ RUTAS DE INFORMACIÓN Y REPORTE DE USUARIOS
+  // ✨ RUTAS DE INFORMACIÓN Y FUNCIONALIDADES DE USUARIO
   { path: 'seller/:id', component: InfoSalesCustomerComponent }, // Información del vendedor/propietario/donante
   { path: 'seller/:id/report', component: ReportSellerCustomerComponent }, // Reportar usuario
-  
-  // ✨ NUEVA RUTA - Calificar pedido
   { path: 'rate-order/:id', component: RateOrderComponent }, // Calificar pedido completado
   
   // 🔄 Redirección por defecto

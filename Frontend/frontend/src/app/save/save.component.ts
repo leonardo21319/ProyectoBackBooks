@@ -1,202 +1,229 @@
-import { Component } from '@angular/core';
+// ============================================
+// 📁 ACTUALIZAR: src/app/save/save.component.ts - ERRORES CORREGIDOS
+// ============================================
+
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { HeaderComponent } from '../shared/header/header.component';
+import { SavedService } from '../servicios/saved.service';
+import { Book } from '../models/Book.model';
 
 @Component({
   selector: 'app-save',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, HeaderComponent],
   templateUrl: './save.component.html',
   styleUrls: ['./save.component.css']
 })
-export class SaveComponent {
-  searchTerm = '';
+export class SaveComponent implements OnInit, OnDestroy {
   cartItems = 0;
-  showCategoriesDropdown = false;
-  showProfileDropdown = false;
+  savedItems = 0;
+  savedBooks: Book[] = [];
+  selectedCategory = 'Todas';
+  
+  private savedBooksSubscription?: Subscription;
 
-  // Lista de categorías del dropdown
-  categories = [
-    'Literatura',
-    'Ciencias y tecnología',
-    'Historia y filosofía',
-    'Economía y negocios',
-    'Arte y cultura',
-    'Desarrollo personal',
-    'Ciencias sociales',
-    'Idiomas y lingüística',
-    'Cocina y alimentación',
-    'Deportes y aventura',
-    'Religión y espiritualidad',
-    'Entretenimiento y hobbies',
-    'Ciencia ficción'
-  ];
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute,
+    private savedService: SavedService
+  ) {}
 
-  // Libros guardados - En producción esto vendría del backend
-  savedBooks = [
-    {
-      id: 1,
-      title: 'Drácula',
-      author: 'Bram Stoker',
-      price: 250,
-      type: 'Venta',
-      image: 'https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=300&h=400&fit=crop',
-      category: 'Literatura',
-      description: 'Clásico de la literatura gótica que ha inspirado generaciones.',
-      savedDate: new Date('2024-01-15')
-    },
-    {
-      id: 3,
-      title: 'El Arte de la Guerra',
-      author: 'Sun Tzu',
-      price: 0,
-      type: 'Intercambio',
-      image: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=300&h=400&fit=crop',
-      category: 'Historia y filosofía',
-      description: 'Tratado sobre estrategia militar y filosofía antigua china.',
-      savedDate: new Date('2024-01-10')
-    }
-  ];
-
-  constructor(private router: Router) {}
-
-  onSearch() {
-    console.log('Buscando en guardados:', this.searchTerm);
-    // 🔌 AQUÍ INTEGRAR BACKEND - Búsqueda en favoritos
-    // this.favoritesService.searchSavedBooks(this.searchTerm).subscribe(...)
-  }
-
-  addToCart(book: any) {
-    this.cartItems++;
-    console.log('Agregado al carrito desde guardados:', book.title);
-    // 🔌 AQUÍ INTEGRAR BACKEND - Agregar al carrito
-    // this.cartService.addToCart(book.id).subscribe(...)
-  }
-
-  requestBook(book: any) {
-    console.log('Solicitando donación de libro desde guardados:', book.title);
-    alert(`Solicitud enviada para: ${book.title}`);
-    // 🔌 AQUÍ INTEGRAR BACKEND - Solicitar donación
-    // this.donationService.requestBook(book.id).subscribe(...)
-  }
-
-  makeOffer(book: any) {
-    console.log('Hacer oferta desde guardados:', book.title);
-    // 🔌 AQUÍ INTEGRAR BACKEND - Crear oferta de intercambio
-    // this.exchangeService.createOffer(book.id, offerData).subscribe(...)
-  }
-
-  removeFromSaved(book: any) {
-    // Eliminar el libro de la lista de guardados
-    this.savedBooks = this.savedBooks.filter(savedBook => savedBook.id !== book.id);
-    console.log('Libro eliminado de guardados:', book.title);
+  ngOnInit() {
+    console.log('SaveComponent: Componente iniciado');
     
-    // 🔌 AQUÍ INTEGRAR BACKEND - Remover de favoritos
-    // this.favoritesService.removeFromFavorites(book.id).subscribe({
-    //   next: () => {
-    //     console.log('Libro removido del backend');
-    //   },
-    //   error: (error) => {
-    //     console.error('Error al remover del backend:', error);
-    //     // Revertir cambio local si falla el backend
-    //     this.loadSavedBooks();
-    //   }
-    // });
+    // Suscribirse a los cambios en libros guardados
+    this.savedBooksSubscription = this.savedService.savedBooks$.subscribe(books => {
+      this.savedBooks = books;
+      this.savedItems = books.length;
+      console.log('Libros guardados actualizados:', books.length);
+    });
+
+    // Manejar redirecciones por categorías/búsqueda desde el header
+    this.route.queryParams.subscribe(params => {
+      if (params['category']) {
+        console.log('Categoría seleccionada desde saved:', params['category']);
+        this.router.navigate(['/home'], { 
+          queryParams: { category: params['category'] },
+          replaceUrl: true 
+        });
+      }
+      if (params['search']) {
+        console.log('Búsqueda desde saved:', params['search']);
+        this.router.navigate(['/home'], { 
+          queryParams: { search: params['search'] },
+          replaceUrl: true 
+        });
+      }
+    });
   }
 
-  // Métodos para obtener el texto del botón según el tipo
-  getButtonText(type: string): string {
-    switch(type) {
-      case 'Venta': 
-        return 'Añadir al carrito';
-      case 'Donación': 
-        return 'Solicitar libro';
-      case 'Intercambio': 
-        return 'Hacer oferta';
-      default: 
-        return 'Acción';
+  ngOnDestroy() {
+    // Limpiar suscripciones
+    if (this.savedBooksSubscription) {
+      this.savedBooksSubscription.unsubscribe();
     }
   }
 
-  getButtonAction(book: any) {
-    switch(book.type) {
-      case 'Venta': 
+  // Filtrar libros por categoría
+  get filteredBooks(): Book[] {
+    if (this.selectedCategory === 'Todas') {
+      return this.savedBooks;
+    }
+    return this.savedBooks.filter(book => book.categoria_nombre === this.selectedCategory);
+  }
+
+  // ✅ CORREGIDO - Obtener categorías disponibles SIN undefined
+  get availableCategories(): string[] {
+    const categories = new Set(
+      this.savedBooks
+        .map(book => book.categoria_nombre)
+        .filter((category): category is string => category !== undefined && category !== null)
+    );
+    return Array.from(categories).sort();
+  }
+
+  // ✅ NUEVO - Método para contar libros por categoría (usado en template)
+  getCategoryCount(category: string): number {
+    if (category === 'Todas') {
+      return this.savedBooks.length;
+    }
+    return this.savedBooks.filter(book => book.categoria_nombre === category).length;
+  }
+
+  // Cambiar categoría seleccionada
+  onCategorySelected(category: string) {
+    console.log('Categoría seleccionada en saved:', category);
+    this.selectedCategory = category;
+  }
+
+  // Remover libro de guardados
+  removeFromSaved(book: Book) {
+    this.savedService.removeFromSaved(book.id);
+    this.showSuccessMessage(`"${book.titulo}" removido de guardados`);
+  }
+
+  // Verificar si un libro está guardado (siempre true en esta página)
+  isBookSaved(bookId: number): boolean {
+    return this.savedService.isBookSaved(bookId);
+  }
+
+  // Agregar al carrito
+  addToCart(book: Book) {
+    if (book.tipo_transaccion_nombre === 'Venta') {
+      this.cartItems++;
+      console.log('Libro agregado al carrito:', book.titulo);
+      this.showSuccessMessage(`"${book.titulo}" agregado al carrito`);
+    }
+  }
+
+  // Solicitar libro (donación)
+  requestBook(book: Book) {
+    console.log('Solicitando donación de libro:', book.titulo);
+    this.showSuccessMessage(`Solicitud enviada para: "${book.titulo}"`);
+  }
+
+  // Hacer oferta (intercambio)
+  makeOffer(book: Book) {
+    console.log('Navegando a hacer oferta para:', book.titulo);
+    this.router.navigate(['/exchange', book.id, 'offer']);
+  }
+
+  // Acción del botón según tipo de transacción
+  getButtonAction(book: Book) {
+    const tipoTransaccion = book.tipo_transaccion_nombre || 'Venta';
+    
+    switch (tipoTransaccion) {
+      case 'Venta':
         this.addToCart(book);
         break;
-      case 'Donación': 
+      case 'Donación':
         this.requestBook(book);
         break;
-      case 'Intercambio': 
+      case 'Intercambio':
         this.makeOffer(book);
+        break;
+      default:
+        this.addToCart(book);
         break;
     }
   }
 
-  // Métodos para categorías
-  toggleCategoriesDropdown(event: Event) {
-    event.stopPropagation();
-    this.showCategoriesDropdown = !this.showCategoriesDropdown;
-    this.showProfileDropdown = false;
-  }
-
-  closeDropdownOnOutsideClick(event: Event) {
-    const target = event.target as HTMLElement;
-    if (!target.closest('.dropdown-container') && !target.closest('.profile-btn-figma')) {
-      this.showCategoriesDropdown = false;
-      this.showProfileDropdown = false;
+  // Texto del botón según tipo de transacción
+  getButtonText(type: string | undefined): string {
+    const tipoTransaccion = type || 'Venta';
+    
+    switch (tipoTransaccion) {
+      case 'Venta':
+        return 'Añadir al carrito';
+      case 'Donación':
+        return 'Solicitar libro';
+      case 'Intercambio':
+        return 'Hacer oferta';
+      default:
+        return 'Añadir al carrito';
     }
   }
 
-  // Métodos para el dropdown del perfil
-  toggleProfileDropdown(event: Event) {
-    event.stopPropagation();
-    this.showProfileDropdown = !this.showProfileDropdown;
-    this.showCategoriesDropdown = false;
+  // Ver detalles del libro
+  viewBookDetail(book: Book): void {
+    console.log('Navegando al detalle del libro:', book.titulo);
+    
+    const tipoTransaccion = book.tipo_transaccion_nombre || 'Venta';
+    
+    if (tipoTransaccion === 'Venta') {
+      this.router.navigate(['/book', book.id]);
+    } else if (tipoTransaccion === 'Intercambio') {
+      this.router.navigate(['/exchange', book.id]);
+    } else if (tipoTransaccion === 'Donación') {
+      this.router.navigate(['/donation', book.id]);
+    } else {
+      this.router.navigate(['/book', book.id]);
+    }
   }
 
-  goToProfile() {
-    this.showProfileDropdown = false;
-    console.log('Ir a Mi cuenta');
-    // 🔌 AQUÍ INTEGRAR BACKEND - Navegar al perfil
-    // this.router.navigate(['/profile']);
+  // Ver información del vendedor/propietario
+  viewSellerInfo(book: Book): void {
+    // Determinar el ID del usuario según el tipo de transacción
+    let userId = 1; // Valor por defecto
+    
+    // Simular obtención del ID del usuario desde el libro
+    if (book.id_usuario) {
+      userId = book.id_usuario;
+    }
+    
+    console.log('Navegando a información del usuario ID:', userId);
+    this.router.navigate(['/seller', userId]);
   }
 
-  goToOrders() {
-    this.showProfileDropdown = false;
-    console.log('Ir a Mis pedidos');
-    // 🔌 AQUÍ INTEGRAR BACKEND - Navegar a pedidos
-    // this.router.navigate(['/orders']);
+  // Limpiar todos los guardados
+  clearAllSaved() {
+    if (confirm('¿Estás seguro de que quieres eliminar todos los libros guardados?')) {
+      this.savedService.clearAllSaved();
+      this.showSuccessMessage('Todos los libros guardados han sido eliminados');
+    }
   }
 
-  goToLogin() {
-    this.showProfileDropdown = false;
-    this.router.navigate(['/']);
-  }
-
-  goToHome() {
+  // Ir a explorar libros
+  goToExplore() {
     this.router.navigate(['/home']);
   }
 
-  goToCart() {
-    console.log('Ir al carrito');
-    // 🔌 AQUÍ INTEGRAR BACKEND - Navegar al carrito
-    // this.router.navigate(['/cart']);
+  // Mostrar mensaje de éxito
+  private showSuccessMessage(message: string) {
+    console.log('✅', message);
+    // TODO: Implementar sistema de notificaciones
   }
 
-  // 🔌 MÉTODO PARA BACKEND - Cargar libros guardados
-  loadSavedBooks() {
-    // En producción, cargar desde el backend:
-    /*
-    this.favoritesService.getSavedBooks().subscribe({
-      next: (books) => {
-        this.savedBooks = books;
-        console.log('Libros guardados cargados:', books);
-      },
-      error: (error) => {
-        console.error('Error cargando libros guardados:', error);
-      }
+  // Manejar búsqueda desde header
+  onSearchPerformed(searchTerm: string) {
+    console.log('Búsqueda desde saved:', searchTerm);
+    this.router.navigate(['/home'], { 
+      queryParams: { search: searchTerm },
+      replaceUrl: true 
     });
-    */
   }
 }

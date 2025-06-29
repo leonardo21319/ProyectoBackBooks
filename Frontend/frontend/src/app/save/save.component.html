@@ -1,216 +1,182 @@
-<div class="bookstore-container" (click)="closeDropdownOnOutsideClick($event)">
-  <!-- Header con Bootstrap - MISMO ESTILO QUE HOME -->
-  <header class="custom-header sticky-top">
-    <div class="container-fluid">
-      <div class="row align-items-center py-3">
-        
-        <!-- Logo -->
-        <div class="col-auto">
-          <div class="logo-container" (click)="goToHome()" style="cursor: pointer;">
-            <img src="assets/images/logo.png" alt="Logo" class="logo-img" 
-                 onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-            <div class="logo-placeholder" style="display: none;">LOGO</div>
-          </div>
+<!-- ============================================ -->
+<!-- 📁 ACTUALIZAR: src/app/save/save.component.html - ERRORES CORREGIDOS -->
+<!-- ============================================ -->
+
+<div class="bookstore-container">
+  <!-- Header compartido -->
+  <app-header
+    [cartItems]="cartItems"
+    [savedItems]="savedItems"
+    [selectedCategory]="selectedCategory"
+    currentPage="saved"
+    (categorySelected)="onCategorySelected($event)"
+    (searchPerformed)="onSearchPerformed($event)">
+  </app-header>
+
+  <!-- Contenido principal -->
+  <main class="saved-main">
+    <div class="container">
+      
+      <!-- Título de la página -->
+      <div class="page-header">
+        <h1 class="page-title">Mis libros guardados</h1>
+        <div class="page-subtitle" *ngIf="savedBooks.length > 0">
+          <span class="books-count">{{filteredBooks.length}} libro(s)</span>
+          <button 
+            class="btn-clear-all" 
+            (click)="clearAllSaved()"
+            *ngIf="savedBooks.length > 0">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="me-2">
+              <path d="M3 6H5H21M8 6V4C8 3.46957 8.21071 2.96086 8.58579 2.58579C8.96086 2.21071 9.46957 2 10 2H14C14.5304 2 15.0391 2.21071 15.4142 2.58579C15.7893 2.96086 16 3.46957 16 4V6M19 6V20C19 20.5304 18.7893 21.0391 18.4142 21.4142C18.0391 21.7893 17.5304 22 17 22H7C6.46957 22 5.96086 21.7893 5.58579 21.4142C5.21071 21.0391 5 20.5304 5 20V6H19Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Limpiar todo
+          </button>
         </div>
+      </div>
 
-        <!-- Buscador Centrado -->
-        <div class="col d-flex justify-content-center">
-          <div class="search-container-figma">
-            <input 
-              type="text" 
-              class="search-input-figma"
-              [(ngModel)]="searchTerm"
-              placeholder="Buscar en guardados..."
-              (keyup.enter)="onSearch()"
-            >
-            <button 
-              class="search-btn-figma" 
-              type="button"
-              (click)="onSearch()"
-            >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M21 21L16.514 16.506M19 10.5C19 15.194 15.194 19 10.5 19S2 15.194 2 10.5 5.806 2 10.5 2 19 5.806 19 10.5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </button>
-          </div>
+      <!-- ✅ FILTROS CORREGIDOS - Sin arrow functions en template -->
+      <div class="filters-section" *ngIf="savedBooks.length > 0 && availableCategories.length > 0">
+        <div class="category-filters">
+          <button 
+            class="filter-btn"
+            [class.active]="selectedCategory === 'Todas'"
+            (click)="selectedCategory = 'Todas'">
+            Todas ({{getCategoryCount('Todas')}})
+          </button>
+          <button 
+            *ngFor="let category of availableCategories"
+            class="filter-btn"
+            [class.active]="selectedCategory === category"
+            (click)="selectedCategory = category">
+            {{category}} ({{getCategoryCount(category)}})
+          </button>
         </div>
+      </div>
 
-        <!-- Navegación -->
-        <div class="col-auto">
-          <div class="d-flex align-items-center" style="gap: 2rem;">
-            <!-- Categorías con dropdown -->
-            <div class="position-relative dropdown-container">
-              <button class="nav-item-figma" (click)="toggleCategoriesDropdown($event)">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M3 7H8V12H3V7Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                  <path d="M13 7H18V12H13V7Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                  <path d="M13 17H18V22H13V17Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                  <path d="M3 17H8V22H3V17Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-                <span>Categorías</span>
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" 
-                     [style.transform]="showCategoriesDropdown ? 'rotate(180deg)' : 'rotate(0deg)'"
-                     [style.transition]="'transform 0.3s ease'">
-                  <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-              </button>
+      <!-- Lista de libros guardados -->
+      <div class="saved-content" *ngIf="filteredBooks.length > 0; else emptyState">
+        <div class="row g-4">
+          <div class="col-12 col-sm-6 col-lg-4" *ngFor="let book of filteredBooks">
+            <div class="card saved-book-card h-100">
+              <div class="position-relative">
+                <!-- Imagen del libro -->
+                <img
+                  [src]="book.portada"
+                  [alt]="book.titulo"
+                  class="card-img-top book-img-saved"
+                  (click)="viewBookDetail(book)"
+                  title="Ver detalles del libro"
+                />
 
-              <!-- Dropdown de categorías -->
-              <div class="categories-dropdown-figma" 
-                   [class.show]="showCategoriesDropdown"
-                   *ngIf="showCategoriesDropdown">
-                
-                <button 
-                  class="dropdown-item-figma" 
-                  *ngFor="let category of categories"
-                  (click)="goToHome()"
-                >
-                  {{category}}
+                <!-- Botón de remover de guardados -->
+                <button
+                  class="btn remove-saved-btn position-absolute"
+                  (click)="removeFromSaved(book)"
+                  title="Remover de guardados">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
                 </button>
+
+                <!-- Badge del tipo de libro -->
+                <div
+                  class="book-type-badge"
+                  [ngClass]="{
+                    'badge-venta': book.tipo_transaccion_nombre === 'Venta',
+                    'badge-donacion': book.tipo_transaccion_nombre === 'Donación',
+                    'badge-intercambio': book.tipo_transaccion_nombre === 'Intercambio'
+                  }">
+                  {{book.tipo_transaccion_nombre}}
+                </div>
+              </div>
+
+              <div class="card-body d-flex flex-column">
+                <h5 class="card-title text-custom-dark mb-2">
+                  {{ book.titulo }}
+                </h5>
+                <p class="card-text text-muted mb-2">{{ book.autor }}</p>
+                <p class="card-text book-description mb-3">
+                  {{ book.descripcion }}
+                </p>
+
+                <!-- Precio solo para ventas -->
+                <div
+                  class="price-section mb-3"
+                  *ngIf="book.tipo_transaccion_nombre === 'Venta'">
+                  <span class="price-label">Precio:</span>
+                  <span class="price-amount">${{ book.precio }}</span>
+                </div>
+
+                <!-- Información del vendedor/propietario -->
+                <div class="seller-info mb-3">
+                  <span class="seller-label">
+                    {{book.tipo_transaccion_nombre === 'Venta' ? 'Vendedor:' : 
+                      book.tipo_transaccion_nombre === 'Donación' ? 'Donante:' : 'Propietario:'}}
+                  </span>
+                  <span class="seller-name clickable" (click)="viewSellerInfo(book)" title="Ver información del usuario">
+                    Usuario ID: {{book.id_usuario || 'N/A'}}
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="external-link-icon">
+                      <path d="M18 13V19C18 19.5304 17.7893 20.0391 17.4142 20.4142C17.0391 20.7893 16.5304 21 16 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V8C3 7.46957 3.21071 6.96086 3.58579 6.58579C3.96086 6.21071 4.46957 6 5 6H11M15 3H21M21 3V9M21 3L9 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </span>
+                </div>
+
+                <div class="mt-auto">
+                  <!-- Botón de acción según tipo -->
+                  <button
+                    class="btn btn-block w-100"
+                    [ngClass]="{
+                      'btn-saved-venta': book.tipo_transaccion_nombre === 'Venta',
+                      'btn-saved-donacion': book.tipo_transaccion_nombre === 'Donación',
+                      'btn-saved-intercambio': book.tipo_transaccion_nombre === 'Intercambio'
+                    }"
+                    (click)="getButtonAction(book)">
+                    {{getButtonText(book.tipo_transaccion_nombre)}}
+                  </button>
+                </div>
               </div>
             </div>
-            
-            <button class="nav-item-figma position-relative nav-active">
-              <!-- Mismo ícono bookmark que en las tarjetas -->
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="#6A93B2" xmlns="http://www.w3.org/2000/svg">
+          </div>
+        </div>
+      </div>
+
+      <!-- Estado vacío -->
+      <ng-template #emptyState>
+        <div class="empty-saved-state">
+          <!-- Si hay libros guardados pero ninguno en la categoría actual -->
+          <div *ngIf="savedBooks.length > 0 && filteredBooks.length === 0" class="empty-category">
+            <div class="empty-icon">
+              <svg width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M19 21L12 16L5 21V5C5 4.46957 5.21071 3.96086 5.58579 3.58579C5.96086 3.21071 6.46957 3 7 3H17C17.5304 3 18.0391 3.21071 18.4142 3.58579C18.7893 3.96086 19 4.46957 19 5V21Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
-              <span>Guardados</span>
-              <span class="badge-figma">{{savedBooks.length}}</span>
+            </div>
+            <h3>No hay libros en "{{selectedCategory}}"</h3>
+            <p>No tienes libros guardados en esta categoría.</p>
+            <button class="btn btn-primary" (click)="selectedCategory = 'Todas'">
+              Ver todos los guardados
             </button>
-            
-            <button class="nav-item-figma position-relative" (click)="goToCart()">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M3 3H5L5.4 5M7 13H17L21 5H5.4M7 13L5.4 5M7 13L4.7 15.3C4.3 15.7 4.6 16.5 5.1 16.5H17M17 13V16.5M9 19.5C9.8 19.5 10.5 20.2 10.5 21S9.8 22.5 9 22.5 7.5 21.8 7.5 21 8.2 19.5 9 19.5ZM20 19.5C20.8 19.5 21.5 20.2 21.5 21S20.8 22.5 20 22.5 18.5 21.8 18.5 21 19.2 19.5 20 19.5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </div>
+
+          <!-- Si no hay libros guardados en absoluto -->
+          <div *ngIf="savedBooks.length === 0" class="empty-saved">
+            <div class="empty-icon">
+              <svg width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M19 21L12 16L5 21V5C5 4.46957 5.21071 3.96086 5.58579 3.58579C5.96086 3.21071 6.46957 3 7 3H17C17.5304 3 18.0391 3.21071 18.4142 3.58579C18.7893 3.96086 19 4.46957 19 5V21Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
-              <span>Mi carrito</span>
-              <span *ngIf="cartItems > 0" class="badge-figma">{{cartItems}}</span>
+            </div>
+            <h3>No tienes libros guardados</h3>
+            <p>Cuando encuentres libros que te interesen, guárdalos aquí para verlos más tarde.</p>
+            <button class="btn btn-primary btn-lg" (click)="goToExplore()">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="me-2">
+                <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2"/>
+                <path d="M21 21L16.65 16.65" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              Explorar libros
             </button>
-            
-            <div class="position-relative">
-              <button class="profile-btn-figma" (click)="toggleProfileDropdown($event)">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                  <circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-              </button>
-
-              <!-- Dropdown del perfil -->
-              <div class="profile-dropdown-figma" 
-                   [class.show]="showProfileDropdown"
-                   *ngIf="showProfileDropdown">
-                
-                <div class="profile-header">
-                  <div class="profile-avatar">
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                      <circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                  </div>
-                </div>
-                
-                <button class="profile-dropdown-item" (click)="goToProfile()">
-                  Mi cuenta
-                </button>
-                
-                <button class="profile-dropdown-item" (click)="goToOrders()">
-                  Mis pedidos
-                </button>
-                
-                <div class="profile-divider"></div>
-                
-                <button class="profile-dropdown-item logout" (click)="goToLogin()">
-                  Cerrar sesión
-                </button>
-              </div>
-            </div>
           </div>
-        </div>
-      </div>
-    </div>
-  </header>
-
-  <!-- Título de página - NUEVO DISEÑO SIMPLE -->
-  <section class="page-title">
-    <div class="container">
-      <div class="page-header">
-        <h1 class="page-name">Mis guardados</h1>
-        <span class="books-count">{{savedBooks.length}} libro(s)</span>
-      </div>
-    </div>
-  </section>
-
-  <!-- Grid de libros guardados -->
-  <section class="books-section">
-    <div class="container">
-      <div class="row g-4" *ngIf="savedBooks.length > 0; else noSavedBooks">
-        <div class="col-12 col-sm-6 col-lg-4" *ngFor="let book of savedBooks">
-          <div class="card book-card-custom h-100">
-            <div class="position-relative">
-              <img [src]="book.image" [alt]="book.title" class="card-img-top book-img-custom">
-              
-              <!-- Botón de eliminar de guardados -->
-              <button class="btn remove-btn-custom position-absolute" 
-                      (click)="removeFromSaved(book)"
-                      title="Eliminar de guardados">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-              </button>
-              
-              <!-- Badge del tipo de libro -->
-              <div class="book-type-badge" 
-                   [ngClass]="{
-                     'badge-venta': book.type === 'Venta',
-                     'badge-donacion': book.type === 'Donación',
-                     'badge-intercambio': book.type === 'Intercambio'
-                   }">
-                {{book.type}}
-              </div>
-            </div>
-            
-            <div class="card-body d-flex flex-column">
-              <h5 class="card-title text-custom-dark mb-2">{{book.title}}</h5>
-              <p class="card-text text-muted mb-2">{{book.author}}</p>
-              <p class="card-text book-description mb-3">{{book.description}}</p>
-              
-              <!-- Precio solo para ventas -->
-              <div class="price-section mb-3" *ngIf="book.type === 'Venta'">
-                <span class="price-label">Precio:</span>
-                <span class="price-amount">${{book.price}}</span>
-              </div>
-              
-              <div class="mt-auto">
-                <button 
-                  class="btn btn-block w-100"
-                  [ngClass]="{
-                    'btn-custom-venta': book.type === 'Venta',
-                    'btn-custom-donacion': book.type === 'Donación',
-                    'btn-custom-intercambio': book.type === 'Intercambio'
-                  }"
-                  (click)="getButtonAction(book)"
-                >
-                  {{getButtonText(book.type)}}
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Mensaje cuando no hay libros guardados -->
-      <ng-template #noSavedBooks>
-        <div class="text-center py-5">
-          <div class="mb-4">
-            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-muted">
-              <path d="M19 21L12 16L5 21V5C5 4.46957 5.21071 3.96086 5.58579 3.58579C5.96086 3.21071 6.46957 3 7 3H17C17.5304 3 18.0391 3.21071 18.4142 3.58579C18.7893 3.96086 19 4.46957 19 5V21Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </div>
-          <h4 class="text-muted">No tienes libros guardados</h4>
-          <p class="text-muted">Guarda libros que te interesen para encontrarlos fácilmente aquí</p>
-          <button class="btn btn-primary" (click)="goToHome()">Explorar libros</button>
         </div>
       </ng-template>
+
     </div>
-  </section>
+  </main>
 </div>
