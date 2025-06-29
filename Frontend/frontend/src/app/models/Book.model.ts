@@ -15,7 +15,7 @@ export interface Book {
   estatus: number;
   id_tipo_transaccion: number;
   categoria_nombre?: string;
-  estado_libro_nombre?: string;
+  estado_libro?: string;
   tipo_transaccion_nombre?: string;
   numpaginas?: number;
 }

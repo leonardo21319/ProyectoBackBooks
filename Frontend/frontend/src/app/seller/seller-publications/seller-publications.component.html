@@ -189,7 +189,12 @@
 
           <!-- Estado -->
           <div class="col-status">
-            <span>{{ getEstadoFisicoNombre(publication.estado_libro) }}</span>
+            <p>
+              {{
+                publication.estado_libro ||
+                  getEstadoFisicoNombre(publication.id_estado_libro)
+              }}
+            </p>
           </div>
 
           <!-- Transacción -->

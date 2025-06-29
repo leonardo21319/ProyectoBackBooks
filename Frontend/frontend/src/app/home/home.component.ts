@@ -74,7 +74,7 @@ export class HomeComponent implements OnInit {
         estatus: 1,
         id_tipo_transaccion: 1,
         categoria_nombre: 'Literatura',
-        estado_libro_nombre: 'Usado',
+        estado_libro: 'Usado',
         tipo_transaccion_nombre: 'Venta',
       },
       {
@@ -96,7 +96,7 @@ export class HomeComponent implements OnInit {
         estatus: 1,
         id_tipo_transaccion: 2,
         categoria_nombre: 'Ciencias y tecnología',
-        estado_libro_nombre: 'Nuevo',
+        estado_libro: 'Nuevo',
         tipo_transaccion_nombre: 'Donación',
       },
       {
@@ -118,7 +118,7 @@ export class HomeComponent implements OnInit {
         estatus: 1,
         id_tipo_transaccion: 3,
         categoria_nombre: 'Historia y filosofía',
-        estado_libro_nombre: 'Usado',
+        estado_libro: 'Usado',
         tipo_transaccion_nombre: 'Intercambio',
       },
       {
@@ -140,7 +140,7 @@ export class HomeComponent implements OnInit {
         estatus: 1,
         id_tipo_transaccion: 1,
         categoria_nombre: 'Literatura',
-        estado_libro_nombre: 'Nuevo',
+        estado_libro: 'Nuevo',
         tipo_transaccion_nombre: 'Venta',
       },
       {
@@ -162,7 +162,7 @@ export class HomeComponent implements OnInit {
         estatus: 1,
         id_tipo_transaccion: 1,
         categoria_nombre: 'Literatura',
-        estado_libro_nombre: 'Usado',
+        estado_libro: 'Usado',
         tipo_transaccion_nombre: 'Venta',
       },
     ];
