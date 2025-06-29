@@ -15,6 +15,8 @@ import { BookDonationComponent } from './book-donation/book-donation.component';
 import { BookExchangeOfferComponent } from './book-exchange-offer/book-exchange-offer.component';
 import { SellerProfileComponent } from './seller/seller-profile/seller-profile.component';
 import { SellerOffersComponent } from './seller/seller-offers/seller-offers.component';
+import { SellerPublicationsComponent } from './seller/seller-publications/seller-publications.component';
+
 import { InfoSalesCustomerComponent } from './info-sales-customer/info-sales-customer.component'; // ✨ IMPORT EXISTENTE
 import { ReportSellerCustomerComponent } from './report-seller-customer/report-seller-customer.component'; // ✨ IMPORT REPORTE
 import { RateOrderComponent } from './rate-order/rate-order.component'; // ✨ NUEVO IMPORT CALIFICACIÓN
@@ -28,6 +30,8 @@ export const routes: Routes = [
   { path: 'saleshome', component: SaleshomeComponent },
   { path: 'seller-profile', component: SellerProfileComponent },
   { path: 'seller-offers', component: SellerOffersComponent },
+  { path: 'seller-publications', component: SellerPublicationsComponent },
+
   
   // 🛒 Funcionalidades de compra
   { path: 'saved', component: SaveComponent },

@@ -1,0 +1,503 @@
+<!-- seller/seller-publications/seller-publications.component.html -->
+<div class="seller-publications-container">
+  <!-- Header del vendedor -->
+  <app-sales-header
+    [selectedCategory]="'Todas'"
+    currentPage="publications"
+    (categorySelected)="onCategorySelected($event)"
+    (searchPerformed)="onSearchPerformed($event)"
+  >
+  </app-sales-header>
+
+  <!-- Contenido principal -->
+  <div class="container-fluid py-4">
+    
+    <!-- Título y estadísticas -->
+    <div class="publications-header">
+      <div class="header-content">
+        <h1 class="page-title">Mis publicaciones</h1>
+        <p class="page-subtitle">Gestiona todos tus libros publicados</p>
+      </div>
+      
+      <div class="publications-stats">
+        <div class="stat-item">
+          <span class="stat-number">{{ totalPublications }}</span>
+          <span class="stat-label">Total</span>
+        </div>
+        <div class="stat-item available">
+          <span class="stat-number">{{ availablePublications }}</span>
+          <span class="stat-label">Disponibles</span>
+        </div>
+        <div class="stat-item sold">
+          <span class="stat-number">{{ soldPublications }}</span>
+          <span class="stat-label">Vendidos</span>
+        </div>
+        <div class="stat-item reserved">
+          <span class="stat-number">{{ reservedPublications }}</span>
+          <span class="stat-label">Reservados</span>
+        </div>
+      </div>
+
+      <!-- Botón nuevo -->
+      <div class="header-actions">
+        <button class="btn btn-primary btn-new" (click)="openNewPublicationModal()">
+          + Nuevo
+        </button>
+      </div>
+    </div>
+
+    <!-- Filtros y controles -->
+    <div class="filters-section">
+      <div class="filters-row">
+        <!-- Filtro por categoría -->
+        <div class="filter-group">
+          <label class="filter-label">Categoría:</label>
+          <select 
+            class="filter-select"
+            [(ngModel)]="filterCategory"
+            (change)="changeFilter('category', filterCategory)"
+          >
+            <option value="todas">Todas las categorías</option>
+            <option *ngFor="let category of categories" [value]="category.value">
+              {{ category.label }}
+            </option>
+          </select>
+        </div>
+
+        <!-- Filtro por estado -->
+        <div class="filter-group">
+          <label class="filter-label">Estado:</label>
+          <select 
+            class="filter-select"
+            [(ngModel)]="filterStatus"
+            (change)="changeFilter('status', filterStatus)"
+          >
+            <option value="todos">Todos los estados</option>
+            <option value="disponible">Disponible</option>
+            <option value="vendido">Vendido</option>
+            <option value="reservado">Reservado</option>
+          </select>
+        </div>
+
+        <!-- Filtro por transacción -->
+        <div class="filter-group">
+          <label class="filter-label">Transacción:</label>
+          <select 
+            class="filter-select"
+            [(ngModel)]="filterTransaction"
+            (change)="changeFilter('transaction', filterTransaction)"
+          >
+            <option value="todas">Todas</option>
+            <option value="venta">Venta</option>
+            <option value="intercambio">Intercambio</option>
+            <option value="donacion">Donación</option>
+          </select>
+        </div>
+
+        <!-- Ordenamiento -->
+        <div class="filter-group">
+          <label class="filter-label">Ordenar por:</label>
+          <select 
+            class="filter-select"
+            [(ngModel)]="sortBy"
+            (change)="changeFilter('sort', sortBy)"
+          >
+            <option value="fecha_desc">Más recientes</option>
+            <option value="fecha_asc">Más antiguos</option>
+            <option value="titulo_asc">Título A-Z</option>
+            <option value="titulo_desc">Título Z-A</option>
+            <option value="precio_asc">Precio menor</option>
+            <option value="precio_desc">Precio mayor</option>
+          </select>
+        </div>
+
+        <!-- Buscador -->
+        <div class="filter-group search-group">
+          <input 
+            type="text" 
+            class="search-input"
+            placeholder="Buscar por título, autor, editorial o ISBN..."
+            [(ngModel)]="searchTerm"
+            (input)="applyFilters()"
+          />
+          <button class="search-btn">🔍</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Lista de publicaciones -->
+    <div class="publications-list" *ngIf="filteredPublications.length > 0; else noPublications">
+      <div class="publications-table">
+        <!-- Header de la tabla -->
+        <div class="table-header">
+          <div class="col-image">Portada</div>
+          <div class="col-details">Detalles</div>
+          <div class="col-category">Categoría</div>
+          <div class="col-status">Estado</div>
+          <div class="col-transaction">Transacción</div>
+          <div class="col-actions">Acciones</div>
+        </div>
+
+        <!-- Filas de publicaciones -->
+        <div 
+          class="table-row"
+          *ngFor="let publication of filteredPublications; trackBy: trackByPublicationId"
+        >
+          <!-- Imagen del libro -->
+          <div class="col-image">
+            <img 
+              [src]="publication.portada" 
+              [alt]="publication.titulo" 
+              class="book-thumbnail"
+              (click)="goToBookDetail(publication.id)"
+            />
+          </div>
+
+          <!-- Detalles del libro -->
+          <div class="col-details">
+            <div class="book-details">
+              <h4 class="book-title" (click)="goToBookDetail(publication.id)">
+                {{ publication.titulo }}
+              </h4>
+              <p class="book-author">{{ publication.autor }}</p>
+              <p class="book-editorial">{{ publication.editorial }}</p>
+              <p class="book-isbn">ISBN: {{ publication.isbn }}</p>
+              <p class="book-pages">{{ publication.numPaginas }} páginas</p>
+              <p class="book-date">Publicado: {{ formatDate(publication.fechaPublicacion) }}</p>
+            </div>
+          </div>
+
+          <!-- Categoría -->
+          <div class="col-category">
+            <span class="category-badge">
+              {{ getCategoryText(publication.categoria) }}
+            </span>
+          </div>
+
+          <!-- Estado -->
+          <div class="col-status">
+            <span class="status-badge" [ngClass]="getStatusClass(publication.estado)">
+              {{ getStatusText(publication.estado) }}
+            </span>
+          </div>
+
+          <!-- Transacción -->
+          <div class="col-transaction">
+            <div class="transaction-info">
+              <span class="transaction-badge" [ngClass]="getTransactionClass(publication.transaccion)">
+                {{ getTransactionText(publication.transaccion) }}
+              </span>
+              <span class="price" *ngIf="publication.precio">
+                {{ formatPrice(publication.precio) }}
+              </span>
+            </div>
+          </div>
+
+          <!-- Acciones -->
+          <div class="col-actions">
+            <div class="action-buttons">
+              <button 
+                class="btn-action btn-edit"
+                (click)="openEditPublicationModal(publication)"
+                title="Editar publicación"
+              >
+                ✏️
+              </button>
+              
+              <button 
+                class="btn-action btn-duplicate"
+                (click)="duplicatePublication(publication)"
+                title="Duplicar publicación"
+              >
+                📋
+              </button>
+              
+              <button 
+                class="btn-action btn-delete"
+                (click)="deletePublication(publication)"
+                title="Eliminar publicación"
+              >
+                🗑️
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mensaje cuando no hay publicaciones -->
+    <ng-template #noPublications>
+      <div class="no-publications">
+        <div class="no-publications-icon">📚</div>
+        <h3>No hay publicaciones</h3>
+        <p *ngIf="searchTerm || filterCategory !== 'todas' || filterStatus !== 'todos' || filterTransaction !== 'todas'">
+          No se encontraron publicaciones con los filtros aplicados.
+        </p>
+        <p *ngIf="!searchTerm && filterCategory === 'todas' && filterStatus === 'todos' && filterTransaction === 'todas'">
+          Aún no has publicado ningún libro. ¡Comienza a publicar tus libros!
+        </p>
+        <button class="btn btn-primary" (click)="openNewPublicationModal()">
+          📖 Publicar mi primer libro
+        </button>
+      </div>
+    </ng-template>
+
+  </div>
+</div>
+
+<!-- Modal de nueva/editar publicación -->
+<div 
+  class="modal fade" 
+  [class.show]="showNewPublicationModal"
+  [style.display]="showNewPublicationModal ? 'block' : 'none'"
+  *ngIf="showNewPublicationModal"
+>
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          {{ isEditMode ? '✏️ Editar detalles' : '📚 Nueva publicación' }}
+        </h5>
+        <button 
+          type="button" 
+          class="btn-close" 
+          (click)="closeModal()"
+        ></button>
+      </div>
+      
+      <div class="modal-body">
+        <form class="publication-form">
+          <div class="form-row">
+            <!-- Título -->
+            <div class="form-group col-md-6">
+              <label for="titulo">Título *</label>
+              <input 
+                type="text" 
+                id="titulo"
+                class="form-control"
+                [(ngModel)]="currentPublication.titulo"
+                name="titulo"
+                placeholder="Título del libro"
+                required
+              />
+            </div>
+
+            <!-- ISBN -->
+            <div class="form-group col-md-6">
+              <label for="isbn">ISBN *</label>
+              <input 
+                type="text" 
+                id="isbn"
+                class="form-control"
+                [(ngModel)]="currentPublication.isbn"
+                name="isbn"
+                placeholder="978-0-000-00000-0"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <!-- Autor -->
+            <div class="form-group col-md-6">
+              <label for="autor">Autor *</label>
+              <input 
+                type="text" 
+                id="autor"
+                class="form-control"
+                [(ngModel)]="currentPublication.autor"
+                name="autor"
+                placeholder="Nombre del autor"
+                required
+              />
+            </div>
+
+            <!-- Editorial -->
+            <div class="form-group col-md-6">
+              <label for="editorial">Editorial *</label>
+              <input 
+                type="text" 
+                id="editorial"
+                class="form-control"
+                [(ngModel)]="currentPublication.editorial"
+                name="editorial"
+                placeholder="Nombre de la editorial"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <!-- ISBN -->
+            <div class="form-group col-md-6">
+              <label for="isbn">ISBN *</label>
+              <input 
+                type="text" 
+                id="isbn"
+                class="form-control"
+                [(ngModel)]="currentPublication.isbn"
+                name="isbn"
+                placeholder="978-0-000-00000-0"
+                required
+              />
+            </div>
+
+            <!-- Portada -->
+            <div class="form-group col-md-6">
+              <label for="portada">Portada</label>
+              <div class="file-input-group">
+                <input 
+                  type="file" 
+                  id="portada"
+                  class="form-control-file"
+                  (change)="onImageSelected($event)"
+                  accept="image/*"
+                />
+                <button type="button" class="btn btn-outline-secondary">
+                  Elegir archivo
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <!-- Estado del libro -->
+            <div class="form-group col-md-6">
+              <label for="estado">Estado del libro *</label>
+              <select 
+                id="estado"
+                class="form-control"
+                [(ngModel)]="currentPublication.estado"
+                name="estado"
+                required
+              >
+                <option value="disponible">Disponible</option>
+                <option value="vendido">Vendido</option>
+                <option value="reservado">Reservado</option>
+              </select>
+            </div>
+
+            <!-- Categoría -->
+            <div class="form-group col-md-6">
+              <label for="categoria">Categoría *</label>
+              <select 
+                id="categoria"
+                class="form-control"
+                [(ngModel)]="currentPublication.categoria"
+                name="categoria"
+                required
+              >
+                <option *ngFor="let category of categories" [value]="category.value">
+                  {{ category.label }}
+                </option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <!-- Transacción -->
+            <div class="form-group col-md-6">
+              <label for="transaccion">Transacción *</label>
+              <select 
+                id="transaccion"
+                class="form-control"
+                [(ngModel)]="currentPublication.transaccion"
+                name="transaccion"
+                required
+              >
+                <option value="venta">Venta</option>
+                <option value="intercambio">Intercambio</option>
+                <option value="donacion">Donación</option>
+              </select>
+            </div>
+
+            <!-- Precio (solo si es venta) -->
+            <div class="form-group col-md-6" *ngIf="currentPublication.transaccion === 'venta'">
+              <label for="precio">Precio (MXN)</label>
+              <input 
+                type="number" 
+                id="precio"
+                class="form-control"
+                [(ngModel)]="currentPublication.precio"
+                name="precio"
+                placeholder="0.00"
+                min="0"
+                step="0.01"
+              />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <!-- Número de páginas -->
+            <div class="form-group col-md-6">
+              <label for="numPaginas">Número de páginas *</label>
+              <input 
+                type="number" 
+                id="numPaginas"
+                class="form-control"
+                [(ngModel)]="currentPublication.numPaginas"
+                name="numPaginas"
+                placeholder="0"
+                min="1"
+                required
+              />
+            </div>
+
+            <!-- Fecha de publicación -->
+            <div class="form-group col-md-6">
+              <label for="fechaPublicacion">Fecha de publicación</label>
+              <input 
+                type="date" 
+                id="fechaPublicacion"
+                class="form-control"
+                [(ngModel)]="currentPublication.fechaPublicacion"
+                name="fechaPublicacion"
+              />
+            </div>
+          </div>
+
+          <!-- Descripción -->
+          <div class="form-group">
+            <label for="descripcion">Descripción *</label>
+            <textarea 
+              id="descripcion"
+              class="form-control"
+              [(ngModel)]="currentPublication.descripcion"
+              name="descripcion"
+              rows="4"
+              placeholder="Describe el libro, su estado, etc."
+              required
+            ></textarea>
+          </div>
+        </form>
+      </div>
+      
+      <div class="modal-footer">
+        <button 
+          type="button" 
+          class="btn btn-secondary" 
+          (click)="closeModal()"
+        >
+          Cancelar
+        </button>
+        
+        <button 
+          type="button" 
+          class="btn btn-primary"
+          (click)="savePublication()"
+          [disabled]="!isFormValid()"
+        >
+          {{ isEditMode ? 'Guardar' : 'Guardar' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Overlay del modal -->
+<div 
+  class="modal-backdrop fade"
+  [class.show]="showNewPublicationModal"
+  *ngIf="showNewPublicationModal"
+  (click)="closeModal()"
+></div>

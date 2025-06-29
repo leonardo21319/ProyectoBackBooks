@@ -79,8 +79,8 @@ export class SalesHeaderComponent {
 
   goToPublications() {
     console.log('Ir a mis publicaciones');
-    // this.router.navigate(['/vendor-publications']);
-    alert('📚 Navegando a mis publicaciones...');
+    this.router.navigate(['/seller-publications']);
+
   }
 
   goToOrders() {
