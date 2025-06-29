@@ -1,5 +1,5 @@
 // ============================================
-// 📁 src/app/book-donation/book-donation.component.ts
+// 📁 ACTUALIZAR: src/app/book-donation/book-donation.component.ts
 // ============================================
 
 import { Component, OnInit } from '@angular/core';
@@ -30,6 +30,7 @@ export class BookDonationComponent implements OnInit {
     price: 0,
     condition: 'Nuevo',
     donor: 'Ana García López',
+    donorId: 2, // ✨ ID del donante para navegación
     type: 'Donación',
     image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=600&fit=crop',
     category: 'Ciencias y tecnología',
@@ -85,7 +86,7 @@ export class BookDonationComponent implements OnInit {
     
     const numericId = parseInt(bookId, 10);
     
-    // ✨ SOLO LIBROS DE DONACIÓN - Datos simulados
+    // ✨ SOLO LIBROS DE DONACIÓN - Datos simulados con donorId
     const donationBooksData = {
       2: {
         id: 2,
@@ -94,6 +95,7 @@ export class BookDonationComponent implements OnInit {
         price: 0,
         condition: 'Nuevo',
         donor: 'Ana García López',
+        donorId: 2, // ✨ ID del donante
         type: 'Donación',
         image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=600&fit=crop',
         category: 'Ciencias y tecnología',
@@ -113,6 +115,7 @@ export class BookDonationComponent implements OnInit {
         price: 0,
         condition: 'Usado',
         donor: 'Pedro Martínez',
+        donorId: 4, // ✨ ID del donante
         type: 'Donación',
         image: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400&h=600&fit=crop',
         category: 'Ciencias y tecnología',
@@ -132,6 +135,7 @@ export class BookDonationComponent implements OnInit {
         price: 0,
         condition: 'Usado',
         donor: 'Laura Jiménez',
+        donorId: 5, // ✨ ID del donante
         type: 'Donación',
         image: 'https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=400&h=600&fit=crop',
         category: 'Ciencias y tecnología',
@@ -212,6 +216,12 @@ export class BookDonationComponent implements OnInit {
 
   isBookSaved(): boolean {
     return this.savedItems > 0;
+  }
+
+  // ✨ NUEVO MÉTODO - Navegar a información del donante
+  viewDonorInfo(): void {
+    console.log('Navegando a información del donante ID:', this.book.donorId);
+    this.router.navigate(['/seller', this.book.donorId]);
   }
 
   goBack() {

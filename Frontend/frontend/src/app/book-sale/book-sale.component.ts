@@ -1,5 +1,5 @@
 // ============================================
-// 📁 src/app/book-sale/book-sale.component.ts - SOLO LIBROS DE VENTA
+// 📁 ACTUALIZAR: src/app/book-sale/book-sale.component.ts
 // ============================================
 
 import { Component, OnInit } from '@angular/core';
@@ -28,6 +28,7 @@ export class BookSaleComponent implements OnInit {
     price: 190,
     condition: 'Usado',
     seller: 'Michael Benito Kerr Thatcher',
+    sellerId: 1, // ✨ ID del vendedor para navegación
     type: 'Venta',
     image: 'https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=400&h=600&fit=crop',
     category: 'Literatura',
@@ -82,7 +83,7 @@ export class BookSaleComponent implements OnInit {
     
     const numericId = parseInt(bookId, 10);
     
-    // ✨ SOLO LIBROS DE VENTA - Datos simulados
+    // ✨ SOLO LIBROS DE VENTA - Datos simulados con sellerId
     const salesBooksData = {
       1: {
         id: 1,
@@ -91,6 +92,7 @@ export class BookSaleComponent implements OnInit {
         price: 190,
         condition: 'Usado',
         seller: 'Michael Benito Kerr Thatcher',
+        sellerId: 1, // ✨ ID del vendedor
         type: 'Venta',
         image: 'https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=400&h=600&fit=crop',
         category: 'Literatura',
@@ -109,6 +111,7 @@ export class BookSaleComponent implements OnInit {
         price: 350,
         condition: 'Nuevo',
         seller: 'Carlos Mendoza',
+        sellerId: 3, // ✨ ID del vendedor
         type: 'Venta',
         image: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400&h=600&fit=crop',
         category: 'Literatura',
@@ -127,6 +130,7 @@ export class BookSaleComponent implements OnInit {
         price: 280,
         condition: 'Usado',
         seller: 'Ana García López',
+        sellerId: 2, // ✨ ID del vendedor
         type: 'Venta',
         image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=600&fit=crop',
         category: 'Literatura',
@@ -171,6 +175,12 @@ export class BookSaleComponent implements OnInit {
 
   isBookSaved(): boolean {
     return this.savedItems > 0;
+  }
+
+  // ✨ NUEVO MÉTODO - Navegar a información del vendedor
+  viewSellerInfo(): void {
+    console.log('Navegando a información del vendedor ID:', this.book.sellerId);
+    this.router.navigate(['/seller', this.book.sellerId]);
   }
 
   goBack() {

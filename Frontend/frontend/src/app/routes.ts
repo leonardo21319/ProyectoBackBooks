@@ -1,3 +1,7 @@
+// ============================================
+// 📁 ACTUALIZAR: src/app/app.routes.ts
+// ============================================
+
 import { Routes } from '@angular/router';
 import { LoginComponent } from './login/login.component';
 import { HomeComponent } from './home/home.component';
@@ -11,7 +15,7 @@ import { BookDonationComponent } from './book-donation/book-donation.component';
 import { BookExchangeOfferComponent } from './book-exchange-offer/book-exchange-offer.component';
 import { SellerProfileComponent } from './seller/seller-profile/seller-profile.component';
 import { SellerOffersComponent } from './seller/seller-offers/seller-offers.component';
-
+import { InfoSalesCustomerComponent } from './info-sales-customer/info-sales-customer.component'; // ✨ NUEVO IMPORT
 
 export const routes: Routes = [
   { path: '', component: LoginComponent },
@@ -19,10 +23,9 @@ export const routes: Routes = [
   
   // 🏠 Páginas principales
   { path: 'home', component: HomeComponent },
-  { path: 'saleshome', component: SaleshomeComponent }, // ✅ Página de vendedor
-  { path: 'seller-profile', component: SellerProfileComponent }, // ✅ Cambié de 'sellerprofile' a 'seller-profile'
+  { path: 'saleshome', component: SaleshomeComponent },
+  { path: 'seller-profile', component: SellerProfileComponent },
   { path: 'seller-offers', component: SellerOffersComponent },
-
   
   // 🛒 Funcionalidades de compra
   { path: 'saved', component: SaveComponent },
@@ -35,6 +38,9 @@ export const routes: Routes = [
   { path: 'donation/:id', component: BookDonationComponent }, // Para libros de donación
   { path: 'exchange/:id/offer', component: BookExchangeOfferComponent }, // Para hacer ofertas de intercambio
   
+  // ✨ NUEVA RUTA - Información del vendedor/propietario/donante
+  { path: 'seller/:id', component: InfoSalesCustomerComponent },
+  
   // 🔄 Redirección por defecto
-  { path: '**', redirectTo: 'login' } // ✅ Mejor redirigir a login en lugar de cadena vacía
+  { path: '**', redirectTo: 'login' }
 ];

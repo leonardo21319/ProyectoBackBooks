@@ -1,5 +1,5 @@
 // ============================================
-// 📁 src/app/book-exchange/book-exchange.component.ts
+// 📁 ACTUALIZAR: src/app/book-exchange/book-exchange.component.ts
 // ============================================
 
 import { Component, OnInit } from '@angular/core';
@@ -28,6 +28,7 @@ export class BookExchangeComponent implements OnInit {
     price: 0,
     condition: 'Usado',
     owner: 'Carlos Mendoza',
+    ownerId: 3, // ✨ ID del propietario para navegación
     type: 'Intercambio',
     image: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400&h=600&fit=crop',
     category: 'Historia y filosofía',
@@ -82,7 +83,7 @@ export class BookExchangeComponent implements OnInit {
     
     const numericId = parseInt(bookId, 10);
     
-    // ✨ SOLO LIBROS DE INTERCAMBIO - Datos simulados
+    // ✨ SOLO LIBROS DE INTERCAMBIO - Datos simulados con ownerId
     const exchangeBooksData = {
       3: {
         id: 3,
@@ -91,6 +92,7 @@ export class BookExchangeComponent implements OnInit {
         price: 0,
         condition: 'Usado',
         owner: 'Carlos Mendoza',
+        ownerId: 3, // ✨ ID del propietario
         type: 'Intercambio',
         image: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400&h=600&fit=crop',
         category: 'Historia y filosofía',
@@ -109,6 +111,7 @@ export class BookExchangeComponent implements OnInit {
         price: 0,
         condition: 'Nuevo',
         owner: 'María Fernández',
+        ownerId: 4, // ✨ ID del propietario
         type: 'Intercambio',
         image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=600&fit=crop',
         category: 'Literatura',
@@ -127,6 +130,7 @@ export class BookExchangeComponent implements OnInit {
         price: 0,
         condition: 'Usado',
         owner: 'Roberto Silva',
+        ownerId: 5, // ✨ ID del propietario
         type: 'Intercambio',
         image: 'https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=400&h=600&fit=crop',
         category: 'Historia y filosofía',
@@ -171,6 +175,12 @@ export class BookExchangeComponent implements OnInit {
 
   isBookSaved(): boolean {
     return this.savedItems > 0;
+  }
+
+  // ✨ NUEVO MÉTODO - Navegar a información del propietario
+  viewOwnerInfo(): void {
+    console.log('Navegando a información del propietario ID:', this.book.ownerId);
+    this.router.navigate(['/seller', this.book.ownerId]);
   }
 
   goBack() {

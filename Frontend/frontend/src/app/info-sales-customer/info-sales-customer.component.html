@@ -1,0 +1,168 @@
+<!-- ============================================ -->
+<!-- 📁 CREAR: src/app/info-sales-customer/info-sales-customer.component.html -->
+<!-- ============================================ -->
+
+<div class="bookstore-container">
+  
+  <!-- Header compartido -->
+  <app-header 
+    [cartItems]="cartItems" 
+    [savedItems]="savedItems" 
+    currentPage="info-sales-customer"
+    (searchPerformed)="onSearchPerformed($event)">
+  </app-header>
+
+  <!-- Contenido principal -->
+  <main class="customer-info-main">
+    <div class="container">
+      
+      <!-- Botón de regreso -->
+      <div class="back-button-container">
+        <button class="btn-back" (click)="goBack()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M19 12H5M12 19L5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Regresar
+        </button>
+      </div>
+
+      <!-- Título de la página -->
+      <div class="page-title">
+        <h2>Información del vendedor</h2>
+      </div>
+
+      <!-- Información del usuario -->
+      <div class="customer-profile-container">
+        
+        <!-- Avatar y información básica -->
+        <div class="profile-header">
+          <div class="avatar-section">
+            <img [src]="customerInfo.avatar" [alt]="customerInfo.name" class="customer-avatar">
+          </div>
+          
+          <div class="customer-details">
+            <h1 class="customer-name">{{customerInfo.name}}</h1>
+            
+            <!-- Calificación con estrellas -->
+            <div class="rating-section">
+              <div class="stars-container">
+                <svg 
+                  *ngFor="let star of getRatingStars()" 
+                  width="20" 
+                  height="20" 
+                  viewBox="0 0 24 24" 
+                  xmlns="http://www.w3.org/2000/svg"
+                  [ngClass]="{
+                    'star-full': star === 'full',
+                    'star-half': star === 'half',
+                    'star-empty': star === 'empty'
+                  }">
+                  <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" 
+                        [attr.fill]="star === 'empty' ? 'none' : (star === 'half' ? 'url(#halfGrad)' : '#6A93B2')"
+                        stroke="#6A93B2" 
+                        stroke-width="1"/>
+                </svg>
+              </div>
+              <span class="rating-text">{{customerInfo.rating}} ({{customerInfo.totalReviews}} reseñas)</span>
+            </div>
+            
+            <!-- Miembro desde -->
+            <div class="member-since">
+              <span class="member-label">Miembro desde:</span>
+              <span class="member-date">{{customerInfo.memberSince}}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Separador -->
+        <hr class="section-divider">
+
+        <!-- Estadísticas del usuario -->
+        <div class="user-stats">
+          <h3 class="stats-title">Actividad del usuario</h3>
+          
+          <div class="stats-grid">
+            <div class="stat-item">
+              <div class="stat-number">{{customerInfo.booksForSale}}</div>
+              <div class="stat-label">Libros en venta</div>
+            </div>
+            
+            <div class="stat-item">
+              <div class="stat-number">{{customerInfo.booksForExchange}}</div>
+              <div class="stat-label">Libros para intercambio</div>
+            </div>
+            
+            <div class="stat-item">
+              <div class="stat-number">{{customerInfo.booksDonated}}</div>
+              <div class="stat-label">Libros donados</div>
+            </div>
+            
+            <div class="stat-item">
+              <div class="stat-number">{{customerInfo.completedTransactions}}</div>
+              <div class="stat-label">Transacciones completadas</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Separador -->
+        <hr class="section-divider">
+
+        <!-- Información de contacto -->
+        <div class="contact-section">
+          <h3 class="contact-title">Contacto</h3>
+          
+          <div class="contact-grid">
+            <div class="contact-item">
+              <div class="contact-method">
+                <span class="contact-label">Correo electrónico</span>
+                <a [href]="'mailto:' + customerInfo.email" class="contact-link">
+                  {{customerInfo.email}}
+                </a>
+              </div>
+            </div>
+            
+            <div class="contact-item">
+              <div class="contact-method">
+                <span class="contact-label">Teléfono</span>
+                <a [href]="'tel:' + customerInfo.phone" class="contact-link">
+                  {{customerInfo.phone}}
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Separador -->
+        <hr class="section-divider">
+
+        <!-- Botones de acción -->
+        <div class="action-buttons">
+          <button class="btn-send-message" (click)="sendMessage()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="me-2">
+              <path d="M21 8V7C21 6.46957 20.7893 5.96086 20.4142 5.58579C20.0391 5.21071 19.5304 5 19 5H5C4.46957 5 3.96086 5.21071 3.58579 5.58579C3.21071 5.96086 3 6.46957 3 7V8M21 8L12 13L3 8M21 8V17C21 17.5304 20.7893 18.0391 20.4142 18.4142C20.0391 18.7893 19.5304 19 19 19H5C4.46957 19 3.96086 18.7893 3.58579 18.4142C3.21071 18.0391 3 17.5304 3 17V8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Enviar mensaje
+          </button>
+          
+          <button class="btn-report-user" (click)="reportUser()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="me-2">
+              <path d="M12 9V13M12 17H12.01M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Reportar este usuario
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- SVG para media estrella -->
+<svg style="display: none;">
+  <defs>
+    <linearGradient id="halfGrad">
+      <stop offset="50%" stop-color="#6A93B2"/>
+      <stop offset="50%" stop-color="transparent"/>
+    </linearGradient>
+  </defs>
+</svg>
