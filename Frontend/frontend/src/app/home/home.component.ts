@@ -29,9 +29,8 @@ export class HomeComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    console.log('HomeComponent: Componente iniciado'); // SOLO AGREGAR LOG
+    console.log('HomeComponent: Componente iniciado');
     
-    // MANTENER TU LÓGICA EXACTAMENTE IGUAL
     this.obtenerLibros();
 
     this.route.queryParams.subscribe((params) => {
@@ -45,9 +44,8 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  // MANTENER TU MÉTODO EXACTAMENTE IGUAL
   obtenerLibros() {
-    console.log('HomeComponent: Obteniendo libros'); // SOLO AGREGAR LOG
+    console.log('HomeComponent: Obteniendo libros');
     this.ApiService.obtenerLibros().subscribe(
       (data: Book[]) => {
         this.allBooks = data.map((book: Book) => {
@@ -57,7 +55,7 @@ export class HomeComponent implements OnInit {
             portada: portadaBase64,
           };
         });
-        console.log('HomeComponent: Libros obtenidos:', this.allBooks.length); // SOLO AGREGAR LOG
+        console.log('HomeComponent: Libros obtenidos:', this.allBooks.length);
       },
       (error) => {
         console.error('Error al obtener los libros:', error);
@@ -65,7 +63,6 @@ export class HomeComponent implements OnInit {
     );
   }
 
-  // MANTENER TU MÉTODO EXACTAMENTE IGUAL
   bufferToBase64(buffer: any): string {
     if (buffer && buffer.data) {
       return `data:image/png;base64,${Buffer.from(buffer.data).toString(
@@ -75,7 +72,6 @@ export class HomeComponent implements OnInit {
     return '';
   }
 
-  // MANTENER TU GETTER EXACTAMENTE IGUAL
   get books() {
     if (this.selectedCategory === 'Todas') {
       return this.allBooks;
@@ -85,12 +81,10 @@ export class HomeComponent implements OnInit {
     );
   }
 
-  // SOLO AGREGAR LOGS PARA DEBUG
   onCategorySelected(category: string) {
-    console.log('HomeComponent: Categoría seleccionada desde header:', category); // SOLO AGREGAR LOG
+    console.log('HomeComponent: Categoría seleccionada desde header:', category);
     this.selectedCategory = category;
 
-    // MANTENER TU LÓGICA EXACTAMENTE IGUAL
     if (category === 'Todas') {
       this.router.navigate(['/home'], { replaceUrl: true });
     } else {
@@ -101,12 +95,10 @@ export class HomeComponent implements OnInit {
     }
   }
 
-  // MANTENER TU MÉTODO EXACTAMENTE IGUAL
   onCartClicked() {
     this.toggleCartSidebar();
   }
 
-  // MANTENER TU MÉTODO EXACTAMENTE IGUAL
   onSearchPerformed(searchTerm: string) {
     console.log('Búsqueda desde header:', searchTerm);
     
@@ -116,9 +108,8 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  // MANTENER TODOS TUS MÉTODOS DEL CARRITO EXACTAMENTE IGUAL
   addToCart(book: any) {
-    console.log('HomeComponent: Añadiendo al carrito:', book.titulo); // SOLO AGREGAR LOG
+    console.log('HomeComponent: Añadiendo al carrito:', book.titulo);
     const existingBook = this.cartBooks.find((item) => item.id === book.id);
     if (existingBook) {
       existingBook.quantity += 1;
@@ -175,7 +166,6 @@ export class HomeComponent implements OnInit {
     this.showCartSidebar = false;
   }
 
-  // MANTENER TUS MÉTODOS DE GUARDADOS EXACTAMENTE IGUAL
   addToSaved(book: any) {
     if (this.isBookSaved(book.id)) {
       this.savedBooksIds.delete(book.id);
@@ -200,7 +190,6 @@ export class HomeComponent implements OnInit {
     }
   }
 
-  // MANTENER TUS MÉTODOS DE ACCIONES EXACTAMENTE IGUAL
   requestBook(book: any) {
     console.log('Solicitando donación de libro:', book.titulo);
     alert(`Solicitud enviada para: ${book.titulo}`);
@@ -211,7 +200,7 @@ export class HomeComponent implements OnInit {
   }
 
   getButtonAction(book: any) {
-    console.log('HomeComponent: Acción para libro tipo:', book.tipo_transaccion_nombre); // SOLO AGREGAR LOG
+    console.log('HomeComponent: Acción para libro tipo:', book.tipo_transaccion_nombre);
     switch (book.tipo_transaccion_nombre) {
       case 'Venta':
         this.addToCart(book);
@@ -225,24 +214,24 @@ export class HomeComponent implements OnInit {
     }
   }
 
-  getButtonText(type: string): string {
-    switch (type) {
-      case 'Venta':
-        return 'Añadir al carrito';
-      case 'Donación':
-        return 'Solicitar libro';
-      case 'Intercambio':
-        return 'Hacer oferta';
-      default:
-        return 'Acción';
-    }
+// home.component.ts
+getButtonText(type: string | undefined): string {
+  switch (type) {
+    case 'Venta':
+      return 'Añadir al carrito';
+    case 'Donación':
+      return 'Solicitar libro';
+    case 'Intercambio':
+      return 'Hacer oferta';
+    default:
+      return 'Acción';
   }
+}
 
   selectCategory(category: string) {
-    console.log('HomeComponent: Categoría seleccionada directamente:', category); // SOLO AGREGAR LOG
+    console.log('HomeComponent: Categoría seleccionada directamente:', category);
     this.selectedCategory = category;
 
-    // MANTENER TU LÓGICA EXACTAMENTE IGUAL
     if (category === 'Todas') {
       this.router.navigate(['/home'], { replaceUrl: true });
     } else {
@@ -253,10 +242,24 @@ export class HomeComponent implements OnInit {
     }
   }
 
-  // MANTENER TU MÉTODO EXACTAMENTE IGUAL
+  // ✨ MÉTODO CORREGIDO - Navegación según tipo de libro
   viewBookDetail(book: Book): void {
-    console.log('Detalles del libro:', book);
-    this.router.navigate(['/book-detail', book.id]);
+    console.log('Navegando al detalle del libro:', book.titulo, 'Tipo:', book.tipo_transaccion_nombre);
+    
+    if (book.tipo_transaccion_nombre === 'Venta') {
+      // Libros de venta van a book-sale
+      this.router.navigate(['/book', book.id]);
+    } else if (book.tipo_transaccion_nombre === 'Intercambio') {
+      // Libros de intercambio van a book-exchange
+      this.router.navigate(['/exchange', book.id]);
+    } else if (book.tipo_transaccion_nombre === 'Donación') {
+      // Libros de donación van a book-donation
+      this.router.navigate(['/donation', book.id]);
+    } else {
+      console.warn('Tipo de libro no reconocido:', book.tipo_transaccion_nombre);
+      // Fallback: ir a book-sale por defecto
+      this.router.navigate(['/book', book.id]);
+    }
   }
 
   goToCartPage() {
