@@ -1,4 +1,6 @@
-/* src/app/shared/header/header.component.css */
+/* ============================================ */
+/* 📁 ACTUALIZAR SECCIÓN: src/app/shared/header/header.component.css - LOGO MÁS GRANDE */
+/* ============================================ */
 
 /* Header personalizado - Estilo Figma */
 .custom-header {
@@ -7,11 +9,11 @@
   border-bottom: 1px solid #e9ecef;
 }
 
-/* Logo */
+/* ✨ LOGO MÁS GRANDE Y APROVECHA MEJOR EL ESPACIO */
 .logo-container {
-  width: 120px;
-  height: 50px;
-  background: #e9ecef;
+  width: 150px; 
+  height: 65px;
+  background: transparent;
   border-radius: 8px;
   display: flex;
   align-items: center;
@@ -19,23 +21,155 @@
   overflow: hidden;
   cursor: pointer;
   transition: all 0.3s ease;
+  padding: 1px;
 }
 
 .logo-container:hover {
-  background: #d6d8db;
+  transform: scale(1.05);
+  box-shadow: 0 2px 8px rgba(106, 147, 178, 0.2);
 }
 
+/* ✅ IMAGEN DEL LOGO MÁS GRANDE */
 .logo-img {
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
+  transition: all 0.3s ease;
+  /* Asegurar que la imagen ocupe el máximo espacio disponible */
+  width: auto;
+  height: auto;
 }
 
+/* ✅ PLACEHOLDER MEJORADO con ícono más grande */
 .logo-placeholder {
-  color: #6c757d;
-  font-weight: 500;
-  font-size: 0.9rem;
+  color: #6A93B2;
+  font-weight: 600;
+  font-size: 1.1rem; /* Aumentado de 0.9rem */
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-direction: row; /* Cambiado a horizontal para mejor uso del espacio */
+  text-align: center;
+  width: 100%;
+  justify-content: center;
 }
+
+.logo-placeholder svg {
+  color: #6A93B2;
+  opacity: 0.8;
+  width: 32px; /* Ícono más grande */
+  height: 32px;
+  flex-shrink: 0;
+}
+
+/* ✨ AJUSTE DEL HEADER PARA DAR MÁS ESPACIO AL LOGO */
+.custom-header .container-fluid {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.custom-header .row {
+  align-items: center;
+}
+
+/* Ajustar el padding vertical del header para acomodar el logo más grande */
+.custom-header .py-3 {
+  padding-top: 1rem !important;
+  padding-bottom: 1rem !important;
+}
+
+/* ✨ RESPONSIVE LOGO - Mantiene buen tamaño en todas las pantallas */
+@media (max-width: 1200px) {
+  .logo-container {
+    width: 180px;
+    height: 55px;
+  }
+  
+  .logo-placeholder {
+    font-size: 1rem;
+  }
+  
+  .logo-placeholder svg {
+    width: 28px;
+    height: 28px;
+  }
+}
+
+@media (max-width: 992px) {
+  .logo-container {
+    width: 160px;
+    height: 50px;
+  }
+  
+  .logo-placeholder {
+    font-size: 0.95rem;
+  }
+  
+  .logo-placeholder svg {
+    width: 26px;
+    height: 26px;
+  }
+}
+
+@media (max-width: 768px) {
+  .logo-container {
+    width: 140px;
+    height: 45px;
+  }
+  
+  .logo-placeholder {
+    font-size: 0.9rem;
+    flex-direction: column; /* Volver a vertical en móviles */
+    gap: 4px;
+  }
+  
+  .logo-placeholder svg {
+    width: 24px;
+    height: 24px;
+  }
+  
+  .logo-placeholder span {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .logo-container {
+    width: 120px;
+    height: 40px;
+  }
+  
+  .logo-placeholder {
+    font-size: 0.8rem;
+  }
+  
+  .logo-placeholder svg {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .logo-placeholder span {
+    display: none; /* Ocultar texto en pantallas muy pequeñas */
+  }
+}
+
+/* ✨ MEJORAR EL BALANCE VISUAL DEL HEADER */
+@media (min-width: 1200px) {
+  .custom-header .col-auto:first-child {
+    flex: 0 0 220px; /* Reservar más espacio para el logo en pantallas grandes */
+  }
+  
+  .custom-header .col-auto:last-child {
+    flex: 0 0 auto;
+  }
+  
+  .custom-header .col {
+    flex: 1;
+    max-width: 600px; /* Limitar el ancho máximo del buscador */
+  }
+}
+
+/* === RESTO DE ESTILOS DEL HEADER SIN CAMBIOS === */
 
 /* Buscador estilo Figma */
 .search-container-figma {
@@ -130,10 +264,6 @@
   background: #2F4653;
 }
 
-.profile-btn-figma.active-nav {
-  background: #2F4653;
-}
-
 .badge-figma {
   background: #ff4757;
   color: white;
@@ -197,12 +327,6 @@
 .dropdown-item-figma:hover {
   background: rgba(106, 147, 178, 0.1);
   color: #6A93B2;
-}
-
-.dropdown-item-figma.active {
-  background: #6A93B2;
-  color: white;
-  font-weight: 600;
 }
 
 .dropdown-item-figma:first-of-type {
@@ -274,11 +398,6 @@
 .profile-dropdown-item:hover {
   background: rgba(106, 147, 178, 0.1);
   color: #6A93B2;
-}
-
-.profile-dropdown-item.active {
-  background: #6A93B2;
-  color: white;
 }
 
 .profile-dropdown-item.logout {
