@@ -16,7 +16,8 @@ import { BookExchangeOfferComponent } from './book-exchange-offer/book-exchange-
 import { SellerProfileComponent } from './seller/seller-profile/seller-profile.component';
 import { SellerOffersComponent } from './seller/seller-offers/seller-offers.component';
 import { InfoSalesCustomerComponent } from './info-sales-customer/info-sales-customer.component'; // ✨ IMPORT EXISTENTE
-import { ReportSellerCustomerComponent } from './report-seller-customer/report-seller-customer.component'; // ✨ NUEVO IMPORT
+import { ReportSellerCustomerComponent } from './report-seller-customer/report-seller-customer.component'; // ✨ IMPORT REPORTE
+import { RateOrderComponent } from './rate-order/rate-order.component'; // ✨ NUEVO IMPORT CALIFICACIÓN
 
 export const routes: Routes = [
   { path: '', component: LoginComponent },
@@ -41,7 +42,10 @@ export const routes: Routes = [
   
   // ✨ RUTAS DE INFORMACIÓN Y REPORTE DE USUARIOS
   { path: 'seller/:id', component: InfoSalesCustomerComponent }, // Información del vendedor/propietario/donante
-  { path: 'seller/:id/report', component: ReportSellerCustomerComponent }, // ✨ NUEVA RUTA - Reportar usuario
+  { path: 'seller/:id/report', component: ReportSellerCustomerComponent }, // Reportar usuario
+  
+  // ✨ NUEVA RUTA - Calificar pedido
+  { path: 'rate-order/:id', component: RateOrderComponent }, // Calificar pedido completado
   
   // 🔄 Redirección por defecto
   { path: '**', redirectTo: 'login' }

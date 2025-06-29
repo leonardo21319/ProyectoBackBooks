@@ -1,0 +1,175 @@
+<!-- ============================================ -->
+<!-- 📁 CREAR NUEVO: src/app/rate-order/rate-order.component.html -->
+<!-- ============================================ -->
+
+<div class="bookstore-container">
+  
+  <!-- Header compartido -->
+  <app-header 
+    [cartItems]="cartItems" 
+    [savedItems]="savedItems" 
+    currentPage="rate-order"
+    (searchPerformed)="onSearchPerformed($event)">
+  </app-header>
+
+  <!-- Contenido principal -->
+  <main class="rating-main">
+    <div class="container">
+      
+      <!-- Contenedor centrado del formulario de calificación -->
+      <div class="rating-container">
+        
+        <!-- Título principal -->
+        <div class="rating-header">
+          <h1 class="rating-title">Calificar pedido</h1>
+        </div>
+
+        <!-- Descripción -->
+        <div class="rating-description">
+          <p>Comparte tu experiencia con este pedido y ayuda a otros usuarios.</p>
+        </div>
+
+        <!-- Información del pedido -->
+        <div class="order-context" *ngIf="orderData">
+          <div class="order-card">
+            <div class="order-image">
+              <img [src]="orderData.bookImage" [alt]="orderData.bookTitle" class="book-order-image">
+            </div>
+            <div class="order-details">
+              <h3 class="order-book-title">{{orderData.bookTitle}}</h3>
+              <p class="order-book-author">por {{orderData.bookAuthor}}</p>
+              <div class="order-info-grid">
+                <div class="order-info-item">
+                  <span class="order-label">Vendedor:</span>
+                  <span class="order-value clickable" (click)="viewSellerInfo()" title="Ver información del vendedor">
+                    {{orderData.seller}}
+                  </span>
+                </div>
+                <div class="order-info-item">
+                  <span class="order-label">Fecha:</span>
+                  <span class="order-value">{{orderData.orderDate}}</span>
+                </div>
+                <div class="order-info-item">
+                  <span class="order-label">Tipo:</span>
+                  <span class="order-value order-type">{{orderData.orderType}}</span>
+                </div>
+                <div class="order-info-item" *ngIf="orderData.orderType === 'Venta'">
+                  <span class="order-label">Total:</span>
+                  <span class="order-value order-amount">${{orderData.totalAmount}}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Formulario de calificación -->
+        <form class="rating-form" (ngSubmit)="submitRating()">
+          
+          <!-- Sistema de estrellas -->
+          <div class="form-group">
+            <label class="form-label">Calificación</label>
+            <div class="stars-rating">
+              <button
+                type="button"
+                *ngFor="let star of getStarsArray()"
+                class="star-btn"
+                [class.star-filled]="isStarFilled(star)"
+                [class.star-empty]="!isStarFilled(star)"
+                (click)="setRating(star)"
+                [title]="star + ' estrella' + (star > 1 ? 's' : '')">
+                <svg width="32" height="32" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" 
+                        [attr.fill]="isStarFilled(star) ? '#F59E0B' : 'none'"
+                        stroke="#F59E0B" 
+                        stroke-width="1.5"/>
+                </svg>
+              </button>
+            </div>
+            <div class="rating-text" *ngIf="rating > 0">
+              <span class="selected-rating">{{rating}} de 5 estrellas</span>
+            </div>
+          </div>
+
+          <!-- Campo de comentarios -->
+          <div class="form-group">
+            <label for="ratingComment" class="form-label">Comentario (opcional)</label>
+            <textarea 
+              id="ratingComment"
+              class="form-control rating-textarea"
+              [(ngModel)]="comment"
+              name="comment"
+              placeholder="Comparte detalles sobre tu experiencia: calidad del libro, tiempo de entrega, comunicación con el vendedor, etc."
+              rows="4">
+            </textarea>
+            <div class="char-counter">
+              <small class="text-muted">{{comment.length}} caracteres</small>
+            </div>
+          </div>
+
+          <!-- Botones de acción -->
+          <div class="form-actions">
+            <button 
+              type="button" 
+              class="btn btn-cancel"
+              (click)="cancel()">
+              Cancelar
+            </button>
+            
+            <button 
+              type="submit" 
+              class="btn btn-submit-rating"
+              [disabled]="rating === 0">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="me-2">
+                <path d="M22 11.08V12C21.9988 14.1564 21.3005 16.2547 20.0093 17.9818C18.7182 19.7088 16.9033 20.9725 14.8354 21.5839C12.7674 22.1953 10.5573 22.1219 8.53447 21.3746C6.51168 20.6273 4.78465 19.2461 3.61096 17.4371C2.43727 15.628 1.87979 13.4881 2.02168 11.3363C2.16356 9.18455 2.99721 7.13631 4.39828 5.49706C5.79935 3.85781 7.69279 2.71537 9.79619 2.24013C11.8996 1.7649 14.1003 1.98232 16.07 2.86" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M22 4L12 14.01L9 11.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              Enviar calificación
+            </button>
+          </div>
+
+        </form>
+
+        <!-- Información adicional -->
+        <div class="rating-info">
+          <div class="info-card">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="info-icon">
+              <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+              <path d="M12 16V12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M12 8H12.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <div class="info-text">
+              <h4>¿Cómo calificar?</h4>
+              <ul>
+                <li><strong>5 estrellas:</strong> Experiencia excelente, muy recomendado</li>
+                <li><strong>4 estrellas:</strong> Buena experiencia, recomendado</li>
+                <li><strong>3 estrellas:</strong> Experiencia aceptable</li>
+                <li><strong>2 estrellas:</strong> Experiencia regular, mejorable</li>
+                <li><strong>1 estrella:</strong> Experiencia deficiente</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- ✨ POPUP DE ÉXITO -->
+  <div class="popup-overlay" [class.show]="showSuccessPopup" (click)="closeSuccessPopup()">
+    <div class="success-popup" (click)="$event.stopPropagation()">
+      <div class="popup-content">
+        <div class="success-icon">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M22 11.08V12C21.9988 14.1564 21.3005 16.2547 20.0093 17.9818C18.7182 19.7088 16.9033 20.9725 14.8354 21.5839C12.7674 22.1953 10.5573 22.1219 8.53447 21.3746C6.51168 20.6273 4.78465 19.2461 3.61096 17.4371C2.43727 15.628 1.87979 13.4881 2.02168 11.3363C2.16356 9.18455 2.99721 7.13631 4.39828 5.49706C5.79935 3.85781 7.69279 2.71537 9.79619 2.24013C11.8996 1.7649 14.1003 1.98232 16.07 2.86" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M22 4L12 14.01L9 11.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h2 class="popup-title">¡Calificación enviada!</h2>
+        <p class="popup-message">
+          Gracias por tu calificación. Tu opinión ayuda a otros usuarios a tomar mejores decisiones.
+        </p>
+      </div>
+    </div>
+  </div>
+
+</div>

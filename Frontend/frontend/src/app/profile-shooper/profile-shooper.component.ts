@@ -1,4 +1,7 @@
-// src/app/profile-shooper/profile-shooper.component.ts
+// ============================================
+// 📁 ACTUALIZAR: src/app/profile-shooper/profile-shooper.component.ts - COMPLETO
+// ============================================
+
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -185,10 +188,10 @@ export class ProfileShooperComponent implements OnInit {
     }
   }
 
+  // ✨ MÉTODO ACTUALIZADO - Navegar a página de calificación
   rateOrder(order: any) {
-    console.log('Calificar pedido:', order);
-    // 🔌 AQUÍ INTEGRAR BACKEND - Abrir modal de calificación
-    alert(`Calificar pedido: ${order.bookTitle}`);
+    console.log('Navegando a página de calificación para pedido:', order.bookTitle);
+    this.router.navigate(['/rate-order', order.id]);
   }
 
   viewOrderDetails(order: any) {
