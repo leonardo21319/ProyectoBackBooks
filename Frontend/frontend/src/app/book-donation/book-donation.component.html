@@ -51,8 +51,11 @@
 
             <!-- Donante -->
             <div class="donor-info">
-              <span class="donor-label">Donado por:</span>
-              <span class="donor-name">{{book.donor}}</span>
+              <span class="donor-label">Usuario:</span>
+              <span class="donor-name clickable" (click)="viewDonorInfo()" title="Ver información del usuario">
+                {{book.donor}}
+                <!-- SVG icon -->
+              </span>
             </div>
 
             <!-- Estado -->

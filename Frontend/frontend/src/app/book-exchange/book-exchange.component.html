@@ -51,8 +51,11 @@
 
             <!-- Propietario -->
             <div class="owner-info">
-              <span class="owner-label">Propietario:</span>
-              <span class="owner-name">{{book.owner}}</span>
+              <span class="owner-label">Usuario:</span>
+              <span class="owner-name clickable" (click)="viewOwnerInfo()" title="Ver información del usuario">
+                {{book.owner}}
+                <!-- SVG icon -->
+              </span>
             </div>
 
             <!-- Estado -->

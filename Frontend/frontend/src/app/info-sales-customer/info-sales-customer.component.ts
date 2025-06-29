@@ -1,5 +1,5 @@
 // ============================================
-// 📁 CREAR: src/app/info-sales-customer/info-sales-customer.component.ts
+// 📁 ACTUALIZAR: src/app/info-sales-customer/info-sales-customer.component.ts - SIMPLIFICADO
 // ============================================
 
 import { Component, OnInit } from '@angular/core';
@@ -18,7 +18,7 @@ export class InfoSalesCustomerComponent implements OnInit {
   cartItems = 0;
   savedItems = 0;
   
-  // Información del vendedor/usuario
+  // ✨ INFORMACIÓN SIMPLIFICADA DEL USUARIO
   customerInfo = {
     id: 0,
     name: '',
@@ -26,12 +26,7 @@ export class InfoSalesCustomerComponent implements OnInit {
     phone: '',
     rating: 0,
     totalReviews: 0,
-    memberSince: '',
-    avatar: '',
-    booksForSale: 0,
-    booksForExchange: 0,
-    booksDonated: 0,
-    completedTransactions: 0
+    avatar: ''
   };
 
   constructor(
@@ -53,6 +48,7 @@ export class InfoSalesCustomerComponent implements OnInit {
     this.customerInfo = this.getMockCustomerData(userId);
   }
 
+  // ✨ DATOS SIMPLIFICADOS DE USUARIOS
   getMockCustomerData(userId: number): any {
     const mockCustomers = [
       {
@@ -62,12 +58,7 @@ export class InfoSalesCustomerComponent implements OnInit {
         phone: '5578907654',
         rating: 5.0,
         totalReviews: 127,
-        memberSince: 'Enero 2022',
-        avatar: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120"><circle cx="60" cy="60" r="60" fill="%23E8F4FD"/><circle cx="60" cy="45" r="20" fill="%236A93B2"/><ellipse cx="60" cy="85" rx="25" ry="15" fill="%236A93B2"/></svg>',
-        booksForSale: 15,
-        booksForExchange: 8,
-        booksDonated: 23,
-        completedTransactions: 89
+        avatar: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120"><circle cx="60" cy="60" r="60" fill="%23E8F4FD"/><circle cx="60" cy="45" r="20" fill="%236A93B2"/><ellipse cx="60" cy="85" rx="25" ry="15" fill="%236A93B2"/></svg>'
       },
       {
         id: 2,
@@ -76,12 +67,7 @@ export class InfoSalesCustomerComponent implements OnInit {
         phone: '5512345678',
         rating: 4.8,
         totalReviews: 92,
-        memberSince: 'Marzo 2021',
-        avatar: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120"><circle cx="60" cy="60" r="60" fill="%23F0E6FF"/><circle cx="60" cy="45" r="20" fill="%238B5CF6"/><ellipse cx="60" cy="85" rx="25" ry="15" fill="%238B5CF6"/></svg>',
-        booksForSale: 12,
-        booksForExchange: 6,
-        booksDonated: 18,
-        completedTransactions: 67
+        avatar: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120"><circle cx="60" cy="60" r="60" fill="%23F0E6FF"/><circle cx="60" cy="45" r="20" fill="%238B5CF6"/><ellipse cx="60" cy="85" rx="25" ry="15" fill="%238B5CF6"/></svg>'
       },
       {
         id: 3,
@@ -90,12 +76,7 @@ export class InfoSalesCustomerComponent implements OnInit {
         phone: '5598765432',
         rating: 4.9,
         totalReviews: 156,
-        memberSince: 'Julio 2020',
-        avatar: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120"><circle cx="60" cy="60" r="60" fill="%23FEF3E2"/><circle cx="60" cy="45" r="20" fill="%23F59E0B"/><ellipse cx="60" cy="85" rx="25" ry="15" fill="%23F59E0B"/></svg>',
-        booksForSale: 22,
-        booksForExchange: 11,
-        booksDonated: 31,
-        completedTransactions: 134
+        avatar: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120"><circle cx="60" cy="60" r="60" fill="%23FEF3E2"/><circle cx="60" cy="45" r="20" fill="%23F59E0B"/><ellipse cx="60" cy="85" rx="25" ry="15" fill="%23F59E0B"/></svg>'
       },
       {
         id: 4,
@@ -104,12 +85,7 @@ export class InfoSalesCustomerComponent implements OnInit {
         phone: '5534567890',
         rating: 4.7,
         totalReviews: 78,
-        memberSince: 'Noviembre 2022',
-        avatar: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120"><circle cx="60" cy="60" r="60" fill="%23FDF2F8"/><circle cx="60" cy="45" r="20" fill="%23EC4899"/><ellipse cx="60" cy="85" rx="25" ry="15" fill="%23EC4899"/></svg>',
-        booksForSale: 9,
-        booksForExchange: 4,
-        booksDonated: 12,
-        completedTransactions: 45
+        avatar: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120"><circle cx="60" cy="60" r="60" fill="%23FDF2F8"/><circle cx="60" cy="45" r="20" fill="%23EC4899"/><ellipse cx="60" cy="85" rx="25" ry="15" fill="%23EC4899"/></svg>'
       },
       {
         id: 5,
@@ -118,12 +94,7 @@ export class InfoSalesCustomerComponent implements OnInit {
         phone: '5567890123',
         rating: 4.6,
         totalReviews: 103,
-        memberSince: 'Septiembre 2021',
-        avatar: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120"><circle cx="60" cy="60" r="60" fill="%23F0FDF4"/><circle cx="60" cy="45" r="20" fill="%2316A34A"/><ellipse cx="60" cy="85" rx="25" ry="15" fill="%2316A34A"/></svg>',
-        booksForSale: 18,
-        booksForExchange: 7,
-        booksDonated: 25,
-        completedTransactions: 76
+        avatar: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120"><circle cx="60" cy="60" r="60" fill="%23F0FDF4"/><circle cx="60" cy="45" r="20" fill="%2316A34A"/><ellipse cx="60" cy="85" rx="25" ry="15" fill="%2316A34A"/></svg>'
       }
     ];
 
@@ -145,12 +116,6 @@ export class InfoSalesCustomerComponent implements OnInit {
     // TODO: Implementar lógica de reporte
     console.log('Reportando usuario:', this.customerInfo.name);
     alert(`Reporte enviado para el usuario: ${this.customerInfo.name}`);
-  }
-
-  sendMessage(): void {
-    // TODO: Implementar sistema de mensajes
-    console.log('Enviando mensaje a:', this.customerInfo.name);
-    alert(`Función de mensajería próximamente disponible`);
   }
 
   getRatingStars(): string[] {
