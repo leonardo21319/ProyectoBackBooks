@@ -58,57 +58,33 @@ import {
  *         description: Error en el servidor al procesar la solicitud.
  */
 export const RegistrarLibrosControlador = async (req, res) => {
-  const listaLibros = req.body;
-  console.log("Lista de libros recibida:", listaLibros);
-  if (!Array.isArray(listaLibros)) {
-    return res
-      .status(400)
-      .json({ error: "El cuerpo de la solicitud debe ser un arreglo" });
+  try {
+    const libroData = {
+      titulo: req.body.titulo,
+      isbn: req.body.isbn || null,
+      autor: req.body.autor,
+      editorial: req.body.editorial,
+      fecha_publicacion: req.body.fecha_publicacion,
+      id_estado_libro: Number(req.body.id_estado_libro),
+      precio: Number(req.body.precio),
+      descripcion: req.body.descripcion,
+      id_usuario: Number(req.body.id_usuario),
+      id_categoria: Number(req.body.id_categoria),
+      disponibilidad: req.body.disponibilidad === "1",
+      estatus: Number(req.body.estatus),
+      id_tipo_transaccion: Number(req.body.id_tipo_transaccion),
+      numpaginas: Number(req.body.numpaginas),
+      portada: req.file ? `/uploads/portadas/${req.file.filename}` : null,
+    };
+
+    const libro = new Libro(libroData);
+    await guardarLibroDB(libro);
+
+    res.status(201).json(libro);
+  } catch (err) {
+    console.error("Error al registrar libro:", err);
+    res.status(500).json({ error: err.message });
   }
-
-  const resultados = [];
-
-  await Promise.all(
-    listaLibros.map(async (libroData) => {
-      try {
-        if (libroData.portada && typeof libroData.portada === "string") {
-          const base64 = libroData.portada.includes(",")
-            ? libroData.portada.split(",")[1]
-            : libroData.portada;
-
-          if (!base64.match(/^[A-Za-z0-9+/=]*$/)) {
-            throw new Error("La imagen tiene una secuencia base64 no válida");
-          }
-
-          libroData.portada = Buffer.from(base64, "base64");
-        } else {
-          libroData.portada = null;
-        }
-
-        if (typeof libroData.estatus !== "number" || isNaN(libroData.estatus)) {
-          throw new Error("El valor de estatus debe ser un número entero");
-        }
-
-        const valoresValidosEstatus = [1, 2]; // Ejemplo: 1 = NUEVO, 2 = USADO
-        if (!valoresValidosEstatus.includes(libroData.estatus)) {
-          throw new Error("El valor de estatus no es válido");
-        }
-
-        const libro = new Libro(libroData);
-        await guardarLibroDB(libro);
-
-        resultados.push({ titulo: libro.titulo, exito: true });
-      } catch (error) {
-        resultados.push({
-          titulo: libroData.titulo || "—",
-          exito: false,
-          error: error.message,
-        });
-      }
-    })
-  );
-
-  res.json(resultados);
 };
 
 /**
@@ -153,6 +129,7 @@ export const RegistrarLibrosControlador = async (req, res) => {
 export const obtenerLibrosControlador = async (req, res) => {
   try {
     const libros = await obtenerTodosLosLibros();
+    console.log("Libros obtenidos:", libros);
     res.json(libros);
   } catch (error) {
     console.error("Error al obtener los libros:", error);

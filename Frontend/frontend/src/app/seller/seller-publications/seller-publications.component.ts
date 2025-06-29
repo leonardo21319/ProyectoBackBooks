@@ -4,23 +4,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { SalesHeaderComponent } from '../sales-header/sales-header.component';
-
-interface Publication {
-  id: number;
-  titulo: string;
-  autor: string;
-  editorial: string;
-  isbn: string;
-  portada: string;
-  categoria: 'ficcion' | 'no_ficcion' | 'academico' | 'infantil' | 'comic' | 'revista';
-  estado: 'disponible' | 'vendido' | 'reservado';
-  transaccion: 'venta' | 'intercambio' | 'donacion';
-  precio?: number;
-  descripcion: string;
-  numPaginas: number;
-  fechaPublicacion: string;
-}
-
+import { ApiService } from '../../servicios/api.service';
+import { Book } from '../../models/Book.model';
 @Component({
   selector: 'app-seller-publications',
   standalone: true,
@@ -29,12 +14,12 @@ interface Publication {
   styleUrls: ['./seller-publications.component.css'],
 })
 export class SellerPublicationsComponent implements OnInit {
-  publications: Publication[] = [];
-  filteredPublications: Publication[] = [];
-  currentPublication: Publication = this.emptyPublication;
+  publications: Book[] = [];
+  filteredPublications: Book[] = [];
+  currentPublication: Book = this.emptyPublication;
   showNewPublicationModal = false;
   isEditMode = false;
-  
+
   // Filtros
   filterCategory = 'todas';
   filterStatus = 'todos';
@@ -48,17 +33,23 @@ export class SellerPublicationsComponent implements OnInit {
   soldPublications = 0;
   reservedPublications = 0;
 
-  // Categorías disponibles
-  categories = [
-    { value: 'ficcion', label: 'Ficción' },
-    { value: 'no_ficcion', label: 'No Ficción' },
-    { value: 'academico', label: 'Académico' },
-    { value: 'infantil', label: 'Infantil' },
-    { value: 'comic', label: 'Cómic' },
-    { value: 'revista', label: 'Revista' }
+  categoriasMap = [
+    { id: 1, value: '1', label: 'Ficción' },
+    { id: 2, value: '2', label: 'Anime' },
+    { id: 3, value: '3', label: 'Académico' },
+    { id: 4, value: '4', label: 'Infantil' },
+    { id: 5, value: '5', label: 'Cómic' },
+    { id: 6, value: '6', label: 'Revista' },
+    { id: 7, value: '7', label: 'Romantico' },
   ];
 
-  get emptyPublication(): Publication {
+  transaccionesMap = [
+    { id: 1, value: 'venta', label: 'Venta' },
+    { id: 2, value: 'intercambio', label: 'Intercambio' },
+    { id: 3, value: 'donacion', label: 'Donación' },
+  ];
+
+  get emptyPublication(): Book {
     return {
       id: 0,
       titulo: '',
@@ -66,93 +57,82 @@ export class SellerPublicationsComponent implements OnInit {
       editorial: '',
       isbn: '',
       portada: '',
-      categoria: 'ficcion',
-      estado: 'disponible',
-      transaccion: 'venta',
+      id_categoria: 0,
+      id_estado_libro: 0,
+      id_tipo_transaccion: 0,
       precio: 0,
       descripcion: '',
-      numPaginas: 0,
-      fechaPublicacion: ''
+      numpaginas: 0,
+      fecha_publicacion: '',
+      disponibilidad: true,
+      estatus: 1,
+      id_usuario: 0, // <- Asegúrate de establecer dinámicamente el ID del usuario autenticado
     };
   }
+  public categories = this.categoriasMap;
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+
+    private ApiService: ApiService
+  ) {}
 
   ngOnInit(): void {
+    const decoded = this.ApiService.decodificarToken();
+    if (decoded && decoded.id) {
+      this.currentPublication.id_usuario = Number(decoded.id);
+    }
+
     this.loadMockPublications();
     this.updateStats();
     this.applyFilters();
   }
 
+  getCategoryName(id: number): string {
+    return this.categoriasMap.find((c) => c.id === id)?.label || 'N/D';
+  }
+  getTransactionName(id: number): string {
+    return this.transaccionesMap.find((t) => t.id === id)?.label || 'N/D';
+  }
   loadMockPublications() {
-    this.publications = [
-      {
-        id: 1,
-        titulo: 'Cien Años de Soledad',
-        autor: 'Gabriel García Márquez',
-        editorial: 'Editorial Sudamericana',
-        isbn: '9780307474728',
-        portada: 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=300&h=400&fit=crop',
-        categoria: 'ficcion',
-        estado: 'disponible',
-        transaccion: 'venta',
-        precio: 250,
-        descripcion: 'Una obra maestra del realismo mágico que narra la historia de la familia Buendía.',
-        numPaginas: 417,
-        fechaPublicacion: '2024-06-10'
+    this.ApiService.obtenerLibros().subscribe({
+      next: (libros) => {
+        this.publications = libros.map((libro: any) => ({
+          ...libro,
+          portada: libro.portada
+            ? `http://localhost:3000${libro.portada}`
+            : 'assets/default-cover.jpg',
+        }));
+        this.applyFilters();
+        this.updateStats();
       },
-      {
-        id: 2,
-        titulo: 'El Arte de la Guerra',
-        autor: 'Sun Tzu',
-        editorial: 'Planeta',
-        isbn: '9788441414259',
-        portada: 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=300&h=400&fit=crop',
-        categoria: 'no_ficcion',
-        estado: 'vendido',
-        transaccion: 'venta',
-        precio: 180,
-        descripcion: 'Tratado militar clásico sobre estrategia y táctica.',
-        numPaginas: 320,
-        fechaPublicacion: '2024-06-08'
+      error: (error) => {
+        console.error('Error al obtener libros:', error);
+        alert('Error al obtener libros');
       },
-      {
-        id: 3,
-        titulo: 'Sapiens',
-        autor: 'Yuval Noah Harari',
-        editorial: 'Debate',
-        isbn: '9788499926223',
-        portada: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=400&fit=crop',
-        categoria: 'no_ficcion',
-        estado: 'disponible',
-        transaccion: 'intercambio',
-        descripcion: 'Una breve historia de la humanidad desde la aparición del Homo sapiens.',
-        numPaginas: 512,
-        fechaPublicacion: '2024-06-05'
-      },
-      {
-        id: 4,
-        titulo: '1984',
-        autor: 'George Orwell',
-        editorial: 'Penguin Classics',
-        isbn: '9788499890944',
-        portada: 'https://images.unsplash.com/photo-1516979187457-637abb4f9353?w=300&h=400&fit=crop',
-        categoria: 'ficcion',
-        estado: 'reservado',
-        transaccion: 'venta',
-        precio: 200,
-        descripcion: 'Novela distópica sobre un futuro totalitario.',
-        numPaginas: 328,
-        fechaPublicacion: '2024-06-03'
-      }
-    ];
+    });
   }
 
   updateStats() {
     this.totalPublications = this.publications.length;
-    this.availablePublications = this.publications.filter(pub => pub.estado === 'disponible').length;
-    this.soldPublications = this.publications.filter(pub => pub.estado === 'vendido').length;
-    this.reservedPublications = this.publications.filter(pub => pub.estado === 'reservado').length;
+    this.availablePublications = this.publications.filter(
+      (pub) => pub.disponibilidad === true
+    ).length;
+    this.soldPublications = this.publications.filter(
+      (pub) => pub.disponibilidad === false && pub.estatus === 2
+    ).length;
+    this.reservedPublications = this.publications.filter(
+      (pub) => pub.disponibilidad === false && pub.estatus === 3
+    ).length;
+  }
+
+  getEstadoFisicoNombre(id_estado_libro: number): string {
+    const map: { [key: number]: string } = {
+      1: 'Nuevo',
+      2: 'Usado',
+      3: 'Desgastado',
+    };
+    return map[id_estado_libro] || 'Desconocido';
   }
 
   // Métodos del header
@@ -168,48 +148,64 @@ export class SellerPublicationsComponent implements OnInit {
     this.applyFilters();
   }
 
-  // Filtros y búsqueda
   applyFilters() {
     let filtered = [...this.publications];
 
-    // Filtrar por categoría
+    /* ---- Filtrar por categoría ---- */
     if (this.filterCategory !== 'todas') {
-      filtered = filtered.filter(pub => pub.categoria === this.filterCategory);
-    }
-
-    // Filtrar por estado
-    if (this.filterStatus !== 'todos') {
-      filtered = filtered.filter(pub => pub.estado === this.filterStatus);
-    }
-
-    // Filtrar por tipo de transacción
-    if (this.filterTransaction !== 'todas') {
-      filtered = filtered.filter(pub => pub.transaccion === this.filterTransaction);
-    }
-
-    // Filtrar por búsqueda
-    if (this.searchTerm) {
-      filtered = filtered.filter(pub => 
-        pub.titulo.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-        pub.autor.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-        pub.editorial.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-        pub.isbn.includes(this.searchTerm)
+      filtered = filtered.filter(
+        (b) => b.id_categoria === +this.filterCategory /* number vs string */
       );
     }
 
-    // Ordenar
-    filtered = this.sortPublications(filtered);
+    /* ---- Filtrar por estatus comercial ---- */
+    if (this.filterStatus !== 'todos') {
+      if (this.filterStatus === 'disponible') {
+        filtered = filtered.filter((b) => b.disponibilidad);
+      } else if (this.filterStatus === 'vendido') {
+        filtered = filtered.filter((b) => !b.disponibilidad && b.estatus === 2);
+      } else if (this.filterStatus === 'reservado') {
+        filtered = filtered.filter((b) => !b.disponibilidad && b.estatus === 3);
+      }
+    }
 
+    /* ---- Filtrar por tipo de transacción ---- */
+    if (this.filterTransaction !== 'todas') {
+      filtered = filtered.filter(
+        (b) => b.id_tipo_transaccion === +this.filterTransaction
+      );
+    }
+
+    /* ---- Búsqueda libre ---- */
+    if (this.searchTerm) {
+      const term = this.searchTerm.toLowerCase();
+      filtered = filtered.filter(
+        (b) =>
+          b.titulo.toLowerCase().includes(term) ||
+          b.autor.toLowerCase().includes(term) ||
+          b.editorial.toLowerCase().includes(term) ||
+          (b.isbn ?? '').includes(term)
+      );
+    }
+
+    /* ---- Ordenar ---- */
+    filtered = this.sortPublications(filtered);
     this.filteredPublications = filtered;
   }
 
-  sortPublications(publications: Publication[]): Publication[] {
+  sortPublications(publications: Book[]): Book[] {
     return publications.sort((a, b) => {
       switch (this.sortBy) {
         case 'fecha_desc':
-          return new Date(b.fechaPublicacion).getTime() - new Date(a.fechaPublicacion).getTime();
+          return (
+            new Date(b.fecha_publicacion).getTime() -
+            new Date(a.fecha_publicacion).getTime()
+          );
         case 'fecha_asc':
-          return new Date(a.fechaPublicacion).getTime() - new Date(b.fechaPublicacion).getTime();
+          return (
+            new Date(a.fecha_publicacion).getTime() -
+            new Date(b.fecha_publicacion).getTime()
+          );
         case 'titulo_asc':
           return a.titulo.localeCompare(b.titulo);
         case 'titulo_desc':
@@ -244,12 +240,16 @@ export class SellerPublicationsComponent implements OnInit {
 
   // Gestión de publicaciones
   openNewPublicationModal() {
+    const decoded = this.ApiService.decodificarToken();
     this.currentPublication = { ...this.emptyPublication };
+    if (decoded && decoded.id) {
+      this.currentPublication.id_usuario = Number(decoded.id);
+    }
     this.isEditMode = false;
     this.showNewPublicationModal = true;
   }
 
-  openEditPublicationModal(publication: Publication) {
+  openEditPublicationModal(publication: Book) {
     this.currentPublication = { ...publication };
     this.isEditMode = true;
     this.showNewPublicationModal = true;
@@ -263,35 +263,61 @@ export class SellerPublicationsComponent implements OnInit {
 
   savePublication() {
     if (!this.isFormValid()) {
-      alert('Por favor completa todos los campos requeridos');
+      alert('Por favor, completa todos los campos obligatorios.');
       return;
     }
 
-    if (this.isEditMode) {
-      // Actualizar publicación existente
-      const index = this.publications.findIndex(pub => pub.id === this.currentPublication.id);
-      if (index !== -1) {
-        this.publications[index] = { ...this.currentPublication };
-        console.log('Publicación actualizada:', this.currentPublication);
-        alert('✅ Publicación actualizada correctamente');
-      }
-    } else {
-      // Crear nueva publicación
-      const newId = Math.max(...this.publications.map(pub => pub.id), 0) + 1;
-      const newPublication = { ...this.currentPublication, id: newId };
-      this.publications.push(newPublication);
-      console.log('Nueva publicación creada:', newPublication);
-      alert('✅ Publicación creada correctamente');
+    const fd = new FormData();
+    fd.append('titulo', this.currentPublication.titulo);
+    fd.append('isbn', this.currentPublication.isbn ?? '');
+    fd.append('autor', this.currentPublication.autor);
+    fd.append('editorial', this.currentPublication.editorial);
+    fd.append('fecha_publicacion', this.currentPublication.fecha_publicacion);
+    fd.append(
+      'id_estado_libro',
+      String(this.currentPublication.id_estado_libro)
+    );
+    fd.append('precio', String(this.currentPublication.precio));
+    fd.append('descripcion', this.currentPublication.descripcion);
+    fd.append('id_usuario', String(this.currentPublication.id_usuario));
+    fd.append('id_categoria', String(this.currentPublication.id_categoria));
+    fd.append(
+      'disponibilidad',
+      this.currentPublication.disponibilidad ? '1' : '0'
+    );
+    fd.append('estatus', String(this.currentPublication.estatus));
+    fd.append(
+      'id_tipo_transaccion',
+      String(this.currentPublication.id_tipo_transaccion)
+    );
+    fd.append('numpaginas', String(this.currentPublication.numpaginas || 0));
+
+    if (this.selectedImageFile) {
+      fd.append('portada', this.selectedImageFile); // nombre 'portada' debe coincidir con upload.single('portada')
     }
 
-    this.updateStats();
-    this.applyFilters();
-    this.closeModal();
+    this.ApiService.registrarLibro(fd).subscribe({
+      next: (res) => {
+        alert('Libro registrado correctamente');
+        this.publications.push(res);
+        this.updateStats();
+        this.applyFilters();
+        this.closeModal();
+      },
+      error: (e) => {
+        console.error('Error al registrar libro:', e);
+        alert('Error al registrar el libro.');
+      },
+    });
   }
 
-  deletePublication(publication: Publication) {
-    if (confirm(`¿Estás seguro de que quieres eliminar "${publication.titulo}"?`)) {
-      this.publications = this.publications.filter(pub => pub.id !== publication.id);
+  deletePublication(publication: Book) {
+    if (
+      confirm(`¿Estás seguro de que quieres eliminar "${publication.titulo}"?`)
+    ) {
+      this.publications = this.publications.filter(
+        (pub) => pub.id !== publication.id
+      );
       this.updateStats();
       this.applyFilters();
       console.log('Publicación eliminada:', publication);
@@ -299,80 +325,83 @@ export class SellerPublicationsComponent implements OnInit {
     }
   }
 
-  duplicatePublication(publication: Publication) {
-    const newId = Math.max(...this.publications.map(pub => pub.id), 0) + 1;
-    const duplicatedPublication = { 
-      ...publication, 
-      id: newId, 
+  duplicatePublication(publication: Book) {
+    const newId = Math.max(...this.publications.map((pub) => pub.id), 0) + 1;
+    const duplicatedPublication = {
+      ...publication,
+      id: newId,
       titulo: `${publication.titulo} (Copia)`,
-      fechaPublicacion: new Date().toISOString().split('T')[0]
+      fechaPublicacion: new Date().toISOString().split('T')[0],
     };
     this.publications.push(duplicatedPublication);
     this.updateStats();
     this.applyFilters();
     alert('📋 Publicación duplicada correctamente');
   }
-
   isFormValid(): boolean {
     return !!(
       this.currentPublication.titulo &&
       this.currentPublication.autor &&
       this.currentPublication.editorial &&
-      this.currentPublication.isbn &&
-      this.currentPublication.categoria &&
-      this.currentPublication.estado &&
-      this.currentPublication.transaccion &&
       this.currentPublication.descripcion &&
-      this.currentPublication.numPaginas > 0
+      this.currentPublication.numpaginas &&
+      this.currentPublication.id_categoria &&
+      this.currentPublication.id_tipo_transaccion
     );
   }
 
   // Métodos de utilidad
   getStatusText(status: string): string {
     const statuses = {
-      'disponible': 'Disponible',
-      'vendido': 'Vendido',
-      'reservado': 'Reservado'
+      disponible: 'Disponible',
+      vendido: 'Vendido',
+      reservado: 'Reservado',
     };
     return statuses[status as keyof typeof statuses] || status;
   }
 
   getStatusClass(status: string): string {
     const statusClasses = {
-      'disponible': 'status-available',
-      'vendido': 'status-sold',
-      'reservado': 'status-reserved'
+      disponible: 'status-available',
+      vendido: 'status-sold',
+      reservado: 'status-reserved',
     };
     return statusClasses[status as keyof typeof statusClasses] || '';
   }
 
   getTransactionText(transaction: string): string {
     const transactions = {
-      'venta': 'Venta',
-      'intercambio': 'Intercambio',
-      'donacion': 'Donación'
+      venta: 'Venta',
+      intercambio: 'Intercambio',
+      donacion: 'Donación',
     };
-    return transactions[transaction as keyof typeof transactions] || transaction;
+    return (
+      transactions[transaction as keyof typeof transactions] || transaction
+    );
   }
 
   getTransactionClass(transaction: string): string {
     const transactionClasses = {
-      'venta': 'transaction-sale',
-      'intercambio': 'transaction-exchange',
-      'donacion': 'transaction-donation'
+      venta: 'transaction-sale',
+      intercambio: 'transaction-exchange',
+      donacion: 'transaction-donation',
     };
-    return transactionClasses[transaction as keyof typeof transactionClasses] || '';
+    return (
+      transactionClasses[transaction as keyof typeof transactionClasses] || ''
+    );
   }
 
   getCategoryText(category: string): string {
-    const categoryMap = this.categories.find(cat => cat.value === category);
+    const categoryMap = this.categoriasMap.find(
+      (cat) => cat.value === category
+    );
     return categoryMap?.label || category;
   }
 
   formatPrice(price: number): string {
     return new Intl.NumberFormat('es-MX', {
       style: 'currency',
-      currency: 'MXN'
+      currency: 'MXN',
     }).format(price);
   }
 
@@ -380,12 +409,12 @@ export class SellerPublicationsComponent implements OnInit {
     return new Date(date).toLocaleDateString('es-MX', {
       year: 'numeric',
       month: 'short',
-      day: 'numeric'
+      day: 'numeric',
     });
   }
 
-  trackByPublicationId(index: number, publication: Publication): number {
-    return publication.id;
+  trackByPublicationId(index: number, book: Book): number {
+    return book.id;
   }
 
   // Navegación
@@ -397,14 +426,20 @@ export class SellerPublicationsComponent implements OnInit {
     this.router.navigate(['/book', bookId]);
   }
 
+  selectedImageFile: File | null = null;
+
   // Manejo de imagen
   onImageSelected(event: any) {
     const file = event.target.files[0];
     if (file) {
-      // Aquí normalmente subirías la imagen a un servidor
-      // Por ahora solo simularemos con una URL
-      this.currentPublication.portada = 'https://via.placeholder.com/300x400?text=Nueva+Imagen';
-      console.log('Imagen seleccionada:', file.name);
+      this.selectedImageFile = file;
+
+      // Opcional: mostrar vista previa
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.currentPublication.portada = e.target.result;
+      };
+      reader.readAsDataURL(file);
     }
   }
 }

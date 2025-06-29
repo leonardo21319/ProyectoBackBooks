@@ -8,7 +8,7 @@ export interface Book {
   id_estado_libro: number;
   precio: number;
   descripcion: string;
-  portada: string; // Cambiado a string
+  portada: string;
   id_usuario: number;
   id_categoria: number;
   disponibilidad: boolean;
@@ -17,4 +17,5 @@ export interface Book {
   categoria_nombre?: string;
   estado_libro_nombre?: string;
   tipo_transaccion_nombre?: string;
+  numpaginas?: number;
 }

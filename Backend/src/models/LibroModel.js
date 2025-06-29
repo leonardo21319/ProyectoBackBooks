@@ -5,8 +5,8 @@ export const guardarLibroDB = async (libro) => {
   console.log("Guardando libro:", libro);
   const sql = `
     INSERT INTO libros 
-    (titulo, isbn, autor, editorial, fecha_publicacion, precio, descripcion, portada, id_usuario, id_categoria, disponibilidad, estatus, id_estado_libro, id_tipo_transaccion)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
+    (titulo, isbn, autor, editorial, fecha_publicacion, precio, descripcion, portada, id_usuario, id_categoria, disponibilidad, estatus, id_estado_libro, id_tipo_transaccion, numpaginas)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
     RETURNING id
   `;
 
@@ -25,6 +25,7 @@ export const guardarLibroDB = async (libro) => {
     libro.estatus,
     libro.id_estado_libro,
     libro.id_tipo_transaccion,
+    libro.numpaginas,
   ];
 
   try {
@@ -103,7 +104,7 @@ export const obtenerTodosLosLibros = async () => {
       l.id_tipo_transaccion, 
       l.id_categoria,
       c.nombre AS categoria_nombre, 
-      e.nombre AS estado_libro_nombre, 
+      e.nombre AS estado_libro, 
       t.nombre AS tipo_transaccion_nombre
     FROM libros l
     JOIN categoria c ON l.id_categoria = c.id

@@ -49,7 +49,6 @@ export class ApiService {
   guardarToken(token: string): void {
     try {
       localStorage.setItem('token', token);
-      console.log('ApiService: Token guardado exitosamente');
     } catch (error) {
       console.error('ApiService: Error al guardar token:', error);
     }
@@ -60,7 +59,6 @@ export class ApiService {
     try {
       return localStorage.getItem('token');
     } catch (error) {
-      console.error('ApiService: Error al obtener token:', error);
       return null;
     }
   }
@@ -69,13 +67,18 @@ export class ApiService {
   cerrarSesion(token: string): Observable<any> {
     console.log('ApiService: Iniciando cierre de sesión en backend');
     const headers = { Authorization: `Bearer ${token}` };
-    return this.http.post(`${this.baseUrl}/auth/cerrarSesion`, {}, { headers }).pipe(
-      timeout(5000),
-      catchError((error) => {
-        console.error('ApiService: Error al cerrar sesión en backend:', error);
-        return throwError(() => error);
-      })
-    );
+    return this.http
+      .post(`${this.baseUrl}/auth/cerrarSesion`, {}, { headers })
+      .pipe(
+        timeout(5000),
+        catchError((error) => {
+          console.error(
+            'ApiService: Error al cerrar sesión en backend:',
+            error
+          );
+          return throwError(() => error);
+        })
+      );
   }
 
   // NUEVO MÉTODO PARA LIMPIAR TOKENS
@@ -101,10 +104,9 @@ export class ApiService {
 
     try {
       const decoded = jwtDecode<DecodedToken>(token);
-      console.log('ApiService: Token decodificado exitosamente');
+
       return decoded;
     } catch (error) {
-      console.error('ApiService: Error decodificando el token:', error);
       return null;
     }
   }
@@ -120,21 +122,18 @@ export class ApiService {
     if (decodedToken.exp) {
       const currentTime = Math.floor(Date.now() / 1000);
       if (decodedToken.exp < currentTime) {
-        console.log('ApiService: Token expirado');
         return false;
       }
     }
 
     // Verificar que el rol sea válido (1=Admin, 2=Comprador, 3=Vendedor)
     if (![1, 2, 3].includes(decodedToken.rol)) {
-      console.log('ApiService: Rol de usuario inválido');
       return false;
     }
 
     return true;
   }
 
-  // NUEVO MÉTODO PARA OBTENER ROL DEL USUARIO
   getUserRole(): number | null {
     const decodedToken = this.decodificarToken();
     return decodedToken ? decodedToken.rol : null;
@@ -154,10 +153,9 @@ export class ApiService {
   isAdmin(): boolean {
     return this.getUserRole() === 1;
   }
-
-  // MANTENER TUS MÉTODOS DE LIBROS EXACTAMENTE IGUAL
+  //METODO PARA OBTENER LIBROS
   obtenerLibros(): Observable<any> {
-    console.log('ApiService: Obteniendo libros');
+    console.log('ApiService: Obteniendo libros desde el backend');
     return this.http.get(`${this.baseUrl}/intercambio/obtenerLibros`).pipe(
       catchError((error) => {
         console.error('ApiService: Error al obtener libros:', error);
@@ -170,8 +168,9 @@ export class ApiService {
     return this.http.get(`${this.baseUrl}/intercambio/obtenerlibros/${id}`);
   }
 
-  registrarLibros(libros: any): Observable<any> {
-    return this.http.post(`${this.baseUrl}/intercambio/cargarlibros`, libros);
+  registrarLibro(formData: FormData): Observable<any> {
+    console.log('ApiService: Datos del libro:', formData);
+    return this.http.post(`${this.baseUrl}/intercambio/cargarlibros`, formData);
   }
 
   actualizarLibro(id: number, libro: any): Observable<any> {

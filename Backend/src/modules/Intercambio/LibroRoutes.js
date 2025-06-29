@@ -9,7 +9,7 @@ import {
   eliminarMarcadorLibroControlador,
   obtenerMarcadoresPorUsuarioControlador,
 } from "../Intercambio/LibroController.js";
-
+import upload from "../../middlewares/guardarPortada.js"; // Importar configuración de multer
 const router = express.Router();
 
 /**
@@ -48,7 +48,11 @@ const router = express.Router();
  *       500:
  *         description: Error en el servidor
  */
-router.post("/cargarlibros", RegistrarLibrosControlador);
+router.post(
+  "/cargarlibros",
+  upload.single("portada"),
+  RegistrarLibrosControlador
+);
 
 /**
  * @swagger

@@ -28,11 +28,14 @@ app.use(
 const rutas = [
   { path: "/auth", route: indexRutas },
   { path: "/intercambio", route: IntercambioRutas },
+  {
+    path: "/uploads/portadas",
+    route: express.static(path.join(path.resolve(), "uploads/portadas")),
+  },
 ];
 rutas.forEach(({ path, route }) => {
   app.use(path, route);
 });
-
 app.listen(puerto, "0.0.0.0", () => {
   console.log(`Servidor corriendo en http://localhost:${puerto}`);
 });
