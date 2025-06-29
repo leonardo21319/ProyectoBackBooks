@@ -1,5 +1,5 @@
 // ============================================
-// 📁 ACTUALIZAR: src/app/app.routes.ts
+// 📁 ACTUALIZAR: src/app/app.routes.ts - COMPLETO
 // ============================================
 
 import { Routes } from '@angular/router';
@@ -15,7 +15,8 @@ import { BookDonationComponent } from './book-donation/book-donation.component';
 import { BookExchangeOfferComponent } from './book-exchange-offer/book-exchange-offer.component';
 import { SellerProfileComponent } from './seller/seller-profile/seller-profile.component';
 import { SellerOffersComponent } from './seller/seller-offers/seller-offers.component';
-import { InfoSalesCustomerComponent } from './info-sales-customer/info-sales-customer.component'; // ✨ NUEVO IMPORT
+import { InfoSalesCustomerComponent } from './info-sales-customer/info-sales-customer.component'; // ✨ IMPORT EXISTENTE
+import { ReportSellerCustomerComponent } from './report-seller-customer/report-seller-customer.component'; // ✨ NUEVO IMPORT
 
 export const routes: Routes = [
   { path: '', component: LoginComponent },
@@ -38,8 +39,9 @@ export const routes: Routes = [
   { path: 'donation/:id', component: BookDonationComponent }, // Para libros de donación
   { path: 'exchange/:id/offer', component: BookExchangeOfferComponent }, // Para hacer ofertas de intercambio
   
-  // ✨ NUEVA RUTA - Información del vendedor/propietario/donante
-  { path: 'seller/:id', component: InfoSalesCustomerComponent },
+  // ✨ RUTAS DE INFORMACIÓN Y REPORTE DE USUARIOS
+  { path: 'seller/:id', component: InfoSalesCustomerComponent }, // Información del vendedor/propietario/donante
+  { path: 'seller/:id/report', component: ReportSellerCustomerComponent }, // ✨ NUEVA RUTA - Reportar usuario
   
   // 🔄 Redirección por defecto
   { path: '**', redirectTo: 'login' }

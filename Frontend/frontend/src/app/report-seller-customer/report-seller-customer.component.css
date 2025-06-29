@@ -1,0 +1,425 @@
+/* ============================================ */
+/* 📁 CREAR NUEVO: src/app/report-seller-customer/report-seller-customer.component.css */
+/* ============================================ */
+
+.bookstore-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  font-family: "Segoe UI", sans-serif;
+}
+
+/* === CONTENIDO PRINCIPAL === */
+.report-main {
+  padding: 2rem 0;
+  min-height: calc(100vh - 120px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* === CONTENEDOR DEL REPORTE === */
+.report-container {
+  background: white;
+  border-radius: 20px;
+  padding: 2.5rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* === HEADER === */
+.report-header {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.report-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #2F4653;
+  margin: 0;
+}
+
+/* === DESCRIPCIÓN === */
+.report-description {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.report-description p {
+  color: #6c757d;
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+/* === CONTEXTO DEL USUARIO === */
+.user-context {
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 12px;
+  border-left: 4px solid #dc3545;
+}
+
+.user-mini-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.user-mini-image {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 2px solid #e9ecef;
+  object-fit: cover;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.user-mini-info {
+  flex: 1;
+}
+
+.user-mini-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #2F4653;
+  margin: 0 0 0.25rem 0;
+}
+
+.user-mini-label {
+  font-size: 0.85rem;
+  color: #dc3545;
+  font-weight: 500;
+  margin: 0;
+}
+
+/* === FORMULARIO === */
+.report-form {
+  margin-bottom: 2rem;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-label {
+  display: block;
+  font-weight: 600;
+  color: #2F4653;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+}
+
+.form-control {
+  width: 100%;
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  font-family: inherit;
+}
+
+.report-textarea {
+  padding: 1rem;
+  resize: vertical;
+  min-height: 120px;
+  line-height: 1.5;
+}
+
+.report-textarea:focus {
+  outline: none;
+  border-color: #dc3545;
+  box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
+}
+
+.report-textarea::placeholder {
+  color: #adb5bd;
+  font-style: italic;
+}
+
+.char-counter {
+  text-align: right;
+  margin-top: 0.5rem;
+}
+
+.char-counter small {
+  font-size: 0.85rem;
+}
+
+/* === BOTONES === */
+.form-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn {
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 140px;
+}
+
+.btn-cancel {
+  background: #6c757d;
+  color: white;
+}
+
+.btn-cancel:hover {
+  background: #5a6268;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
+}
+
+.btn-send-report {
+  background: linear-gradient(135deg, #dc3545, #c82333);
+  color: white;
+}
+
+.btn-send-report:hover:not(:disabled) {
+  background: linear-gradient(135deg, #c82333, #a71e2a);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
+}
+
+.btn-send-report:disabled {
+  background: #6c757d;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.me-2 {
+  margin-right: 0.5rem;
+}
+
+/* === INFORMACIÓN ADICIONAL === */
+.report-info {
+  margin-top: 2rem;
+}
+
+.info-card {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 12px;
+  padding: 1.5rem;
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.info-icon {
+  color: #dc3545;
+  flex-shrink: 0;
+  margin-top: 0.25rem;
+}
+
+.info-text h4 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #2F4653;
+  margin: 0 0 0.75rem 0;
+}
+
+.info-text ul {
+  margin: 0;
+  padding-left: 1.25rem;
+  color: #6c757d;
+}
+
+.info-text li {
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.info-text li:last-child {
+  margin-bottom: 0;
+}
+
+/* === UTILIDADES === */
+.text-muted {
+  color: #6c757d !important;
+}
+
+/* === RESPONSIVE DESIGN === */
+@media (max-width: 768px) {
+  .report-main {
+    padding: 1rem 0;
+    align-items: flex-start;
+  }
+
+  .report-container {
+    padding: 2rem 1.5rem;
+    margin: 1rem;
+    border-radius: 15px;
+  }
+
+  .report-title {
+    font-size: 1.6rem;
+  }
+
+  .report-description p {
+    font-size: 1rem;
+  }
+
+  .user-mini-card {
+    flex-direction: column;
+    text-align: center;
+    gap: 0.75rem;
+  }
+
+  .user-mini-image {
+    align-self: center;
+  }
+
+  .form-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .btn {
+    min-width: auto;
+    width: 100%;
+  }
+
+  .info-card {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .info-icon {
+    align-self: center;
+  }
+
+  .info-text {
+    text-align: center;
+  }
+
+  .info-text ul {
+    text-align: left;
+    max-width: 300px;
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 576px) {
+  .report-container {
+    padding: 1.5rem 1rem;
+    margin: 0.5rem;
+  }
+
+  .report-title {
+    font-size: 1.4rem;
+  }
+
+  .report-description p {
+    font-size: 0.95rem;
+  }
+
+  .form-label {
+    font-size: 0.95rem;
+  }
+
+  .report-textarea {
+    padding: 0.75rem;
+    font-size: 0.95rem;
+  }
+
+  .btn {
+    padding: 10px 20px;
+    font-size: 0.95rem;
+  }
+}
+
+/* === ANIMACIONES === */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.report-container {
+  animation: fadeIn 0.5s ease-out;
+}
+
+/* === ESTADOS DE FOCUS === */
+.btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.25);
+}
+
+.btn-cancel:focus {
+  box-shadow: 0 0 0 3px rgba(108, 117, 125, 0.25);
+}
+
+/* === POPUP DE ÉXITO === */
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.popup-overlay.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.success-popup {
+  background: linear-gradient(135deg, #dc3545, #c82333);
+  border-radius: 15px;
+  padding: 3rem 2rem;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+  transform: scale(0.7);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.popup-overlay.show .success-popup {
+  transform: scale(1);
+}
+
+.popup-content {
+  color: white;
+}
+
+.popup-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin: 0 0 1rem 0;
+  color: white;
+}
+
+.popup-message {
+  font-size: 1.1rem;
+  line-height: 1.5;
+  margin: 0;
+  opacity: 0.95;
+}

@@ -1,5 +1,5 @@
 // ============================================
-// 📁 ACTUALIZAR: src/app/info-sales-customer/info-sales-customer.component.ts - SIMPLIFICADO
+// 📁 ACTUALIZAR: src/app/info-sales-customer/info-sales-customer.component.ts - COMPLETO
 // ============================================
 
 import { Component, OnInit } from '@angular/core';
@@ -39,6 +39,24 @@ export class InfoSalesCustomerComponent implements OnInit {
     this.route.params.subscribe(params => {
       const userId = +params['id'];
       this.loadCustomerInfo(userId);
+    });
+
+    // Manejar redirecciones por categorías/búsqueda desde el header
+    this.route.queryParams.subscribe(params => {
+      if (params['category']) {
+        console.log('Categoría seleccionada desde info-sales-customer:', params['category']);
+        this.router.navigate(['/home'], { 
+          queryParams: { category: params['category'] },
+          replaceUrl: true 
+        });
+      }
+      if (params['search']) {
+        console.log('Búsqueda desde info-sales-customer:', params['search']);
+        this.router.navigate(['/home'], { 
+          queryParams: { search: params['search'] },
+          replaceUrl: true 
+        });
+      }
     });
   }
 
@@ -112,10 +130,10 @@ export class InfoSalesCustomerComponent implements OnInit {
     });
   }
 
+  // ✨ MÉTODO ACTUALIZADO - Navegar a página de reporte
   reportUser(): void {
-    // TODO: Implementar lógica de reporte
-    console.log('Reportando usuario:', this.customerInfo.name);
-    alert(`Reporte enviado para el usuario: ${this.customerInfo.name}`);
+    console.log('Navegando a página de reporte para usuario:', this.customerInfo.name);
+    this.router.navigate(['/seller', this.customerInfo.id, 'report']);
   }
 
   getRatingStars(): string[] {

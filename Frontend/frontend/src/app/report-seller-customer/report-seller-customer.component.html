@@ -1,0 +1,123 @@
+<!-- ============================================ -->
+<!-- 📁 NUEVO: src/app/report-seller-customer/report-seller-customer.component.html -->
+<!-- ============================================ -->
+
+<div class="bookstore-container">
+  
+  <!-- Header compartido -->
+  <app-header 
+    [cartItems]="cartItems" 
+    [savedItems]="savedItems" 
+    currentPage="report-seller-customer"
+    (searchPerformed)="onSearchPerformed($event)">
+  </app-header>
+
+  <!-- Contenido principal -->
+  <main class="report-main">
+    <div class="container">
+      
+      <!-- Contenedor centrado del formulario de reporte -->
+      <div class="report-container">
+        
+        <!-- Título principal -->
+        <div class="report-header">
+          <h1 class="report-title">Reportar usuario</h1>
+        </div>
+
+        <!-- Descripción -->
+        <div class="report-description">
+          <p>Describe brevemente el problema o el motivo de tu reporte.</p>
+        </div>
+
+        <!-- Información del usuario (opcional, para contexto) -->
+        <div class="user-context" *ngIf="reportedUser">
+          <div class="user-mini-card">
+            <img [src]="reportedUser.avatar" [alt]="reportedUser.name" class="user-mini-image">
+            <div class="user-mini-info">
+              <h3 class="user-mini-name">{{reportedUser.name}}</h3>
+              <p class="user-mini-label">Usuario reportado</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Formulario de reporte -->
+        <form class="report-form" (ngSubmit)="sendReport()">
+          
+          <!-- Campo de texto para el reporte -->
+          <div class="form-group">
+            <label for="reportText" class="form-label">Describe el motivo del reporte</label>
+            <textarea 
+              id="reportText"
+              class="form-control report-textarea"
+              [(ngModel)]="reportText"
+              name="reportText"
+              placeholder="Explica detalladamente qué problema has tenido con este usuario, qué normas ha incumplido o cualquier comportamiento inapropiado que hayas observado."
+              rows="6"
+              required>
+            </textarea>
+            <div class="char-counter">
+              <small class="text-muted">{{reportText.length}} caracteres</small>
+            </div>
+          </div>
+
+          <!-- Botones de acción -->
+          <div class="form-actions">
+            <button 
+              type="button" 
+              class="btn btn-cancel"
+              (click)="cancel()">
+              Cancelar
+            </button>
+            
+            <button 
+              type="submit" 
+              class="btn btn-send-report"
+              [disabled]="!reportText.trim()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="me-2">
+                <path d="M22 2L11 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              Enviar
+            </button>
+          </div>
+
+        </form>
+
+        <!-- Información adicional -->
+        <div class="report-info">
+          <div class="info-card">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="info-icon">
+              <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+              <path d="M12 16V12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M12 8H12.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <div class="info-text">
+              <h4>¿Cuándo reportar a un usuario?</h4>
+              <ul>
+                <li>Comportamiento ofensivo o lenguaje inapropiado</li>
+                <li>Incumplimiento de acuerdos de intercambio o venta</li>
+                <li>Publicación de libros falsos o engañosos</li>
+                <li>Actividad sospechosa o fraudulenta</li>
+                <li>Spam o contenido no relacionado con libros</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- ✨ POPUP DE ÉXITO -->
+  <div class="popup-overlay" [class.show]="showSuccessPopup" (click)="closeSuccessPopup()">
+    <div class="success-popup" (click)="$event.stopPropagation()">
+      <div class="popup-content">
+        <h2 class="popup-title">¡Reporte enviado!</h2>
+        <p class="popup-message">
+          Gracias por tu reporte. Nuestro equipo revisará la situación y tomará las medidas necesarias.
+        </p>
+      </div>
+    </div>
+  </div>
+
+</div>
