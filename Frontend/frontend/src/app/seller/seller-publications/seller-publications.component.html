@@ -369,32 +369,37 @@
               />
             </div>
 
-            <!-- Portada -->
-            <div class="form-group col-md-6">
-              <label for="portada">Portada</label>
-              <div class="file-input-group">
-                <input
-                  type="file"
-                  id="portada"
-                  class="form-control-file"
-                  (change)="onImageSelected($event)"
-                  accept="image/*"
-                />
-                <button type="button" class="btn btn-outline-secondary">
-                  Elegir archivo
-                </button>
-              </div>
 
-              <div *ngIf="currentPublication.portada" class="mt-2">
-    <label>Portada actual:</label><br />
-    <img
-      [src]="currentPublication.portada"
-      alt="Portada actual"
-      style="max-width: 150px; border: 1px solid #ccc; padding: 4px;"
+            
+<div class="form-group col-md-6">
+  <label for="portada">Portada</label>
+  <div class="file-input-group">
+    <!-- Ocultar input real -->
+    <input
+      type="file"
+      id="portada"
+      class="form-control-file d-none"
+      (change)="onImageSelected($event)"
+      accept="image/*"
+      #fileInput
     />
-              
-            </div>
-          </div>
+
+    <!-- Botón personalizado que abre el input -->
+    <button type="button" class="btn btn-outline-secondary" (click)="fileInput.click()">
+      Elegir archivo
+    </button>
+  </div>
+
+  <!-- Mostrar nombre del archivo nuevo si el usuario selecciona uno -->
+  <div *ngIf="selectedImageFile" class="mt-2 text-muted">
+    Archivo seleccionado: {{ selectedImageFile.name }}
+  </div>
+
+  <!-- Mostrar nombre del archivo actual si no se ha seleccionado uno nuevo -->
+  <div *ngIf="!selectedImageFile && currentPublication.portada" class="mt-2 text-muted">
+    Archivo actual: {{ getFileNameFromUrl(currentPublication.portada) }}
+  </div>
+</div>
 
           <div class="form-row">
             <!-- Estado del libro -->

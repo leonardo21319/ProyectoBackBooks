@@ -18,8 +18,23 @@ export class SellerPublicationsComponent implements OnInit {
   filteredPublications: Book[] = [];
   currentPublication: Book = this.emptyPublication;
   showNewPublicationModal = false;
+  selectedImageFile: File | null = null;
   isEditMode = false;
 
+  getFileNameFromUrl(url: string): string {
+    return url ? url.split('/').pop() || '' : '';
+  }
+
+onImageSelected(event: any): void {
+  const file = event.target.files[0];
+  if (file) {
+    this.selectedImageFile = file;
+    console.log('Archivo seleccionado:', file.name);
+  }
+}
+
+
+  
   // Filtros
   filterCategory = 'todas';
   filterStatus = 'todos';
@@ -262,6 +277,7 @@ export class SellerPublicationsComponent implements OnInit {
     fecha_publicacion: publication.fecha_publicacion?.split('T')[0] ?? '',
     numpaginas: Number(publication.numpaginas) || 0,
     disponibilidad: Number(publication.disponibilidad) || 1,
+
     portada: publication.portada
       ? publication.portada.startsWith('http')
         ? publication.portada
@@ -269,10 +285,12 @@ export class SellerPublicationsComponent implements OnInit {
       : 'assets/default-cover.jpg',
   };
 
+
   this.isEditMode = true;
   this.showNewPublicationModal = true;
 
   console.log('Estado del libro al editar:', this.currentPublication.id_estado_libro);
+  console.log('Portada:', this.currentPublication.portada);
 }
 
 
@@ -494,20 +512,6 @@ export class SellerPublicationsComponent implements OnInit {
     this.router.navigate(['/book', bookId]);
   }
 
-  selectedImageFile: File | null = null;
-
-  // Manejo de imagen
-  onImageSelected(event: any) {
-    const file = event.target.files[0];
-    if (file) {
-      this.selectedImageFile = file;
-
-      // Opcional: mostrar vista previa
-      const reader = new FileReader();
-      reader.onload = (e: any) => {
-        this.currentPublication.portada = e.target.result;
-      };
-      reader.readAsDataURL(file);
-    }
-  }
 }
+
+
