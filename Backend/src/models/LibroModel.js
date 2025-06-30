@@ -124,12 +124,12 @@ export const obtenerTodosLosLibros = async () => {
 // Función para obtener un libro por su ID
 export const obtenerLibroPorId = async (id) => {
   const sql = `
-    SELECT l.id, l.titulo, l.isbn, l.autor, l.editorial, l.fecha_publicacion, l.precio, l.descripcion, l.portada,
+    SELECT l.id, l.titulo, l.isbn, l.autor, l.editorial, l.numpaginas, l.fecha_publicacion, l.precio, l.descripcion, l.portada,
            c.nombre AS categoria, e.nombre AS estado_libro, t.nombre AS tipo_transaccion
     FROM libros l
-    JOIN categorias c ON l.id_categoria = c.id
-    JOIN estados_libro e ON l.id_estado_libro = e.id
-    JOIN tipos_transaccion t ON l.id_tipo_transaccion = t.id
+    JOIN categoria c ON l.id_categoria = c.id
+    LEFT JOIN estado_libro e ON l.id_estado_libro = e.id
+    LEFT JOIN tipo_transaccion t ON l.id_tipo_transaccion = t.id
     WHERE l.id = $1
   `;
 
@@ -141,6 +141,7 @@ export const obtenerLibroPorId = async (id) => {
     throw error;
   }
 };
+
 
 export const eliminarLibroPorId = async (id) => {
   const sql = `

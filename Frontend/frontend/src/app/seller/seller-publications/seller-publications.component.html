@@ -384,6 +384,15 @@
                   Elegir archivo
                 </button>
               </div>
+
+              <div *ngIf="currentPublication.portada" class="mt-2">
+    <label>Portada actual:</label><br />
+    <img
+      [src]="currentPublication.portada"
+      alt="Portada actual"
+      style="max-width: 150px; border: 1px solid #ccc; padding: 4px;"
+    />
+              
             </div>
           </div>
 

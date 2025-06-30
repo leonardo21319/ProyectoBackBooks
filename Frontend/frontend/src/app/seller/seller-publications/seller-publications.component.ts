@@ -252,10 +252,30 @@ export class SellerPublicationsComponent implements OnInit {
   }
 
   openEditPublicationModal(publication: Book) {
-    this.currentPublication = { ...publication };
-    this.isEditMode = true;
-    this.showNewPublicationModal = true;
-  }
+  this.currentPublication = {
+    ...this.emptyPublication,
+    ...publication,
+    id_usuario: publication.id_usuario,
+    id_categoria: Number(publication.id_categoria) || 0,
+    id_estado_libro: Number(publication.id_estado_libro) || 1,
+    id_tipo_transaccion: Number(publication.id_tipo_transaccion) || 0,
+    fecha_publicacion: publication.fecha_publicacion?.split('T')[0] ?? '',
+    numpaginas: Number(publication.numpaginas) || 0,
+    disponibilidad: Number(publication.disponibilidad) || 1,
+    portada: publication.portada
+      ? publication.portada.startsWith('http')
+        ? publication.portada
+        : `http://localhost:3000${publication.portada}`
+      : 'assets/default-cover.jpg',
+  };
+
+  this.isEditMode = true;
+  this.showNewPublicationModal = true;
+
+  console.log('Estado del libro al editar:', this.currentPublication.id_estado_libro);
+}
+
+
 
   closeModal() {
     this.showNewPublicationModal = false;
@@ -296,10 +316,42 @@ export class SellerPublicationsComponent implements OnInit {
       fd.append('portada', this.selectedImageFile); // nombre 'portada' debe coincidir con upload.single('portada')
     }
 
+
+    if (this.isEditMode) {
+    // 🟡 EDITAR LIBRO
+    this.ApiService.actualizarLibro(this.currentPublication.id, fd).subscribe({
+      next: (res) => {
+        const index = this.publications.findIndex(pub => pub.id === this.currentPublication.id);
+        if (index !== -1) {
+          this.publications[index] = {
+            ...this.publications[index],
+            ...res,
+            id_usuario: this.currentPublication.id_usuario,
+            portada: res.portada
+              ? `http://localhost:3000${res.portada}`
+              : this.publications[index].portada,
+          };
+        }
+        this.updateStats();
+        this.applyFilters();
+        this.closeModal();
+      },
+      error: (e) => {
+        console.error('Error al actualizar libro:', e);
+        alert('Error al actualizar el libro.');
+      },
+    });
+  } else {
+    // 🟢 REGISTRAR LIBRO NUEVO
     this.ApiService.registrarLibro(fd).subscribe({
       next: (res) => {
-        alert('Libro registrado correctamente');
-        this.publications.push(res);
+        const libroConPortada = {
+          ...res,
+          portada: res.portada
+            ? `http://localhost:3000${res.portada}`
+            : 'assets/default-cover.jpg',
+        };
+        this.publications.push(libroConPortada);
         this.updateStats();
         this.applyFilters();
         this.closeModal();
@@ -310,7 +362,17 @@ export class SellerPublicationsComponent implements OnInit {
       },
     });
   }
+}
+  
 
+
+
+
+
+
+
+
+  
   deletePublication(publication: Book) {
     if (
       confirm(`¿Estás seguro de que quieres eliminar "${publication.titulo}"?`)

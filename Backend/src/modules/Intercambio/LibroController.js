@@ -181,6 +181,7 @@ export const obtenerLibroPorIdControlador = async (req, res) => {
 
   try {
     const libro = await obtenerLibroPorId(id);
+    console.log(libro)
     if (!libro) {
       return res.status(404).json({ error: "Libro no encontrado" });
     }

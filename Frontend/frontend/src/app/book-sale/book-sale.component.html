@@ -38,11 +38,12 @@
         <!-- Imagen del libro - tamaño reducido -->
         <div class="book-image-section">
           <div class="book-image-container">
-            <img
-              [src]="book.image"
-              [alt]="book.title"
-              class="book-detail-image"
-            />
+          <img
+          [src]="book?.portada"
+          [alt]="book?.titulo"
+          class="book-detail-image"
+          />
+
           </div>
         </div>
 
@@ -51,12 +52,12 @@
           <div class="book-info">
             <!-- Título y precio -->
             <div class="book-header">
-              <h1 class="book-title">{{ book.title }}</h1>
-              <div class="book-price">${{ book.price }}</div>
+              <h1 class="book-title">{{ book?.titulo }}</h1>
+              <div class="book-price">${{ book?.precio }}</div>
             </div>
 
             <!-- Autor -->
-            <p class="book-author">{{ book.author }}</p>
+            <p class="book-author">{{ book?.autor }}</p>
 
             <!-- ✨ VENDEDOR CLICKEABLE -->
             <div class="seller-info">
@@ -66,7 +67,7 @@
                 (click)="viewSellerInfo()"
                 title="Ver información del usuario"
               >
-                {{ book.seller }}
+                {{ book?.vendedor }}
                 <!-- SVG icon -->
               </span>
             </div>
@@ -74,7 +75,7 @@
             <!-- Estado -->
             <div class="book-condition">
               <span class="condition-label">Estado:</span>
-              <span class="condition-value">{{ book.condition }}</span>
+              <span class="condition-value">{{ book?.estado_libro }}</span>
             </div>
 
             <!-- Botones de acción -->
@@ -117,11 +118,8 @@
       <div class="details-container">
         <!-- Sinopsis -->
         <div class="info-section">
-          <h3 class="section-title">Sinopsis</h3>
-          <p class="section-content">{{ book.synopsis }}</p>
-          <div class="details-continuation">
-            <p class="section-content">{{ book.details }}</p>
-          </div>
+          <h3 class="section-title">Descripción</h3>
+          <p class="section-content">{{ book?.descripcion }}</p>
         </div>
 
         <!-- Detalles del producto -->
@@ -131,33 +129,33 @@
           <div class="details-list">
             <div class="detail-item">
               <span class="detail-label">Número de páginas:</span>
-              <span class="detail-value">{{ book.pages }} páginas</span>
+              <span class="detail-value">{{ book?.numpaginas }} páginas</span>
             </div>
 
             <div class="detail-item">
               <span class="detail-label">Fecha de publicación:</span>
-              <span class="detail-value">{{ book.publishDate }}</span>
+              <span class="detail-value">{{ book?.fecha_publicacion }}</span>
             </div>
 
             <div class="detail-item">
               <span class="detail-label">ISBN:</span>
-              <span class="detail-value">{{ book.isbn }}</span>
+              <span class="detail-value">{{ book?.isbn }}</span>
             </div>
 
             <div class="detail-item">
               <span class="detail-label">Editorial:</span>
-              <span class="detail-value">{{ book.editorial }}</span>
+              <span class="detail-value">{{ book?.editorial }}</span>
             </div>
 
             <div class="detail-item">
               <span class="detail-label">Categoría:</span>
-              <span class="detail-value">{{ book.category }}</span>
+              <span class="detail-value">{{ book?.categoria_nombre}}</span>
             </div>
 
             <div class="detail-item">
               <span class="detail-label">Transacción:</span>
               <span class="detail-value transaction-type">{{
-                book.transaction
+                book?.tipo_transaccion_nombre
               }}</span>
             </div>
           </div>
