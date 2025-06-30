@@ -70,7 +70,7 @@ export const RegistrarLibrosControlador = async (req, res) => {
       descripcion: req.body.descripcion,
       id_usuario: Number(req.body.id_usuario),
       id_categoria: Number(req.body.id_categoria),
-      disponibilidad: req.body.disponibilidad === "1",
+      disponibilidad:Number(req.body.disponibilidad),
       estatus: Number(req.body.estatus),
       id_tipo_transaccion: Number(req.body.id_tipo_transaccion),
       numpaginas: Number(req.body.numpaginas),

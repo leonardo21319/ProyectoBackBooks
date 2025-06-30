@@ -283,10 +283,8 @@ export class SellerPublicationsComponent implements OnInit {
     fd.append('descripcion', this.currentPublication.descripcion);
     fd.append('id_usuario', String(this.currentPublication.id_usuario));
     fd.append('id_categoria', String(this.currentPublication.id_categoria));
-    fd.append(
-      'disponibilidad',
-      this.currentPublication.disponibilidad ? '1' : '0'
-    );
+    fd.append('disponibilidad', String (this.currentPublication.disponibilidad || 0));
+
     fd.append('estatus', String(this.currentPublication.estatus));
     fd.append(
       'id_tipo_transaccion',
