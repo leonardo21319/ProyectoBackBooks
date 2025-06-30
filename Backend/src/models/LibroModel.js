@@ -103,6 +103,7 @@ export const obtenerTodosLosLibros = async () => {
       l.estatus,
       l.id_tipo_transaccion, 
       l.id_categoria,
+      l.numpaginas,
       c.nombre AS categoria_nombre, 
       e.nombre AS estado_libro, 
       t.nombre AS tipo_transaccion_nombre
