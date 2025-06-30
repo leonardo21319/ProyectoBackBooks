@@ -1,5 +1,5 @@
 // ============================================
-// 📁 SOLUCION: src/app/home/home.component.ts - ERROR CORREGIDO
+// 📁 ACTUALIZAR: src/app/home/home.component.ts - COMPLETO CON PAYMENT
 // ============================================
 
 import { Component, OnInit } from '@angular/core';
@@ -34,10 +34,10 @@ export class HomeComponent implements OnInit {
 
   ngOnInit(): void {
     console.log('HomeComponent: Componente iniciado');
-
+    
     // ✨ TEMPORALMENTE COMENTADO - Usar libros de prueba
     // this.obtenerLibros();
-
+    
     // ✨ CARGAR LIBROS DE PRUEBA TEMPORALES
     this.cargarLibrosDePrueba();
 
@@ -57,120 +57,107 @@ export class HomeComponent implements OnInit {
     this.allBooks = [
       {
         id: 1,
-        titulo: 'Drácula',
-        isbn: '9786254449970',
-        autor: 'Bram Stoker',
-        editorial: 'Pinky Penguin',
-        fecha_publicacion: '1897-05-26',
+        titulo: "Drácula",
+        isbn: "9786254449970",
+        autor: "Bram Stoker",
+        editorial: "Pinky Penguin",
+        fecha_publicacion: "1897-05-26",
         id_estado_libro: 1,
-        precio: 190.0,
-        descripcion:
-          'Una obra maestra del género gótico. La historia se desarrolla a través de cartas, diarios y recortes de periódicos.',
-        portada:
-          "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='300' viewBox='0 0 200 300'><rect width='200' height='300' fill='%23f0f8ff'/><circle cx='100' cy='150' r='40' fill='%236A93B2'/><text x='100' y='250' font-family='Arial' font-size='12' text-anchor='middle' fill='%232F4653'>Drácula</text></svg>",
+        precio: 190.00,
+        descripcion: "Una obra maestra del género gótico. La historia se desarrolla a través de cartas, diarios y recortes de periódicos.",
+        portada: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='300' viewBox='0 0 200 300'><rect width='200' height='300' fill='%23f0f8ff'/><circle cx='100' cy='150' r='40' fill='%236A93B2'/><text x='100' y='250' font-family='Arial' font-size='12' text-anchor='middle' fill='%232F4653'>Drácula</text></svg>",
         id_usuario: 1,
         id_categoria: 1,
         disponibilidad: true,
         estatus: 1,
         id_tipo_transaccion: 1,
-        categoria_nombre: 'Literatura',
-        estado_libro: 'Usado',
-        tipo_transaccion_nombre: 'Venta',
+        categoria_nombre: "Literatura",
+        estado_libro: "Usado",
+        tipo_transaccion_nombre: "Venta"
       },
       {
         id: 2,
-        titulo: 'Fundamentos de programación Java',
-        isbn: '9788441539580',
-        autor: 'Varios Autores',
-        editorial: 'ANAYA Multimedia',
-        fecha_publicacion: '2023-01-15',
+        titulo: "Fundamentos de programación Java",
+        isbn: "9788441539580",
+        autor: "Varios Autores",
+        editorial: "ANAYA Multimedia",
+        fecha_publicacion: "2023-01-15",
         id_estado_libro: 1,
-        precio: 0, // Sin precio porque es donación
-        descripcion:
-          'Manual completo para aprender programación en Java desde cero. Incluye conceptos básicos y ejercicios prácticos.',
-        portada:
-          "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='300' viewBox='0 0 200 300'><rect width='200' height='300' fill='%23e6f3ff'/><circle cx='100' cy='150' r='40' fill='%23007bff'/><text x='100' y='240' font-family='Arial' font-size='10' text-anchor='middle' fill='%232F4653'>Java</text><text x='100' y='255' font-family='Arial' font-size='10' text-anchor='middle' fill='%232F4653'>Programming</text></svg>",
+        precio: 0,
+        descripcion: "Manual completo para aprender programación en Java desde cero. Incluye conceptos básicos y ejercicios prácticos.",
+        portada: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='300' viewBox='0 0 200 300'><rect width='200' height='300' fill='%23e6f3ff'/><circle cx='100' cy='150' r='40' fill='%23007bff'/><text x='100' y='240' font-family='Arial' font-size='10' text-anchor='middle' fill='%232F4653'>Java</text><text x='100' y='255' font-family='Arial' font-size='10' text-anchor='middle' fill='%232F4653'>Programming</text></svg>",
         id_usuario: 2,
         id_categoria: 3,
         disponibilidad: true,
         estatus: 1,
         id_tipo_transaccion: 2,
-        categoria_nombre: 'Ciencias y tecnología',
-        estado_libro: 'Nuevo',
-        tipo_transaccion_nombre: 'Donación',
+        categoria_nombre: "Ciencias y tecnología",
+        estado_libro: "Nuevo",
+        tipo_transaccion_nombre: "Donación"
       },
       {
         id: 3,
-        titulo: 'El Arte de la Guerra',
-        isbn: '9788441421240',
-        autor: 'Sun Tzu',
-        editorial: 'EDAF',
-        fecha_publicacion: '2020-03-10',
+        titulo: "El Arte de la Guerra",
+        isbn: "9788441421240",
+        autor: "Sun Tzu",
+        editorial: "EDAF",
+        fecha_publicacion: "2020-03-10",
         id_estado_libro: 2,
-        precio: 0, // Sin precio porque es intercambio
-        descripcion:
-          'Tratado sobre estrategia militar escrito por Sun Tzu en el siglo VI a.C. Influye en el pensamiento militar y empresarial.',
-        portada:
-          "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='300' viewBox='0 0 200 300'><rect width='200' height='300' fill='%23fff5e6'/><circle cx='100' cy='150' r='40' fill='%23fd7e14'/><text x='100' y='245' font-family='Arial' font-size='11' text-anchor='middle' fill='%232F4653'>El Arte de</text><text x='100' y='260' font-family='Arial' font-size='11' text-anchor='middle' fill='%232F4653'>la Guerra</text></svg>",
+        precio: 0,
+        descripcion: "Tratado sobre estrategia militar escrito por Sun Tzu en el siglo VI a.C. Influye en el pensamiento militar y empresarial.",
+        portada: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='300' viewBox='0 0 200 300'><rect width='200' height='300' fill='%23fff5e6'/><circle cx='100' cy='150' r='40' fill='%23fd7e14'/><text x='100' y='245' font-family='Arial' font-size='11' text-anchor='middle' fill='%232F4653'>El Arte de</text><text x='100' y='260' font-family='Arial' font-size='11' text-anchor='middle' fill='%232F4653'>la Guerra</text></svg>",
         id_usuario: 3,
         id_categoria: 2,
         disponibilidad: true,
         estatus: 1,
         id_tipo_transaccion: 3,
-        categoria_nombre: 'Historia y filosofía',
-        estado_libro: 'Usado',
-        tipo_transaccion_nombre: 'Intercambio',
+        categoria_nombre: "Historia y filosofía",
+        estado_libro: "Usado",
+        tipo_transaccion_nombre: "Intercambio"
       },
       {
         id: 4,
-        titulo: 'El Señor de los Anillos',
-        isbn: '9788445000663',
-        autor: 'J.R.R. Tolkien',
-        editorial: 'Minotauro',
-        fecha_publicacion: '1954-07-29',
+        titulo: "El Señor de los Anillos",
+        isbn: "9788445000663",
+        autor: "J.R.R. Tolkien",
+        editorial: "Minotauro",
+        fecha_publicacion: "1954-07-29",
         id_estado_libro: 1,
-        precio: 350.0,
-        descripcion:
-          'La Comunidad del Anillo es la primera parte de El Señor de los Anillos, la gran obra de J.R.R. Tolkien.',
-        portada:
-          "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='300' viewBox='0 0 200 300'><rect width='200' height='300' fill='%23f0f8ff'/><circle cx='100' cy='150' r='40' fill='%236A93B2'/><text x='100' y='240' font-family='Arial' font-size='10' text-anchor='middle' fill='%232F4653'>El Señor de</text><text x='100' y='255' font-family='Arial' font-size='10' text-anchor='middle' fill='%232F4653'>los Anillos</text></svg>",
+        precio: 350.00,
+        descripcion: "La Comunidad del Anillo es la primera parte de El Señor de los Anillos, la gran obra de J.R.R. Tolkien.",
+        portada: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='300' viewBox='0 0 200 300'><rect width='200' height='300' fill='%23f0f8ff'/><circle cx='100' cy='150' r='40' fill='%236A93B2'/><text x='100' y='240' font-family='Arial' font-size='10' text-anchor='middle' fill='%232F4653'>El Señor de</text><text x='100' y='255' font-family='Arial' font-size='10' text-anchor='middle' fill='%232F4653'>los Anillos</text></svg>",
         id_usuario: 3,
         id_categoria: 1,
         disponibilidad: true,
         estatus: 1,
         id_tipo_transaccion: 1,
-        categoria_nombre: 'Literatura',
-        estado_libro: 'Nuevo',
-        tipo_transaccion_nombre: 'Venta',
+        categoria_nombre: "Literatura",
+        estado_libro: "Nuevo",
+        tipo_transaccion_nombre: "Venta"
       },
       {
         id: 5,
-        titulo: 'Cien años de soledad',
-        isbn: '9788437604947',
-        autor: 'Gabriel García Márquez',
-        editorial: 'Cátedra',
-        fecha_publicacion: '1967-06-05',
+        titulo: "Cien años de soledad",
+        isbn: "9788437604947",
+        autor: "Gabriel García Márquez",
+        editorial: "Cátedra",
+        fecha_publicacion: "1967-06-05",
         id_estado_libro: 2,
-        precio: 280.0,
-        descripcion:
-          'La historia de la familia Buendía a lo largo de siete generaciones en el pueblo ficticio de Macondo.',
-        portada:
-          "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='300' viewBox='0 0 200 300'><rect width='200' height='300' fill='%23f0f8ff'/><circle cx='100' cy='150' r='40' fill='%236A93B2'/><text x='100' y='240' font-family='Arial' font-size='9' text-anchor='middle' fill='%232F4653'>Cien años de</text><text x='100' y='255' font-family='Arial' font-size='9' text-anchor='middle' fill='%232F4653'>soledad</text></svg>",
+        precio: 280.00,
+        descripcion: "La historia de la familia Buendía a lo largo de siete generaciones en el pueblo ficticio de Macondo.",
+        portada: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='300' viewBox='0 0 200 300'><rect width='200' height='300' fill='%23f0f8ff'/><circle cx='100' cy='150' r='40' fill='%236A93B2'/><text x='100' y='240' font-family='Arial' font-size='9' text-anchor='middle' fill='%232F4653'>Cien años de</text><text x='100' y='255' font-family='Arial' font-size='9' text-anchor='middle' fill='%232F4653'>soledad</text></svg>",
         id_usuario: 2,
         id_categoria: 1,
         disponibilidad: true,
         estatus: 1,
         id_tipo_transaccion: 1,
-        categoria_nombre: 'Literatura',
-        estado_libro: 'Usado',
-        tipo_transaccion_nombre: 'Venta',
-      },
+        categoria_nombre: "Literatura",
+        estado_libro: "Usado",
+        tipo_transaccion_nombre: "Venta"
+      }
     ];
-
-    console.log(
-      'HomeComponent: Libros de prueba cargados:',
-      this.allBooks.length
-    );
+    
+    console.log('HomeComponent: Libros de prueba cargados:', this.allBooks.length);
   }
 
   // ✨ MÉTODO ORIGINAL COMENTADO TEMPORALMENTE
@@ -214,10 +201,7 @@ export class HomeComponent implements OnInit {
   }
 
   onCategorySelected(category: string) {
-    console.log(
-      'HomeComponent: Categoría seleccionada desde header:',
-      category
-    );
+    console.log('HomeComponent: Categoría seleccionada desde header:', category);
     this.selectedCategory = category;
 
     if (category === 'Todas') {
@@ -236,7 +220,7 @@ export class HomeComponent implements OnInit {
 
   onSearchPerformed(searchTerm: string) {
     console.log('Búsqueda desde header:', searchTerm);
-
+    
     this.router.navigate(['/home'], {
       queryParams: { search: searchTerm },
       replaceUrl: true,
@@ -332,18 +316,13 @@ export class HomeComponent implements OnInit {
 
   makeOffer(book: any) {
     console.log('Hacer oferta para:', book.titulo);
-    alert(
-      `Función de intercambio para "${book.titulo}" próximamente disponible`
-    );
+    alert(`Función de intercambio para "${book.titulo}" próximamente disponible`);
   }
 
   getButtonAction(book: any) {
-    console.log(
-      'HomeComponent: Acción para libro tipo:',
-      book.tipo_transaccion_nombre
-    );
-    const tipoTransaccion = book.tipo_transaccion_nombre || 'Venta'; // ✨ VALOR POR DEFECTO
-
+    console.log('HomeComponent: Acción para libro tipo:', book.tipo_transaccion_nombre);
+    const tipoTransaccion = book.tipo_transaccion_nombre || 'Venta';
+    
     switch (tipoTransaccion) {
       case 'Venta':
         this.addToCart(book);
@@ -355,15 +334,14 @@ export class HomeComponent implements OnInit {
         this.makeOffer(book);
         break;
       default:
-        this.addToCart(book); // ✨ FALLBACK por defecto
+        this.addToCart(book);
         break;
     }
   }
 
-  // ✨ MÉTODO CORREGIDO - MANEJA UNDEFINED
   getButtonText(type: string | undefined): string {
-    const tipoTransaccion = type || 'Venta'; // ✨ VALOR POR DEFECTO SI ES UNDEFINED
-
+    const tipoTransaccion = type || 'Venta';
+    
     switch (tipoTransaccion) {
       case 'Venta':
         return 'Añadir al carrito';
@@ -372,15 +350,12 @@ export class HomeComponent implements OnInit {
       case 'Intercambio':
         return 'Hacer oferta';
       default:
-        return 'Añadir al carrito'; // ✨ FALLBACK por defecto
+        return 'Añadir al carrito';
     }
   }
 
   selectCategory(category: string) {
-    console.log(
-      'HomeComponent: Categoría seleccionada directamente:',
-      category
-    );
+    console.log('HomeComponent: Categoría seleccionada directamente:', category);
     this.selectedCategory = category;
 
     if (category === 'Todas') {
@@ -393,29 +368,19 @@ export class HomeComponent implements OnInit {
     }
   }
 
-  // ✨ MÉTODO CORREGIDO - Navegación según tipo de libro - MANEJA UNDEFINED
   viewBookDetail(book: Book): void {
-    console.log(
-      'Navegando al detalle del libro:',
-      book.titulo,
-      'Tipo:',
-      book.tipo_transaccion_nombre
-    );
-
-    const tipoTransaccion = book.tipo_transaccion_nombre || 'Venta'; // ✨ VALOR POR DEFECTO
-
+    console.log('Navegando al detalle del libro:', book.titulo, 'Tipo:', book.tipo_transaccion_nombre);
+    
+    const tipoTransaccion = book.tipo_transaccion_nombre || 'Venta';
+    
     if (tipoTransaccion === 'Venta') {
-      // Libros de venta van a book-sale
       this.router.navigate(['/book', book.id]);
     } else if (tipoTransaccion === 'Intercambio') {
-      // Libros de intercambio van a book-exchange
       this.router.navigate(['/exchange', book.id]);
     } else if (tipoTransaccion === 'Donación') {
-      // Libros de donación van a book-donation
       this.router.navigate(['/donation', book.id]);
     } else {
       console.warn('Tipo de libro no reconocido:', tipoTransaccion);
-      // Fallback: ir a book-sale por defecto
       this.router.navigate(['/book', book.id]);
     }
   }
@@ -424,6 +389,13 @@ export class HomeComponent implements OnInit {
     this.closeCartSidebar();
     this.router.navigate(['/cart']);
     console.log('Navegando a la página completa del carrito');
+  }
+
+  // ✨ NUEVO MÉTODO - Ir directamente a pago desde el sidebar
+  goToPayment() {
+    console.log('Navegando directamente a pago desde sidebar');
+    this.closeCartSidebar();
+    this.router.navigate(['/payment']);
   }
 
   goToOrders() {

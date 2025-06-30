@@ -1,22 +1,24 @@
-// src/app/cart/cart.component.ts - SIMPLIFICADO CON HEADER COMPARTIDO
+// ============================================
+// 📁 ACTUALIZAR: src/app/cart/cart.component.ts - AGREGAR NAVEGACIÓN A PAYMENT
+// ============================================
+
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { HeaderComponent } from '../shared/header/header.component'; // Importar header compartido
+import { HeaderComponent } from '../shared/header/header.component';
 
 @Component({
   selector: 'app-cart',
   standalone: true,
-  imports: [CommonModule, FormsModule, HeaderComponent], // Agregar HeaderComponent
+  imports: [CommonModule, FormsModule, HeaderComponent],
   templateUrl: './cart.component.html',
   styleUrls: ['./cart.component.css']
 })
 export class CartComponent implements OnInit {
-  cartItems = 1; // Número para el badge
+  cartItems = 1;
   savedItems = 0;
 
-  // Libros en el carrito (simulando datos)
   cartBooks = [
     {
       id: 1,
@@ -33,10 +35,8 @@ export class CartComponent implements OnInit {
   }
 
   ngOnInit() {
-    // Verificar si hay parámetros de categoría en la URL
     this.route.queryParams.subscribe(params => {
       if (params['category']) {
-        // Si se selecciona una categoría desde cart, navegar a home
         console.log('Categoría seleccionada desde cart:', params['category']);
         this.router.navigate(['/home'], { 
           queryParams: { category: params['category'] },
@@ -44,7 +44,6 @@ export class CartComponent implements OnInit {
         });
       }
       if (params['search']) {
-        // Si se hace una búsqueda desde cart, navegar a home
         console.log('Búsqueda desde cart:', params['search']);
         this.router.navigate(['/home'], { 
           queryParams: { search: params['search'] },
@@ -54,7 +53,6 @@ export class CartComponent implements OnInit {
     });
   }
 
-  // Métodos del carrito
   updateQuantity(book: any, quantity: number) {
     if (quantity <= 0) {
       this.removeFromCart(book);
@@ -81,8 +79,9 @@ export class CartComponent implements OnInit {
     return this.cartBooks.reduce((total, item) => total + (item.price * item.quantity), 0);
   }
 
+  // ✨ NUEVO MÉTODO - Ir a la página de pago
   goToCheckout() {
-    console.log('Ir a checkout');
-    // 🔌 AQUÍ INTEGRAR BACKEND - Navegar a checkout
+    console.log('Navegando a la página de pago');
+    this.router.navigate(['/payment']);
   }
 }
