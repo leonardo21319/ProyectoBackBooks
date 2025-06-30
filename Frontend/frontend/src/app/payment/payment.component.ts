@@ -1,5 +1,5 @@
 // ============================================
-// 📁 CREAR: src/app/payment/payment.component.ts
+// src/app/payment/payment.component.ts
 // ============================================
 
 import { Component, OnInit } from '@angular/core';
