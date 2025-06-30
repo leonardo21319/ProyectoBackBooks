@@ -155,7 +155,6 @@ export class ApiService {
   }
   //METODO PARA OBTENER LIBROS
   obtenerLibros(): Observable<any> {
-    console.log('ApiService: Obteniendo libros desde el backend');
     return this.http.get(`${this.baseUrl}/intercambio/obtenerLibros`).pipe(
       catchError((error) => {
         console.error('ApiService: Error al obtener libros:', error);
@@ -165,6 +164,7 @@ export class ApiService {
   }
 
   obtenerLibroPorId(id: number): Observable<any> {
+    console.log(`ApiService: Obteniendo libro con ID ${id}`);
     return this.http.get(`${this.baseUrl}/intercambio/obtenerlibros/${id}`);
   }
 

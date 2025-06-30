@@ -64,7 +64,7 @@ export class SellerPublicationsComponent implements OnInit {
       descripcion: '',
       numpaginas: 0,
       fecha_publicacion: '',
-      disponibilidad: true,
+      disponibilidad: 0,
       estatus: 1,
       id_usuario: 0, // <- Asegúrate de establecer dinámicamente el ID del usuario autenticado
     };
@@ -112,17 +112,19 @@ export class SellerPublicationsComponent implements OnInit {
       },
     });
   }
-
   updateStats() {
     this.totalPublications = this.publications.length;
+
     this.availablePublications = this.publications.filter(
-      (pub) => pub.disponibilidad === true
+      (pub) => pub.disponibilidad === 1
     ).length;
+
     this.soldPublications = this.publications.filter(
-      (pub) => pub.disponibilidad === false && pub.estatus === 2
+      (pub) => pub.disponibilidad === 0 && pub.estatus > 0 && pub.estatus === 2
     ).length;
+
     this.reservedPublications = this.publications.filter(
-      (pub) => pub.disponibilidad === false && pub.estatus === 3
+      (pub) => pub.disponibilidad === 0 && pub.estatus > 0 && pub.estatus === 3
     ).length;
   }
 
@@ -423,6 +425,12 @@ export class SellerPublicationsComponent implements OnInit {
   }
 
   goToBookDetail(bookId: number) {
+    const libro = this.ApiService.obtenerLibroPorId(bookId);
+    console.log('Libro encontrado:', libro);
+    if (!libro) {
+      console.error('Libro no encontrado con ID:', bookId);
+      return;
+    }
     this.router.navigate(['/book', bookId]);
   }
 
