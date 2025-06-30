@@ -11,7 +11,8 @@ export interface Book {
   portada: string;
   id_usuario: number;
   id_categoria: number;
-  disponibilidad: boolean;
+  disponibilidad: number;
+
   estatus: number;
   id_tipo_transaccion: number;
   categoria_nombre?: string;
