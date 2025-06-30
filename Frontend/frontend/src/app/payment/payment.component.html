@@ -1,0 +1,381 @@
+<!-- ============================================ -->
+<!-- 📁 CREAR: src/app/payment/payment.component.html -->
+<!-- ============================================ -->
+
+<div class="bookstore-container">
+  
+  <!-- Header compartido -->
+  <app-header 
+    [cartItems]="cartItems" 
+    [savedItems]="savedItems" 
+    currentPage="payment"
+    (searchPerformed)="onSearchPerformed($event)">
+  </app-header>
+
+  <!-- Contenido principal de pago -->
+  <main class="payment-main">
+    <div class="container">
+      
+      <!-- Botón de regreso -->
+      <div class="back-button-container">
+        <button class="btn-back" (click)="goBackToCart()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M19 12H5M12 19L5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Regresar al carrito
+        </button>
+      </div>
+
+      <!-- Layout principal -->
+      <div class="payment-layout">
+        
+        <!-- Columna izquierda: Formulario de pago -->
+        <div class="payment-form-section">
+          <div class="payment-container">
+            
+            <!-- Título -->
+            <div class="payment-header">
+              <h1 class="payment-title">Finalizar compra</h1>
+              <div class="secure-badge">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12 22S8 18 8 12V7L12 5L16 7V12C16 18 12 22 12 22Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span>Pago seguro con encriptación SSL</span>
+              </div>
+            </div>
+
+            <!-- Métodos de pago -->
+            <div class="payment-methods">
+              <div class="payment-methods-grid">
+                <button 
+                  *ngFor="let method of paymentMethods"
+                  class="payment-method-btn"
+                  [class.active]="selectedPaymentMethod === method.id"
+                  [class.disabled]="!method.active && method.id !== 'card'"
+                  (click)="selectPaymentMethod(method.id)"
+                  [disabled]="!method.active && method.id !== 'card'">
+                  
+                  <!-- Ícono del método -->
+                  <div class="method-icon" [ngSwitch]="method.id">
+                    <div *ngSwitchCase="'card'" class="card-icons">
+                      <div class="card-icon visa">💳</div>
+                    </div>
+                    <div *ngSwitchCase="'klarna'" class="klarna-icon">K</div>
+                    <div *ngSwitchCase="'afterpay'" class="afterpay-icon">⚡</div>
+                    <div *ngSwitchCase="'affirm'" class="affirm-icon">a</div>
+                    <div *ngSwitchCase="'paypal'" class="paypal-icon">P</div>
+                  </div>
+                  
+                  <span class="method-name">{{method.name}}</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Formulario de tarjeta -->
+            <form class="payment-form" (ngSubmit)="processPayment()" *ngIf="selectedPaymentMethod === 'card'">
+              
+              <!-- Información de contacto -->
+              <div class="form-section">
+                <h3 class="section-title">Información de contacto</h3>
+                
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="email" class="form-label">Email</label>
+                    <input
+                      type="email"
+                      id="email"
+                      class="form-control"
+                      [(ngModel)]="paymentData.email"
+                      name="email"
+                      required
+                      placeholder="tu@email.com">
+                  </div>
+                </div>
+              </div>
+
+              <!-- Información de la tarjeta -->
+              <div class="form-section">
+                <h3 class="section-title">Información de la tarjeta</h3>
+                
+                <!-- Número de tarjeta -->
+                <div class="form-group">
+                  <label for="cardNumber" class="form-label">Número de tarjeta</label>
+                  <div class="card-input-container">
+                    <input
+                      type="text"
+                      id="cardNumber"
+                      class="form-control card-number-input"
+                      [value]="paymentData.cardNumber"
+                      (input)="formatCardNumber($event)"
+                      name="cardNumber"
+                      required
+                      placeholder="1234 1234 1234 1234"
+                      maxlength="19">
+                    
+                    <!-- Iconos de tarjetas aceptadas -->
+                    <div class="card-icons-display">
+                      <div class="card-brand visa"></div>
+                      <div class="card-brand mastercard"></div>
+                      <div class="card-brand amex"></div>
+                      <div class="card-brand discover"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Expiración y CVC -->
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="expiration" class="form-label">Expiración</label>
+                    <div class="expiration-inputs">
+                      <input
+                        type="text"
+                        class="form-control expiration-input"
+                        [value]="paymentData.expirationMonth"
+                        (input)="formatExpiration($event, 'month')"
+                        placeholder="MM"
+                        maxlength="2">
+                      <span class="expiration-separator">/</span>
+                      <input
+                        type="text"
+                        class="form-control expiration-input"
+                        [value]="paymentData.expirationYear"
+                        (input)="formatExpiration($event, 'year')"
+                        placeholder="AA"
+                        maxlength="2">
+                    </div>
+                  </div>
+                  
+                  <div class="form-group">
+                    <label for="cvc" class="form-label">CVC</label>
+                    <div class="cvc-input-container">
+                      <input
+                        type="text"
+                        id="cvc"
+                        class="form-control"
+                        [value]="paymentData.cvc"
+                        (input)="formatCVC($event)"
+                        name="cvc"
+                        required
+                        placeholder="123"
+                        maxlength="4">
+                      
+                      <div class="cvc-help" title="Código de 3 o 4 dígitos en el reverso de tu tarjeta">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                          <path d="M9.09 9C9.3251 8.33167 9.78915 7.76811 10.4 7.40913C11.0108 7.05016 11.7289 6.91894 12.4272 7.03871C13.1255 7.15849 13.7588 7.52152 14.2151 8.06353C14.6713 8.60553 14.9211 9.29152 14.92 10C14.92 12 11.92 13 11.92 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                          <path d="M12 17H12.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Información de facturación -->
+              <div class="form-section">
+                <h3 class="section-title">Información de facturación</h3>
+                
+                <div class="form-group">
+                  <label for="name" class="form-label">Nombre completo</label>
+                  <input
+                    type="text"
+                    id="name"
+                    class="form-control"
+                    [(ngModel)]="paymentData.name"
+                    name="name"
+                    required
+                    placeholder="Nombre y apellidos">
+                </div>
+
+                <div class="form-group">
+                  <label for="address" class="form-label">Dirección</label>
+                  <input
+                    type="text"
+                    id="address"
+                    class="form-control"
+                    [(ngModel)]="paymentData.address"
+                    name="address"
+                    required
+                    placeholder="Calle y número">
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="city" class="form-label">Ciudad</label>
+                    <input
+                      type="text"
+                      id="city"
+                      class="form-control"
+                      [(ngModel)]="paymentData.city"
+                      name="city"
+                      required
+                      placeholder="Ciudad">
+                  </div>
+                  
+                  <div class="form-group">
+                    <label for="state" class="form-label">Estado</label>
+                    <input
+                      type="text"
+                      id="state"
+                      class="form-control"
+                      [(ngModel)]="paymentData.state"
+                      name="state"
+                      required
+                      placeholder="Estado">
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="country" class="form-label">País</label>
+                    <select
+                      id="country"
+                      class="form-control"
+                      [(ngModel)]="paymentData.country"
+                      name="country"
+                      required>
+                      <option value="Mexico">México</option>
+                      <option value="US">Estados Unidos</option>
+                      <option value="Canada">Canadá</option>
+                      <option value="Spain">España</option>
+                    </select>
+                  </div>
+                  
+                  <div class="form-group">
+                    <label for="postalCode" class="form-label">Código postal</label>
+                    <input
+                      type="text"
+                      id="postalCode"
+                      class="form-control"
+                      [(ngModel)]="paymentData.postalCode"
+                      name="postalCode"
+                      required
+                      placeholder="12345">
+                  </div>
+                </div>
+              </div>
+
+              <!-- Botón de pago -->
+              <div class="payment-actions">
+                <button 
+                  type="submit" 
+                  class="btn-pay"
+                  [disabled]="isProcessing">
+                  
+                  <span *ngIf="!isProcessing">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="me-2">
+                      <path d="M12 22S8 18 8 12V7L12 5L16 7V12C16 18 12 22 12 22Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    Pagar ${{orderSummary.total}}
+                  </span>
+                  
+                  <span *ngIf="isProcessing" class="processing-text">
+                    <div class="spinner"></div>
+                    Procesando pago...
+                  </span>
+                </button>
+              </div>
+
+            </form>
+
+            <!-- Métodos no disponibles -->
+            <div *ngIf="selectedPaymentMethod !== 'card'" class="method-not-available">
+              <div class="not-available-icon">⚠️</div>
+              <h3>Método no disponible</h3>
+              <p>Este método de pago estará disponible próximamente.</p>
+              <button class="btn-secondary" (click)="selectPaymentMethod('card')">
+                Usar tarjeta de crédito
+              </button>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Columna derecha: Resumen del pedido -->
+        <div class="order-summary-section">
+          <div class="order-summary-container">
+            
+            <h3 class="summary-title">Resumen del pedido</h3>
+            
+            <!-- Items del pedido -->
+            <div class="order-items">
+              <div class="order-item" *ngFor="let item of orderSummary.items">
+                <div class="item-image">
+                  <img [src]="item.image" [alt]="item.title">
+                </div>
+                <div class="item-details">
+                  <h4 class="item-title">{{item.title}}</h4>
+                  <p class="item-author">{{item.author}}</p>
+                  <div class="item-quantity">Cantidad: {{item.quantity}}</div>
+                </div>
+                <div class="item-price">
+                  ${{item.price * item.quantity}}
+                </div>
+              </div>
+            </div>
+
+            <!-- Totales -->
+            <div class="order-totals">
+              <div class="total-row">
+                <span class="total-label">Subtotal</span>
+                <span class="total-value">${{orderSummary.subtotal}}</span>
+              </div>
+              
+              <div class="total-row">
+                <span class="total-label">Envío</span>
+                <span class="total-value">
+                  <span *ngIf="orderSummary.shipping === 0" class="free-shipping">Gratis</span>
+                  <span *ngIf="orderSummary.shipping > 0">${{orderSummary.shipping}}</span>
+                </span>
+              </div>
+              
+              <div class="total-row">
+                <span class="total-label">Impuestos</span>
+                <span class="total-value">${{orderSummary.tax}}</span>
+              </div>
+              
+              <div class="total-row total-final">
+                <span class="total-label">Total</span>
+                <span class="total-value">${{orderSummary.total}}</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- Popup de éxito -->
+  <div class="popup-overlay" [class.show]="showPaymentSuccess" (click)="closeSuccessPopup()">
+    <div class="success-popup" (click)="$event.stopPropagation()">
+      <div class="popup-content">
+        <div class="success-icon">✅</div>
+        <h2 class="popup-title">¡Pago exitoso!</h2>
+        <p class="popup-message">
+          Tu pedido ha sido procesado correctamente. Te redirigiremos a tus pedidos.
+        </p>
+        <button class="btn-success-ok" (click)="closeSuccessPopup()">
+          Ver mis pedidos
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Popup de error -->
+  <div class="popup-overlay" [class.show]="showPaymentError" (click)="closeErrorPopup()">
+    <div class="error-popup" (click)="$event.stopPropagation()">
+      <div class="popup-content">
+        <div class="error-icon">❌</div>
+        <h2 class="popup-title">Error en el pago</h2>
+        <p class="popup-message">{{errorMessage}}</p>
+        <button class="btn-error-ok" (click)="closeErrorPopup()">
+          Intentar nuevamente
+        </button>
+      </div>
+    </div>
+  </div>
+
+  
+</div>

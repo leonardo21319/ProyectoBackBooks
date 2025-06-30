@@ -1,5 +1,5 @@
 // ============================================
-// 📁 ACTUALIZAR: src/app/app.routes.ts - COMPLETO CORRECTO
+// 📁 ACTUALIZAR: src/app/app.routes.ts - COMPLETO CORRECTO CON PAYMENT
 // ============================================
 
 import { Routes } from '@angular/router';
@@ -8,6 +8,7 @@ import { HomeComponent } from './home/home.component';
 import { SaleshomeComponent } from './seller/saleshome/saleshome.component';
 import { SaveComponent } from './save/save.component';
 import { CartComponent } from './cart/cart.component';
+import { PaymentComponent } from './payment/payment.component'; // ✨ NUEVO IMPORT
 import { ProfileShooperComponent } from './profile-shooper/profile-shooper.component';
 import { BookSaleComponent } from './book-sale/book-sale.component';
 import { BookExchangeComponent } from './book-exchange/book-exchange.component';
@@ -31,11 +32,11 @@ export const routes: Routes = [
   { path: 'seller-profile', component: SellerProfileComponent },
   { path: 'seller-offers', component: SellerOffersComponent },
   { path: 'seller-publications', component: SellerPublicationsComponent },
-
-  
+   
   // 🛒 Funcionalidades de compra
   { path: 'saved', component: SaveComponent },
   { path: 'cart', component: CartComponent },
+  { path: 'payment', component: PaymentComponent }, // ✨ NUEVA RUTA DE PAGO
   { path: 'profile', component: ProfileShooperComponent },
   
   // 📚 Detalles de libros por tipo de transacción
