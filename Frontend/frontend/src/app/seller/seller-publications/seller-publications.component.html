@@ -370,7 +370,7 @@
             </div>
 
 
-            
+
 <div class="form-group col-md-6">
   <label for="portada">Portada</label>
   <div class="file-input-group">
@@ -528,31 +528,27 @@
               required
             ></textarea>
           </div>
-        </form>
       </div>
 
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" (click)="closeModal()">
-          Cancelar
-        </button>
+<div class="modal-footer">
+  <button type="button" class="btn btn-secondary" (click)="closeModal()">
+    Cancelar
+  </button>
 
-        <button
-          type="button"
-          class="btn btn-primary"
-          (click)="savePublication()"
-          [disabled]="!isFormValid()"
-        >
-          {{ isEditMode ? "Guardar" : "Guardar" }}
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
+  <button
+    type="button"
+    class="btn btn-primary"
+    (click)="savePublication()"
+    [disabled]="!isFormValid()"
+  >
+    {{ isEditMode ? "Guardar" : "Guardar" }}
+  </button>
+</div> <!-- <--- ESTE cierre era el que faltaba -->
 
-<!-- Overlay del modal -->
 <div
   class="modal-backdrop fade"
   [class.show]="showNewPublicationModal"
   *ngIf="showNewPublicationModal"
   (click)="closeModal()"
 ></div>
+
