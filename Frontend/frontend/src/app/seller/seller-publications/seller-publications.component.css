@@ -2,7 +2,7 @@
 
 .seller-publications-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: white;
 }
 
 /* Header Section */
@@ -18,6 +18,7 @@
   align-items: center;
   flex-wrap: wrap;
   gap: 2rem;
+  border-left: 6px solid #667eea;
 }
 
 .header-content {
@@ -267,21 +268,13 @@
   margin-bottom: 0.25rem;
 }
 
-.book-isbn {
-  font-size: 0.75rem;
-  color: #718096;
-  margin-bottom: 0.25rem;
-}
-
-.book-pages {
-  font-size: 0.75rem;
-  color: #718096;
-  margin-bottom: 0.25rem;
-}
-
+.book-editorial,
+.book-isbn,
+.book-pages,
 .book-date {
   font-size: 0.75rem;
   color: #718096;
+  margin-bottom: 0.25rem;
 }
 
 /* Badges */
@@ -422,21 +415,9 @@
   margin-bottom: 2rem;
 }
 
-/* Modal Styles */
-.modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 1050;
-  overflow: auto;
-}
+/* Modal Styles - ESTRUCTURA CORREGIDA */
 
-.modal.show {
-  display: block !important;
-}
-
+/* BACKDROP - ELEMENTO SEPARADO */
 .modal-backdrop {
   position: fixed;
   top: 0;
@@ -444,11 +425,33 @@
   width: 100%;
   height: 100%;
   background: rgba(0, 0, 0, 0.5);
-  z-index: 1040;
+  z-index: 1040; /* z-index base para backdrop */
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: auto; /* Permite clicks para cerrar */
 }
 
 .modal-backdrop.show {
   opacity: 1;
+}
+
+/* MODAL PRINCIPAL - SIN BACKDROP INTERNO */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1050; /* z-index mayor que backdrop */
+  overflow: auto;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none; /* No interfiere con el backdrop */
+}
+
+.modal.show {
+  display: flex !important;
 }
 
 .modal-dialog {
@@ -456,6 +459,8 @@
   margin: 2rem auto;
   max-width: 800px;
   width: 90%;
+  z-index: 1060; /* z-index mayor que modal */
+  pointer-events: auto; /* Permite interacción con el contenido */
 }
 
 .modal-content {
@@ -463,6 +468,23 @@
   border-radius: 15px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
   overflow: hidden;
+  position: relative;
+  z-index: 1070; /* z-index mayor que dialog */
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: modalFadeIn 0.3s ease-out;
+}
+
+/* Animación de entrada del modal */
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
 }
 
 .modal-header {
@@ -472,6 +494,9 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 1080;
 }
 
 .modal-title {
@@ -487,15 +512,28 @@
   font-size: 1.5rem;
   cursor: pointer;
   opacity: 0.7;
-  transition: opacity 0.3s ease;
+  transition: all 0.3s ease;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  z-index: 1090;
 }
 
 .btn-close:hover {
   opacity: 1;
+  background: rgba(255, 255, 255, 0.1);
+  transform: scale(1.1);
 }
 
 .modal-body {
   padding: 2rem;
+  max-height: calc(90vh - 140px);
+  overflow-y: auto;
+  position: relative;
+  z-index: 1070;
 }
 
 .modal-footer {
@@ -504,11 +542,53 @@
   display: flex;
   justify-content: flex-end;
   gap: 1rem;
+  position: sticky;
+  bottom: 0;
+  z-index: 1080;
+  border-top: 1px solid #e9ecef;
 }
 
-/* Form Styles */
+/* ASEGURAR QUE TODOS LOS ELEMENTOS SEAN INTERACTIVOS */
+.form-control,
+.form-control:focus,
+.form-control:active,
+.form-control:hover {
+  position: relative;
+  z-index: 1075;
+  pointer-events: auto;
+  background: white;
+}
+
+select.form-control {
+  z-index: 1075;
+  pointer-events: auto;
+}
+
+textarea.form-control {
+  z-index: 1075;
+  pointer-events: auto;
+  resize: vertical;
+}
+
+.btn {
+  position: relative;
+  z-index: 1075;
+  pointer-events: auto;
+}
+
+.file-input-group {
+  z-index: 1075;
+}
+
+.file-input-group .btn {
+  z-index: 1076;
+}
+
+/* Form Styles mejorados */
 .publication-form {
   width: 100%;
+  position: relative;
+  z-index: 1070;
 }
 
 .form-row {
@@ -521,6 +601,8 @@
   flex: 1;
   display: flex;
   flex-direction: column;
+  position: relative;
+  z-index: 1070;
 }
 
 .form-group label {
@@ -528,6 +610,8 @@
   color: #4a5568;
   margin-bottom: 0.5rem;
   font-size: 0.875rem;
+  position: relative;
+  z-index: 1071;
 }
 
 .form-control {
@@ -537,12 +621,19 @@
   padding: 0.75rem;
   font-size: 0.875rem;
   transition: all 0.3s ease;
+  position: relative;
+  z-index: 1075;
 }
 
 .form-control:focus {
   outline: none;
   border-color: #667eea;
   box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  z-index: 1076;
+}
+
+.form-control:hover {
+  border-color: #cbd5e0;
 }
 
 .form-control-file {
@@ -553,12 +644,15 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  position: relative;
+  z-index: 1075;
 }
 
 .file-input-group input {
   flex: 1;
 }
 
+/* Botones del modal */
 .btn {
   padding: 0.75rem 1.5rem;
   border-radius: 8px;
@@ -571,6 +665,8 @@
   transition: all 0.3s ease;
   border: none;
   font-size: 0.875rem;
+  position: relative;
+  z-index: 1075;
 }
 
 .btn-primary {
@@ -586,6 +682,7 @@
 .btn-primary:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+  transform: none !important;
 }
 
 .btn-secondary {
@@ -595,6 +692,7 @@
 
 .btn-secondary:hover {
   background: #cbd5e0;
+  transform: translateY(-1px);
 }
 
 .btn-outline-secondary {
@@ -605,9 +703,96 @@
 
 .btn-outline-secondary:hover {
   background: #e2e8f0;
+  transform: translateY(-1px);
 }
 
-/* Responsive */
+.btn-success {
+  background: linear-gradient(135deg, #28a745, #20c997) !important;
+  border-color: #28a745 !important;
+  color: white !important;
+}
+
+.btn-success:hover:not(:disabled) {
+  background: linear-gradient(135deg, #218838, #1ea087) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+}
+
+/* Feedback visual para archivos */
+.text-success {
+  color: #28a745 !important;
+  font-weight: 600;
+  position: relative;
+  z-index: 1071;
+}
+
+.text-muted {
+  color: #6c757d !important;
+  font-size: 0.875rem;
+  position: relative;
+  z-index: 1071;
+}
+
+/* Info de debug */
+.debug-info {
+  font-family: 'Courier New', monospace;
+  border-left: 4px solid #667eea;
+  position: relative;
+  z-index: 1070;
+}
+
+/* Validación visual de campos */
+.form-control.ng-invalid.ng-touched {
+  border-color: #dc3545;
+  box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
+}
+
+.form-control.ng-valid.ng-touched {
+  border-color: #28a745;
+  box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.1);
+}
+
+/* Utility classes */
+.mt-2 {
+  margin-top: 0.5rem;
+}
+
+.d-none {
+  display: none !important;
+}
+
+.col-md-6 {
+  flex: 0 0 48%;
+  max-width: 48%;
+}
+
+.col-md-12 {
+  flex: 0 0 100%;
+  max-width: 100%;
+}
+
+/* Prevenir scroll del body cuando el modal está abierto */
+body.modal-open {
+  overflow: hidden;
+}
+
+/* Evitar problemas de z-index con selects */
+select.form-control {
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 4 5' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='m0 1 2 2 2-2' stroke='%23666' fill='none' fill-rule='evenodd'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 8px 10px;
+  padding-right: 2.5rem;
+}
+
+/* Asegurar que los elementos de archivo funcionen */
+input[type="file"] {
+  position: relative;
+  z-index: 1076;
+}
+
+/* Responsive mejorado */
 @media (max-width: 768px) {
   .publications-header {
     flex-direction: column;
@@ -656,9 +841,140 @@
   .modal-dialog {
     margin: 1rem;
     width: calc(100% - 2rem);
+    max-height: calc(100vh - 2rem);
+  }
+
+  .modal-content {
+    max-height: calc(100vh - 2rem);
+  }
+
+  .modal-body {
+    max-height: calc(100vh - 200px);
+    padding: 1rem;
   }
 
   .form-row {
     flex-direction: column;
+  }
+
+  .col-md-6,
+  .col-md-12 {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+
+  .modal-footer {
+    padding: 1rem;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .modal-footer .btn {
+    width: 100%;
+  }
+}
+
+/* Mejoras de accesibilidad */
+.btn:focus,
+.form-control:focus,
+.btn-close:focus {
+  outline: 2px solid #667eea;
+  outline-offset: 2px;
+}
+
+/* Transiciones suaves para todos los elementos del modal */
+.modal * {
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+/* Estados de carga para botones */
+.btn.loading {
+  position: relative;
+  color: transparent;
+}
+
+.btn.loading::after {
+  content: '';
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  top: 50%;
+  left: 50%;
+  margin-left: -8px;
+  margin-top: -8px;
+  border: 2px solid transparent;
+  border-top-color: currentColor;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Animaciones adicionales */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Estados hover mejorados */
+.btn:hover {
+  transform: translateY(-1px);
+}
+
+/* Estilos para campos requeridos */
+.form-group label::after {
+  content: '';
+}
+
+.form-group label:has(+ .form-control[required])::after,
+.form-group label:has(+ select[required])::after,
+.form-group label:has(+ textarea[required])::after {
+  content: ' *';
+  color: #e53e3e;
+}
+
+/* Estilos para toast/notificaciones (si se implementan) */
+.toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: white;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 2000;
+  max-width: 300px;
+  animation: slideIn 0.3s ease-out;
+}
+
+.toast.success {
+  border-left: 4px solid #28a745;
+}
+
+.toast.error {
+  border-left: 4px solid #dc3545;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
   }
 }

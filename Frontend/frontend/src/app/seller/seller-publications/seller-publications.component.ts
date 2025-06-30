@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { SalesHeaderComponent } from '../sales-header/sales-header.component';
 import { ApiService } from '../../servicios/api.service';
 import { Book } from '../../models/Book.model';
+
 @Component({
   selector: 'app-seller-publications',
   standalone: true,
@@ -21,20 +22,10 @@ export class SellerPublicationsComponent implements OnInit {
   selectedImageFile: File | null = null;
   isEditMode = false;
 
-  getFileNameFromUrl(url: string): string {
-    return url ? url.split('/').pop() || '' : '';
-  }
+  // Para detección de cambios
+  private originalPublication: Book = this.emptyPublication;
+  hasFormChanged = false;
 
-onImageSelected(event: any): void {
-  const file = event.target.files[0];
-  if (file) {
-    this.selectedImageFile = file;
-    console.log('Archivo seleccionado:', file.name);
-  }
-}
-
-
-  
   // Filtros
   filterCategory = 'todas';
   filterStatus = 'todos';
@@ -81,14 +72,14 @@ onImageSelected(event: any): void {
       fecha_publicacion: '',
       disponibilidad: 0,
       estatus: 1,
-      id_usuario: 0, // <- Asegúrate de establecer dinámicamente el ID del usuario autenticado
+      id_usuario: 0,
     };
   }
+
   public categories = this.categoriasMap;
 
   constructor(
     private router: Router,
-
     private ApiService: ApiService
   ) {}
 
@@ -103,12 +94,138 @@ onImageSelected(event: any): void {
     this.applyFilters();
   }
 
+  // MÉTODOS DE UTILIDAD
+  getFileNameFromUrl(url: string): string {
+    return url ? url.split('/').pop() || '' : '';
+  }
+
   getCategoryName(id: number): string {
     return this.categoriasMap.find((c) => c.id === id)?.label || 'N/D';
   }
+
   getTransactionName(id: number): string {
     return this.transaccionesMap.find((t) => t.id === id)?.label || 'N/D';
   }
+
+  getEstadoFisicoNombre(id_estado_libro: number): string {
+    const map: { [key: number]: string } = {
+      1: 'Nuevo',
+      2: 'Usado',
+      3: 'Desgastado',
+    };
+    return map[id_estado_libro] || 'Desconocido';
+  }
+
+  // MÉTODOS DE EVENTOS DE FORMULARIO
+  onImageSelected(event: Event): void {
+    const target = event.target as HTMLInputElement;
+    const file = target?.files?.[0];
+    
+    if (file) {
+      this.selectedImageFile = file;
+      this.hasFormChanged = true;
+      console.log('📷 Archivo seleccionado:', file.name);
+    }
+  }
+
+  onInputChange(field: string, event: Event): void {
+    const target = event.target as HTMLInputElement;
+    if (target?.value !== undefined) {
+      this.onFieldChange(field, target.value);
+    }
+  }
+
+  onSelectChange(field: string, event: Event): void {
+    const target = event.target as HTMLSelectElement;
+    if (target?.value !== undefined) {
+      const numericValue = parseInt(target.value, 10);
+      this.onFieldChange(field, numericValue);
+    }
+  }
+
+  onNumberInputChange(field: string, event: Event): void {
+    const target = event.target as HTMLInputElement;
+    if (target?.value !== undefined) {
+      const numericValue = parseFloat(target.value) || 0;
+      this.onFieldChange(field, numericValue);
+    }
+  }
+
+  onTextareaChange(field: string, event: Event): void {
+    const target = event.target as HTMLTextAreaElement;
+    if (target?.value !== undefined) {
+      this.onFieldChange(field, target.value);
+    }
+  }
+
+  onDateChange(field: string, event: Event): void {
+    const target = event.target as HTMLInputElement;
+    if (target?.value !== undefined) {
+      this.onFieldChange(field, target.value);
+    }
+  }
+
+  // DETECCIÓN DE CAMBIOS
+  onFieldChange(field: string, value: any): void {
+    // Verificar que currentPublication existe
+    if (!this.currentPublication) {
+      console.error('currentPublication no está definido');
+      return;
+    }
+
+    // Actualizar el campo de forma segura
+    (this.currentPublication as any)[field] = value;
+    
+    // Detectar cambios inmediatamente
+    this.detectFormChanges();
+    
+    console.log(`✏️ Campo ${field} cambiado a:`, value);
+    console.log(`📊 Estado actual - Hay cambios: ${this.hasFormChanged}, Puede guardar: ${this.canSave()}`);
+  }
+
+  detectFormChanges(): void {
+    if (!this.isEditMode) {
+      this.hasFormChanged = true;
+      console.log('Modo nuevo - cambios automáticamente detectados');
+      return;
+    }
+
+    // Verificar que originalPublication existe
+    if (!this.originalPublication || !this.currentPublication) {
+      this.hasFormChanged = true;
+      console.log('Publicaciones no definidas - marcando como cambiado');
+      return;
+    }
+
+    // Comparar con la publicación original de forma segura
+    const hasChanges = (
+      (this.currentPublication?.titulo ?? '') !== (this.originalPublication?.titulo ?? '') ||
+      (this.currentPublication?.autor ?? '') !== (this.originalPublication?.autor ?? '') ||
+      (this.currentPublication?.editorial ?? '') !== (this.originalPublication?.editorial ?? '') ||
+      (this.currentPublication?.isbn ?? '') !== (this.originalPublication?.isbn ?? '') ||
+      (this.currentPublication?.descripcion ?? '') !== (this.originalPublication?.descripcion ?? '') ||
+      (this.currentPublication?.id_categoria ?? 0) !== (this.originalPublication?.id_categoria ?? 0) ||
+      (this.currentPublication?.id_estado_libro ?? 0) !== (this.originalPublication?.id_estado_libro ?? 0) ||
+      (this.currentPublication?.id_tipo_transaccion ?? 0) !== (this.originalPublication?.id_tipo_transaccion ?? 0) ||
+      (this.currentPublication?.precio ?? 0) !== (this.originalPublication?.precio ?? 0) ||
+      (this.currentPublication?.numpaginas ?? 0) !== (this.originalPublication?.numpaginas ?? 0) ||
+      (this.currentPublication?.disponibilidad ?? 0) !== (this.originalPublication?.disponibilidad ?? 0) ||
+      (this.currentPublication?.fecha_publicacion ?? '') !== (this.originalPublication?.fecha_publicacion ?? '') ||
+      this.selectedImageFile !== null
+    );
+
+    this.hasFormChanged = hasChanges;
+    
+    console.log('Detectando cambios:', {
+      hasChanges,
+      titulo: `"${this.currentPublication?.titulo}" vs "${this.originalPublication?.titulo}"`,
+      categoria: `${this.currentPublication?.id_categoria} vs ${this.originalPublication?.id_categoria}`,
+      transaccion: `${this.currentPublication?.id_tipo_transaccion} vs ${this.originalPublication?.id_tipo_transaccion}`,
+      archivo: this.selectedImageFile ? 'Archivo seleccionado' : 'Sin archivo'
+    });
+  }
+
+  // CARGA Y GESTIÓN DE DATOS
   loadMockPublications() {
     this.ApiService.obtenerLibros().subscribe({
       next: (libros) => {
@@ -127,6 +244,7 @@ onImageSelected(event: any): void {
       },
     });
   }
+
   updateStats() {
     this.totalPublications = this.publications.length;
 
@@ -143,16 +261,7 @@ onImageSelected(event: any): void {
     ).length;
   }
 
-  getEstadoFisicoNombre(id_estado_libro: number): string {
-    const map: { [key: number]: string } = {
-      1: 'Nuevo',
-      2: 'Usado',
-      3: 'Desgastado',
-    };
-    return map[id_estado_libro] || 'Desconocido';
-  }
-
-  // Métodos del header
+  // MÉTODOS DEL HEADER
   onCategorySelected(category: string) {
     console.log('Categoría seleccionada desde publicaciones:', category);
     this.filterCategory = category.toLowerCase();
@@ -165,13 +274,14 @@ onImageSelected(event: any): void {
     this.applyFilters();
   }
 
+  // FILTROS Y ORDENAMIENTO
   applyFilters() {
     let filtered = [...this.publications];
 
     /* ---- Filtrar por categoría ---- */
     if (this.filterCategory !== 'todas') {
       filtered = filtered.filter(
-        (b) => b.id_categoria === +this.filterCategory /* number vs string */
+        (b) => b.id_categoria === +this.filterCategory
       );
     }
 
@@ -255,142 +365,272 @@ onImageSelected(event: any): void {
     this.applyFilters();
   }
 
-  // Gestión de publicaciones
+  // GESTIÓN DE MODAL
   openNewPublicationModal() {
     const decoded = this.ApiService.decodificarToken();
     this.currentPublication = { ...this.emptyPublication };
+    
     if (decoded && decoded.id) {
       this.currentPublication.id_usuario = Number(decoded.id);
     }
+    
+    // Para nueva publicación, establecer valores por defecto
+    this.currentPublication.id_categoria = 1;
+    this.currentPublication.id_estado_libro = 1;
+    this.currentPublication.id_tipo_transaccion = 1;
+    this.currentPublication.disponibilidad = 1;
+    this.currentPublication.estatus = 1;
+    
+    this.originalPublication = { ...this.emptyPublication };
     this.isEditMode = false;
     this.showNewPublicationModal = true;
+    this.selectedImageFile = null;
+    this.hasFormChanged = false;
+    
+    // Prevenir scroll del body
+    document.body.classList.add('modal-open');
   }
 
-  openEditPublicationModal(publication: Book) {
-  this.currentPublication = {
-    ...this.emptyPublication,
-    ...publication,
-    id_usuario: publication.id_usuario,
-    id_categoria: Number(publication.id_categoria) || 0,
-    id_estado_libro: Number(publication.id_estado_libro) || 1,
-    id_tipo_transaccion: Number(publication.id_tipo_transaccion) || 0,
-    fecha_publicacion: publication.fecha_publicacion?.split('T')[0] ?? '',
-    numpaginas: Number(publication.numpaginas) || 0,
-    disponibilidad: Number(publication.disponibilidad) || 1,
+  openEditPublicationModal(publication: Book): void {
+    if (!publication) {
+      console.error('No se puede editar: publicación no válida');
+      return;
+    }
 
-    portada: publication.portada
-      ? publication.portada.startsWith('http')
-        ? publication.portada
-        : `http://localhost:3000${publication.portada}`
-      : 'assets/default-cover.jpg',
-  };
+    // Crear copia profunda para la edición
+    this.currentPublication = {
+      ...publication,
+      id_categoria: Number(publication.id_categoria) || 0,
+      id_estado_libro: Number(publication.id_estado_libro) || 1,
+      id_tipo_transaccion: Number(publication.id_tipo_transaccion) || 0,
+      fecha_publicacion: publication.fecha_publicacion?.split('T')[0] ?? '',
+      numpaginas: Number(publication.numpaginas) || 0,
+      disponibilidad: Number(publication.disponibilidad) || 1,
+      precio: Number(publication.precio) || 0,
+      portada: publication.portada
+        ? publication.portada.startsWith('http')
+          ? publication.portada
+          : `http://localhost:3000${publication.portada}`
+        : 'assets/default-cover.jpg',
+    };
 
+    // Guardar copia original para comparar cambios
+    this.originalPublication = { ...this.currentPublication };
+    
+    this.isEditMode = true;
+    this.showNewPublicationModal = true;
+    this.selectedImageFile = null;
+    this.hasFormChanged = false;
+    
+    // Prevenir scroll del body
+    document.body.classList.add('modal-open');
 
-  this.isEditMode = true;
-  this.showNewPublicationModal = true;
-
-  console.log('Estado del libro al editar:', this.currentPublication.id_estado_libro);
-  console.log('Portada:', this.currentPublication.portada);
-}
-
-
+    console.log('Datos cargados para edición:', this.currentPublication);
+  }
 
   closeModal() {
     this.showNewPublicationModal = false;
     this.isEditMode = false;
     this.currentPublication = { ...this.emptyPublication };
+    this.originalPublication = { ...this.emptyPublication };
+    this.selectedImageFile = null;
+    this.hasFormChanged = false;
+    
+    // Restaurar scroll del body
+    document.body.classList.remove('modal-open');
   }
 
-  savePublication() {
+  // VALIDACIÓN
+  isFormValid(): boolean {
+    // Usar optional chaining y nullish coalescing para evitar errores
+    const titulo = this.currentPublication?.titulo?.trim() || '';
+    const autor = this.currentPublication?.autor?.trim() || '';
+    const editorial = this.currentPublication?.editorial?.trim() || '';
+    const descripcion = this.currentPublication?.descripcion?.trim() || '';
+    const numpaginas = this.currentPublication?.numpaginas ?? 0;
+    const id_categoria = this.currentPublication?.id_categoria ?? 0;
+    const id_tipo_transaccion = this.currentPublication?.id_tipo_transaccion ?? 0;
+    const id_estado_libro = this.currentPublication?.id_estado_libro ?? 0;
+    const disponibilidad = this.currentPublication?.disponibilidad ?? 0;
+    const precio = this.currentPublication?.precio ?? 0;
+
+    const isValid = !!(
+      titulo &&
+      autor &&
+      editorial &&
+      descripcion &&
+      numpaginas > 0 &&
+      id_categoria > 0 &&
+      id_tipo_transaccion > 0 &&
+      id_estado_libro > 0 &&
+      disponibilidad > 0
+    );
+
+    // Para venta, verificar que tenga precio
+    if (id_tipo_transaccion === 1) {
+      return isValid && precio > 0;
+    }
+
+    return isValid;
+  }
+
+  canSave(): boolean {
+    // Verificar validez del formulario primero
     if (!this.isFormValid()) {
-      alert('Por favor, completa todos los campos obligatorios.');
+      return false;
+    }
+    
+    // En modo edición, solo permitir guardar si hay cambios
+    if (this.isEditMode) {
+      return this.hasFormChanged;
+    }
+    
+    // En modo nuevo, siempre permitir si es válido
+    return true;
+  }
+
+  // GUARDADO
+  savePublication(): void {
+    console.log('🚀 Iniciando guardado de publicación...');
+    
+    if (!this.isFormValid()) {
+      alert('❌ Por favor, completa todos los campos obligatorios correctamente.');
       return;
     }
 
-    const fd = new FormData();
-    fd.append('titulo', this.currentPublication.titulo);
-    fd.append('isbn', this.currentPublication.isbn ?? '');
-    fd.append('autor', this.currentPublication.autor);
-    fd.append('editorial', this.currentPublication.editorial);
-    fd.append('fecha_publicacion', this.currentPublication.fecha_publicacion);
-    fd.append(
-      'id_estado_libro',
-      String(this.currentPublication.id_estado_libro)
-    );
-    fd.append('precio', String(this.currentPublication.precio));
-    fd.append('descripcion', this.currentPublication.descripcion);
-    fd.append('id_usuario', String(this.currentPublication.id_usuario));
-    fd.append('id_categoria', String(this.currentPublication.id_categoria));
-    fd.append('disponibilidad', String (this.currentPublication.disponibilidad || 0));
-
-    fd.append('estatus', String(this.currentPublication.estatus));
-    fd.append(
-      'id_tipo_transaccion',
-      String(this.currentPublication.id_tipo_transaccion)
-    );
-    fd.append('numpaginas', String(this.currentPublication.numpaginas || 0));
-
-    if (this.selectedImageFile) {
-      fd.append('portada', this.selectedImageFile); // nombre 'portada' debe coincidir con upload.single('portada')
+    if (this.isEditMode && !this.hasFormChanged) {
+      alert('ℹ️ No hay cambios para guardar.');
+      return;
     }
 
+    // Verificar que currentPublication existe
+    if (!this.currentPublication) {
+      alert('❌ Error: No hay datos para guardar.');
+      return;
+    }
+
+    console.log('📊 Estado antes de guardar:', {
+      isEditMode: this.isEditMode,
+      hasFormChanged: this.hasFormChanged,
+      bookId: this.currentPublication.id,
+      titulo: this.currentPublication.titulo
+    });
+
+    // Preparar FormData con verificaciones seguras
+    const fd = new FormData();
+    fd.append('titulo', this.currentPublication.titulo?.trim() ?? '');
+    fd.append('isbn', this.currentPublication.isbn?.trim() ?? '');
+    fd.append('autor', this.currentPublication.autor?.trim() ?? '');
+    fd.append('editorial', this.currentPublication.editorial?.trim() ?? '');
+    fd.append('fecha_publicacion', this.currentPublication.fecha_publicacion ?? '');
+    fd.append('id_estado_libro', String(this.currentPublication.id_estado_libro ?? 1));
+    fd.append('precio', String(this.currentPublication.precio ?? 0));
+    fd.append('descripcion', this.currentPublication.descripcion?.trim() ?? '');
+    fd.append('id_usuario', String(this.currentPublication.id_usuario ?? 0));
+    fd.append('id_categoria', String(this.currentPublication.id_categoria ?? 1));
+    fd.append('disponibilidad', String(this.currentPublication.disponibilidad ?? 1));
+    fd.append('estatus', String(this.currentPublication.estatus ?? 1));
+    fd.append('id_tipo_transaccion', String(this.currentPublication.id_tipo_transaccion ?? 1));
+    fd.append('numpaginas', String(this.currentPublication.numpaginas ?? 0));
+
+    // Solo agregar portada si se seleccionó una nueva
+    if (this.selectedImageFile) {
+      fd.append('portada', this.selectedImageFile);
+      console.log('📷 Archivo de imagen agregado:', this.selectedImageFile.name);
+    }
 
     if (this.isEditMode) {
-    // 🟡 EDITAR LIBRO
-    this.ApiService.actualizarLibro(this.currentPublication.id, fd).subscribe({
-      next: (res) => {
-        const index = this.publications.findIndex(pub => pub.id === this.currentPublication.id);
-        if (index !== -1) {
-          this.publications[index] = {
-            ...this.publications[index],
-            ...res,
-            id_usuario: this.currentPublication.id_usuario,
-            portada: res.portada
-              ? `http://localhost:3000${res.portada}`
-              : this.publications[index].portada,
-          };
-        }
-        this.updateStats();
-        this.applyFilters();
-        this.closeModal();
-      },
-      error: (e) => {
-        console.error('Error al actualizar libro:', e);
-        alert('Error al actualizar el libro.');
-      },
-    });
-  } else {
-    // 🟢 REGISTRAR LIBRO NUEVO
-    this.ApiService.registrarLibro(fd).subscribe({
-      next: (res) => {
-        const libroConPortada = {
-          ...res,
-          portada: res.portada
-            ? `http://localhost:3000${res.portada}`
-            : 'assets/default-cover.jpg',
-        };
-        this.publications.push(libroConPortada);
-        this.updateStats();
-        this.applyFilters();
-        this.closeModal();
-      },
-      error: (e) => {
-        console.error('Error al registrar libro:', e);
-        alert('Error al registrar el libro.');
-      },
-    });
+      // EDITAR LIBRO EXISTENTE
+      const bookId = this.currentPublication.id;
+      if (!bookId || bookId === 0) {
+        alert('❌ Error: ID de libro no válido para edición.');
+        return;
+      }
+
+      console.log(`📝 Actualizando libro ID: ${bookId}`);
+
+      this.ApiService.actualizarLibro(bookId, fd).subscribe({
+        next: (res) => {
+          console.log('✅ Respuesta del servidor al actualizar:', res);
+          
+          if (res) {
+            // Encontrar y actualizar el libro en la lista local
+            const index = this.publications.findIndex(pub => pub.id === bookId);
+            if (index !== -1) {
+              // Actualizar con los datos de respuesta
+              this.publications[index] = {
+                ...this.publications[index],
+                ...res,
+                portada: res.portada
+                  ? `http://localhost:3000${res.portada}`
+                  : this.publications[index].portada,
+              };
+              
+              console.log('📖 Libro actualizado en la lista local');
+            }
+            
+            // Actualizar estadísticas y filtros
+            this.updateStats();
+            this.applyFilters();
+            
+            // Mostrar mensaje de éxito
+            alert('✅ Libro actualizado correctamente');
+            
+            // Cerrar modal
+            this.closeModal();
+          } else {
+            console.error('❌ Respuesta vacía del servidor');
+            alert('❌ Error: Respuesta vacía del servidor.');
+          }
+        },
+        error: (error) => {
+          console.error('❌ Error al actualizar libro:', error);
+          alert(`❌ Error al actualizar el libro: ${error.message || 'Error desconocido'}`);
+        },
+      });
+    } else {
+      // CREAR LIBRO NUEVO
+      console.log('📚 Creando nuevo libro');
+
+      this.ApiService.registrarLibro(fd).subscribe({
+        next: (res) => {
+          console.log('✅ Respuesta del servidor al crear:', res);
+          
+          if (res) {
+            const libroConPortada = {
+              ...res,
+              portada: res.portada
+                ? `http://localhost:3000${res.portada}`
+                : 'assets/default-cover.jpg',
+            };
+            
+            // Agregar a la lista
+            this.publications.push(libroConPortada);
+            console.log('📖 Nuevo libro agregado a la lista');
+            
+            // Actualizar estadísticas y filtros
+            this.updateStats();
+            this.applyFilters();
+            
+            // Mostrar mensaje de éxito
+            alert('✅ Libro creado correctamente');
+            
+            // Cerrar modal
+            this.closeModal();
+          } else {
+            console.error('❌ Respuesta vacía del servidor');
+            alert('❌ Error: Respuesta vacía del servidor.');
+          }
+        },
+        error: (error) => {
+          console.error('❌ Error al crear libro:', error);
+          alert(`❌ Error al crear el libro: ${error.message || 'Error desconocido'}`);
+        },
+      });
+    }
   }
-}
-  
 
-
-
-
-
-
-
-
-  
+  // ACCIONES SOBRE PUBLICACIONES
   deletePublication(publication: Book) {
     if (
       confirm(`¿Estás seguro de que quieres eliminar "${publication.titulo}"?`)
@@ -411,26 +651,15 @@ onImageSelected(event: any): void {
       ...publication,
       id: newId,
       titulo: `${publication.titulo} (Copia)`,
-      fechaPublicacion: new Date().toISOString().split('T')[0],
+      fecha_publicacion: new Date().toISOString().split('T')[0],
     };
     this.publications.push(duplicatedPublication);
     this.updateStats();
     this.applyFilters();
     alert('📋 Publicación duplicada correctamente');
   }
-  isFormValid(): boolean {
-    return !!(
-      this.currentPublication.titulo &&
-      this.currentPublication.autor &&
-      this.currentPublication.editorial &&
-      this.currentPublication.descripcion &&
-      this.currentPublication.numpaginas &&
-      this.currentPublication.id_categoria &&
-      this.currentPublication.id_tipo_transaccion
-    );
-  }
 
-  // Métodos de utilidad
+  // MÉTODOS DE UTILIDAD PARA MOSTRAR DATOS
   getStatusText(status: string): string {
     const statuses = {
       disponible: 'Disponible',
@@ -497,21 +726,27 @@ onImageSelected(event: any): void {
     return book.id;
   }
 
-  // Navegación
+  // NAVEGACIÓN
   goToDashboard() {
     this.router.navigate(['/saleshome']);
   }
 
-  goToBookDetail(bookId: number) {
-    const libro = this.ApiService.obtenerLibroPorId(bookId);
-    console.log('Libro encontrado:', libro);
-    if (!libro) {
-      console.error('Libro no encontrado con ID:', bookId);
+  goToBookDetail(bookId: number): void {
+    // Verificación de ID válido
+    if (!bookId || bookId <= 0) {
+      console.error('ID de libro no válido:', bookId);
       return;
     }
-    this.router.navigate(['/book', bookId]);
+
+    // Alternativa: Usar optional chaining y buscar en la lista local
+    const libroLocal = this.publications.find(pub => pub.id === bookId);
+    
+    if (libroLocal) {
+      console.log('Libro encontrado en lista local:', libroLocal.titulo);
+      this.router.navigate(['/book', bookId]);
+    } else {
+      console.log('Libro no encontrado en lista local, navegando directamente...');
+      this.router.navigate(['/book', bookId]);
+    }
   }
-
 }
-
-

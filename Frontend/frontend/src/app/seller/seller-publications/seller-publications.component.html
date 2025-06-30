@@ -223,13 +223,6 @@
                 ✏️
               </button>
 
-              <!-- <button
-                class="btn-action btn-duplicate"
-                (click)="duplicatePublication(publication)"
-                title="Duplicar publicación"
-              >
-              </button> -->
-
               <button
                 class="btn-action btn-delete"
                 (click)="deletePublication(publication)"
@@ -276,20 +269,29 @@
   </div>
 </div>
 
-<!-- Modal de nueva/editar publicación -->
+<!-- BACKDROP SEPARADO DEL MODAL -->
+<div 
+  class="modal-backdrop fade"
+  [class.show]="showNewPublicationModal"
+  [style.display]="showNewPublicationModal ? 'block' : 'none'"
+  *ngIf="showNewPublicationModal"
+  (click)="closeModal()"
+></div>
+
+<!-- MODAL SIN BACKDROP INTERNO -->
 <div
   class="modal fade"
   [class.show]="showNewPublicationModal"
   [style.display]="showNewPublicationModal ? 'block' : 'none'"
   *ngIf="showNewPublicationModal"
 >
-  <div class="modal-dialog modal-lg">
+  <div class="modal-dialog modal-lg" (click)="$event.stopPropagation()">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">
           {{ isEditMode ? "✏️ Editar detalles" : "📚 Nueva publicación" }}
         </h5>
-        <button type="button" class="btn-close" (click)="closeModal()"></button>
+        <button type="button" class="btn-close" (click)="closeModal()">×</button>
       </div>
 
       <div class="modal-body">
@@ -305,6 +307,7 @@
                 [(ngModel)]="currentPublication.titulo"
                 name="titulo"
                 placeholder="Título del libro"
+                (input)="onInputChange('titulo', $event)"
                 required
               />
             </div>
@@ -319,6 +322,7 @@
                 [(ngModel)]="currentPublication.isbn"
                 name="isbn"
                 placeholder="978-0-000-00000-0"
+                (input)="onInputChange('isbn', $event)"
                 required
               />
             </div>
@@ -335,6 +339,7 @@
                 [(ngModel)]="currentPublication.autor"
                 name="autor"
                 placeholder="Nombre del autor"
+                (input)="onInputChange('autor', $event)"
                 required
               />
             </div>
@@ -349,59 +354,39 @@
                 [(ngModel)]="currentPublication.editorial"
                 name="editorial"
                 placeholder="Nombre de la editorial"
+                (input)="onInputChange('editorial', $event)"
                 required
               />
             </div>
           </div>
 
           <div class="form-row">
-            <!-- ISBN -->
+            <!-- Portada -->
             <div class="form-group col-md-6">
-              <label for="isbn">ISBN *</label>
-              <input
-                type="text"
-                id="isbn"
-                class="form-control"
-                [(ngModel)]="currentPublication.isbn"
-                name="isbn"
-                placeholder="978-0-000-00000-0"
-                required
-              />
+              <label for="portada">Portada</label>
+              <div class="file-input-group">
+                <input
+                  type="file"
+                  id="portada"
+                  class="form-control-file d-none"
+                  (change)="onImageSelected($event)"
+                  accept="image/*"
+                  #fileInput
+                />
+                <button type="button" class="btn btn-outline-secondary" (click)="fileInput.click()">
+                  Elegir archivo
+                </button>
+              </div>
+
+              <div *ngIf="selectedImageFile" class="mt-2 text-success">
+                ✅ Archivo seleccionado: {{ selectedImageFile.name }}
+              </div>
+
+              <div *ngIf="!selectedImageFile && currentPublication.portada" class="mt-2 text-muted">
+                📄 Archivo actual: {{ getFileNameFromUrl(currentPublication.portada) }}
+              </div>
             </div>
 
-
-
-<div class="form-group col-md-6">
-  <label for="portada">Portada</label>
-  <div class="file-input-group">
-    <!-- Ocultar input real -->
-    <input
-      type="file"
-      id="portada"
-      class="form-control-file d-none"
-      (change)="onImageSelected($event)"
-      accept="image/*"
-      #fileInput
-    />
-
-    <!-- Botón personalizado que abre el input -->
-    <button type="button" class="btn btn-outline-secondary" (click)="fileInput.click()">
-      Elegir archivo
-    </button>
-  </div>
-
-  <!-- Mostrar nombre del archivo nuevo si el usuario selecciona uno -->
-  <div *ngIf="selectedImageFile" class="mt-2 text-muted">
-    Archivo seleccionado: {{ selectedImageFile.name }}
-  </div>
-
-  <!-- Mostrar nombre del archivo actual si no se ha seleccionado uno nuevo -->
-  <div *ngIf="!selectedImageFile && currentPublication.portada" class="mt-2 text-muted">
-    Archivo actual: {{ getFileNameFromUrl(currentPublication.portada) }}
-  </div>
-</div>
-
-          <div class="form-row">
             <!-- Estado del libro -->
             <div class="form-group col-md-6">
               <label for="estado">Estado del libro *</label>
@@ -409,6 +394,7 @@
                 class="form-control"
                 [(ngModel)]="currentPublication.id_estado_libro"
                 name="id_estado_libro"
+                (change)="onSelectChange('id_estado_libro', $event)"
                 required
               >
                 <option [ngValue]="1">Nuevo</option>
@@ -416,7 +402,9 @@
                 <option [ngValue]="3">Desgastado</option>
               </select>
             </div>
+          </div>
 
+          <div class="form-row">
             <!-- Categoría -->
             <div class="form-group col-md-6">
               <label for="categoria">Categoría *</label>
@@ -425,8 +413,10 @@
                 class="form-control"
                 [(ngModel)]="currentPublication.id_categoria"
                 name="id_categoria"
+                (change)="onSelectChange('id_categoria', $event)"
                 required
               >
+                <option [ngValue]="0" disabled>Selecciona una categoría</option>
                 <option
                   *ngFor="let category of categoriasMap"
                   [ngValue]="category.id"
@@ -435,9 +425,7 @@
                 </option>
               </select>
             </div>
-          </div>
 
-          <div class="form-row">
             <!-- Transacción -->
             <div class="form-group col-md-6">
               <label for="transaccion">Transacción *</label>
@@ -445,20 +433,24 @@
                 class="form-control"
                 [(ngModel)]="currentPublication.id_tipo_transaccion"
                 name="id_tipo_transaccion"
+                (change)="onSelectChange('id_tipo_transaccion', $event)"
                 required
               >
+                <option [ngValue]="0" disabled>Selecciona el tipo</option>
                 <option [ngValue]="1">Venta</option>
                 <option [ngValue]="2">Intercambio</option>
                 <option [ngValue]="3">Donación</option>
               </select>
             </div>
+          </div>
 
+          <div class="form-row">
             <!-- Precio (solo si es venta) -->
             <div
               *ngIf="currentPublication.id_tipo_transaccion === 1"
               class="form-group col-md-6"
             >
-              <label for="precio">Precio (MXN)</label>
+              <label for="precio">Precio (MXN) *</label>
               <input
                 type="number"
                 id="precio"
@@ -468,13 +460,13 @@
                 placeholder="0.00"
                 min="0"
                 step="0.01"
+                (input)="onNumberInputChange('precio', $event)"
+                required
               />
             </div>
-          </div>
 
-          <div class="form-row">
             <!-- Número de páginas -->
-            <div class="form-group col-md-6">
+            <div class="form-group" [class.col-md-6]="currentPublication.id_tipo_transaccion === 1" [class.col-md-12]="currentPublication.id_tipo_transaccion !== 1">
               <label for="numPaginas">Número de páginas *</label>
               <input
                 type="number"
@@ -484,11 +476,14 @@
                 name="numPaginas"
                 placeholder="0"
                 min="1"
+                (input)="onNumberInputChange('numpaginas', $event)"
                 required
               />
-
             </div>
+          </div>
 
+          <div class="form-row">
+            <!-- Cantidad de libros -->
             <div class="form-group col-md-6">
               <label for="cantidadlibros">Cantidad de libros *</label>
               <input
@@ -499,10 +494,12 @@
                 name="cantidadlibros"
                 placeholder="0"
                 min="1"
+                (input)="onNumberInputChange('disponibilidad', $event)"
                 required
               />
             </div>
 
+            <!-- Fecha de publicación -->
             <div class="form-group col-md-6">
               <label for="fechaPublicacion">Fecha de publicación</label>
               <input
@@ -511,6 +508,7 @@
                 class="form-control"
                 [(ngModel)]="currentPublication.fecha_publicacion"
                 name="fechaPublicacion"
+                (change)="onDateChange('fecha_publicacion', $event)"
               />
             </div>
           </div>
@@ -525,30 +523,41 @@
               name="descripcion"
               rows="4"
               placeholder="Describe el libro, su estado, etc."
+              (input)="onTextareaChange('descripcion', $event)"
               required
             ></textarea>
           </div>
+
+          <!-- Debug info (remover en producción) -->
+          <div class="debug-info" *ngIf="isEditMode" style="background: #f8f9fa; padding: 1rem; border-radius: 8px; margin-top: 1rem;">
+            <small>
+              <strong>Debug:</strong> 
+              Modo edición: {{ isEditMode ? 'Sí' : 'No' }} | 
+              Hay cambios: {{ hasFormChanged ? 'Sí' : 'No' }} | 
+              Formulario válido: {{ isFormValid() ? 'Sí' : 'No' }} | 
+              Puede guardar: {{ canSave() ? 'Sí' : 'No' }}
+            </small>
+          </div>
+        </form>
       </div>
 
-<div class="modal-footer">
-  <button type="button" class="btn btn-secondary" (click)="closeModal()">
-    Cancelar
-  </button>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeModal()">
+          Cancelar
+        </button>
 
-  <button
-    type="button"
-    class="btn btn-primary"
-    (click)="savePublication()"
-    [disabled]="!isFormValid()"
-  >
-    {{ isEditMode ? "Guardar" : "Guardar" }}
-  </button>
-</div> <!-- <--- ESTE cierre era el que faltaba -->
-
-<div
-  class="modal-backdrop fade"
-  [class.show]="showNewPublicationModal"
-  *ngIf="showNewPublicationModal"
-  (click)="closeModal()"
-></div>
-
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="savePublication()"
+          [disabled]="!canSave()"
+          [class.btn-success]="isEditMode && hasFormChanged"
+        >
+          <span *ngIf="!isEditMode">Crear publicación</span>
+          <span *ngIf="isEditMode && !hasFormChanged">Sin cambios</span>
+          <span *ngIf="isEditMode && hasFormChanged">💾 Guardar cambios</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
