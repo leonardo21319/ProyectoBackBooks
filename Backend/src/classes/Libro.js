@@ -9,6 +9,7 @@ class Libro {
     id_estado_libro,
     precio,
     descripcion,
+    numpaginas,
     portada,
     id_usuario,
     id_categoria,
@@ -24,6 +25,7 @@ class Libro {
     this.fecha_publicacion = fecha_publicacion;
     this.id_estado_libro = id_estado_libro;
     this.precio = precio;
+    this.numpaginas = numpaginas;
     this.descripcion = descripcion;
     this.portada = portada;
     this.id_usuario = id_usuario;

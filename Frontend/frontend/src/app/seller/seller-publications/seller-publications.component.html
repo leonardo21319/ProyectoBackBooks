@@ -223,13 +223,12 @@
                 ✏️
               </button>
 
-              <button
+              <!-- <button
                 class="btn-action btn-duplicate"
                 (click)="duplicatePublication(publication)"
                 title="Duplicar publicación"
               >
-                📋
-              </button>
+              </button> -->
 
               <button
                 class="btn-action btn-delete"
@@ -462,6 +461,21 @@
           <div class="form-row">
             <!-- Número de páginas -->
             <div class="form-group col-md-6">
+              <label for="numPaginas">Número de páginas *</label>
+              <input
+                type="number"
+                id="numPaginas"
+                class="form-control"
+                [(ngModel)]="currentPublication.numpaginas"
+                name="numPaginas"
+                placeholder="0"
+                min="1"
+                required
+              />
+
+            </div>
+
+                  <div class="form-group col-md-6">
               <label for="numPaginas">Número de páginas *</label>
               <input
                 type="number"
