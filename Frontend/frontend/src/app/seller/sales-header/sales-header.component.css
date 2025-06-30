@@ -159,18 +159,18 @@
 
 /* Botón especial para agregar libro */
 .add-book-btn {
-  background: linear-gradient(135deg, #28a745, #20c997) !important;
+  background: linear-gradient(135deg, #ffffff, #ffffff) !important;
   color: white !important;
   border: 2px solid transparent !important;
   font-weight: 600 !important;
 }
 
 .add-book-btn:hover {
-  background: linear-gradient(135deg, #218838, #1ea087) !important;
+  background: linear-gradient(135deg, #ffffff, #ffffff) !important;
   color: white !important;
-  border-color: rgba(255, 255, 255, 0.3) !important;
+  border-color: rgb(255, 255, 255) !important;
   transform: translateY(-2px) !important;
-  box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4) !important;
+  box-shadow: 0 6px 20px rgba(255, 255, 255, 0.4) !important;
 }
 
 /* Perfil de vendedor */
