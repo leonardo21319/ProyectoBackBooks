@@ -3,23 +3,10 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { SalesHeaderComponent } from '../sales-header/sales-header.component';
-
+import { ApiService } from '../../servicios/api.service';
 import { Book } from '../../models/Book.model';
 
 // Interfaz simplificada para los libros del vendedor
-interface VendorBook {
-  id: number;
-  titulo: string;
-  autor: string;
-  descripcion: string;
-  precio: number;
-  categoria_nombre: string;
-  tipo_transaccion_nombre: string;
-  portada: string;
-  estado: 'activo' | 'vendido' | 'pausado';
-  fecha_creacion: string;
-  ventas?: number;
-}
 
 @Component({
   selector: 'app-saleshome',
@@ -30,18 +17,18 @@ interface VendorBook {
 })
 export class SaleshomeComponent implements OnInit {
   // Variables del vendedor
-  vendorBooks: VendorBook[] = [];
-  allVendorBooks: VendorBook[] = [];
+  vendorBooks: Book[] = [];
+  allVendorBooks: Book[] = [];
   selectedCategory = 'Todas';
   showBookDetails = false;
-  selectedBook: VendorBook | null = null;
+  selectedBook: Book | null = null;
 
   // Estadísticas del vendedor
   totalBooks = 0;
   activeBooks = 0;
   soldBooks = 0;
   pendingOrders = 5;
-  monthlyEarnings = 1250.50;
+  monthlyEarnings = 1250.5;
 
   // Filtros
   filterStatus = 'Todos'; // Todos, Activos, Vendidos, Pausados
@@ -49,7 +36,8 @@ export class SaleshomeComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private ApiService: ApiService
   ) {}
 
   ngOnInit(): void {
@@ -67,116 +55,56 @@ export class SaleshomeComponent implements OnInit {
   }
 
   cargarDatosMock() {
-    // Datos de ejemplo para el vendedor
-    this.allVendorBooks = [
-      {
-        id: 1,
-        titulo: 'Cien Años de Soledad',
-        autor: 'Gabriel García Márquez',
-        descripcion: 'Una obra maestra del realismo mágico que narra la historia de la familia Buendía.',
-        precio: 299.99,
-        categoria_nombre: 'Literatura',
-        tipo_transaccion_nombre: 'Venta',
-        portada: 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=300&h=400&fit=crop',
-        estado: 'activo' as const,
-        fecha_creacion: '2024-05-15',
-        ventas: 3
+    this.ApiService.obtenerLibros().subscribe({
+      next: (libros) => {
+        this.vendorBooks = libros.map((libro: any) => ({
+          ...libro,
+          portada: libro.portada
+            ? `http://localhost:3000${libro.portada}`
+            : 'assets/default-cover.jpg',
+          estado_libro: libro.estado_libro || 'activo', // Ensure status exists
+        }));
+        this.allVendorBooks = [...this.vendorBooks]; // Initialize allVendorBooks
+        this.updateStats(); // Update statistics
       },
-      {
-        id: 2,
-        titulo: 'El Principito',
-        autor: 'Antoine de Saint-Exupéry',
-        descripcion: 'Un cuento poético que ha conquistado a lectores de todas las edades.',
-        precio: 189.50,
-        categoria_nombre: 'Infantil',
-        tipo_transaccion_nombre: 'Venta',
-        portada: 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=300&h=400&fit=crop',
-        estado: 'vendido' as const,
-        fecha_creacion: '2024-04-20',
-        ventas: 5
+      error: (error) => {
+        console.error('Error al obtener libros:', error);
+        alert('Error al obtener libros');
       },
-      {
-        id: 3,
-        titulo: 'Sapiens',
-        autor: 'Yuval Noah Harari',
-        descripcion: 'Una breve historia de la humanidad desde los orígenes hasta el presente.',
-        precio: 0,
-        categoria_nombre: 'Historia',
-        tipo_transaccion_nombre: 'Donación',
-        portada: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=400&fit=crop',
-        estado: 'activo' as const,
-        fecha_creacion: '2024-06-01',
-        ventas: 0
-      },
-      {
-        id: 4,
-        titulo: '1984',
-        autor: 'George Orwell',
-        descripcion: 'Una distopía sobre el totalitarismo y la manipulación del poder.',
-        precio: 245.00,
-        categoria_nombre: 'Ciencia Ficción',
-        tipo_transaccion_nombre: 'Intercambio',
-        portada: 'https://images.unsplash.com/photo-1516979187457-637abb4f9353?w=300&h=400&fit=crop',
-        estado: 'pausado' as const,
-        fecha_creacion: '2024-03-10',
-        ventas: 1
-      },
-      {
-        id: 5,
-        titulo: 'Don Quijote de la Mancha',
-        autor: 'Miguel de Cervantes',
-        descripcion: 'Las aventuras del ingenioso hidalgo que luchó contra molinos de viento.',
-        precio: 359.99,
-        categoria_nombre: 'Literatura',
-        tipo_transaccion_nombre: 'Venta',
-        portada: 'https://images.unsplash.com/photo-1521123845560-14093637aa5d?w=300&h=400&fit=crop',
-        estado: 'activo' as const,
-        fecha_creacion: '2024-06-10',
-        ventas: 2
-      },
-      {
-        id: 6,
-        titulo: 'El Arte de la Guerra',
-        autor: 'Sun Tzu',
-        descripcion: 'Estrategias militares aplicables a los negocios y la vida.',
-        precio: 199.00,
-        categoria_nombre: 'Filosofía',
-        tipo_transaccion_nombre: 'Venta',
-        portada: 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=300&h=400&fit=crop',
-        estado: 'vendido' as const,
-        fecha_creacion: '2024-02-28',
-        ventas: 4
-      }
-    ];
-
-    this.vendorBooks = this.allVendorBooks;
-    this.updateStats();
-    console.log('Datos mock cargados:', this.allVendorBooks);
+    });
   }
 
   updateStats() {
     this.totalBooks = this.allVendorBooks.length;
-    this.activeBooks = this.allVendorBooks.filter(book => book.estado === 'activo').length;
-    this.soldBooks = this.allVendorBooks.filter(book => book.estado === 'vendido').length;
+    this.activeBooks = this.allVendorBooks.filter(
+      (book) => book.estado_libro === 'activo'
+    ).length;
+    this.soldBooks = this.allVendorBooks.filter(
+      (book) => book.estado_libro === 'vendido'
+    ).length;
   }
 
   // Getter para libros filtrados
   get filteredBooks() {
-    let books = this.allVendorBooks;
+    let books = this.vendorBooks;
 
     // Filtrar por categoría
     if (this.selectedCategory !== 'Todas') {
-      books = books.filter(book => book.categoria_nombre === this.selectedCategory);
+      books = books.filter(
+        (book) => book.categoria_nombre === this.selectedCategory
+      );
     }
 
     // Filtrar por estado
     if (this.filterStatus !== 'Todos') {
       const statusMap: { [key: string]: string } = {
-        'Activos': 'activo',
-        'Vendidos': 'vendido',
-        'Pausados': 'pausado'
+        Activos: 'activo',
+        Vendidos: 'vendido',
+        Pausados: 'pausado',
       };
-      books = books.filter(book => book.estado === statusMap[this.filterStatus]);
+      books = books.filter(
+        (book) => book.estado_libro === statusMap[this.filterStatus]
+      );
     }
 
     // Ordenar
@@ -185,11 +113,14 @@ export class SaleshomeComponent implements OnInit {
     return books;
   }
 
-  sortBooks(books: VendorBook[]): VendorBook[] {
+  sortBooks(books: Book[]): Book[] {
     return books.sort((a, b) => {
       switch (this.sortBy) {
         case 'fecha_desc':
-          return new Date(b.fecha_creacion).getTime() - new Date(a.fecha_creacion).getTime();
+          return (
+            new Date(b.fecha_publicacion).getTime() -
+            new Date(a.fecha_publicacion).getTime()
+          );
         case 'precio_asc':
           return (a.precio || 0) - (b.precio || 0);
         case 'precio_desc':
@@ -211,10 +142,11 @@ export class SaleshomeComponent implements OnInit {
   onSearchPerformed(searchTerm: string) {
     console.log('Búsqueda en mis libros:', searchTerm);
     if (searchTerm) {
-      this.vendorBooks = this.allVendorBooks.filter(book =>
-        book.titulo.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        book.autor.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        book.descripcion.toLowerCase().includes(searchTerm.toLowerCase())
+      this.vendorBooks = this.allVendorBooks.filter(
+        (book) =>
+          book.titulo.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          book.autor.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          book.descripcion.toLowerCase().includes(searchTerm.toLowerCase())
       );
     } else {
       this.vendorBooks = this.allVendorBooks;
@@ -228,39 +160,39 @@ export class SaleshomeComponent implements OnInit {
     // this.router.navigate(['/add-book']);
   }
 
-  editBook(book: VendorBook) {
+  editBook(book: Book) {
     console.log('Editar libro:', book.titulo);
     alert(`✏️ Editando: ${book.titulo}`);
     // this.router.navigate(['/edit-book', book.id]);
   }
 
-  viewBookDetails(book: VendorBook) {
+  viewBookDetails(book: Book) {
     this.selectedBook = book;
     this.showBookDetails = true;
     console.log('Ver detalles del libro:', book.titulo);
   }
 
-  toggleBookStatus(book: VendorBook) {
-    const newStatus = book.estado === 'activo' ? 'pausado' : 'activo';
+  toggleBookStatus(book: Book) {
+    const newStatus = book.estado_libro === 'activo' ? 'pausado' : 'activo';
     console.log(`Cambiar estado de "${book.titulo}" a: ${newStatus}`);
-    
+
     // Simular cambio de estado
-    book.estado = newStatus;
+    book.estado_libro = newStatus;
     this.updateStats();
-    
+
     const statusText = newStatus === 'activo' ? 'activado' : 'pausado';
     alert(`📊 "${book.titulo}" ha sido ${statusText}`);
   }
 
-  deleteBook(book: VendorBook) {
+  deleteBook(book: Book) {
     if (confirm(`¿Estás seguro de que quieres eliminar "${book.titulo}"?`)) {
       console.log('Eliminar libro:', book.titulo);
-      
+
       // Simular eliminación
-      this.allVendorBooks = this.allVendorBooks.filter(b => b.id !== book.id);
+      this.allVendorBooks = this.allVendorBooks.filter((b) => b.id !== book.id);
       this.vendorBooks = this.allVendorBooks;
       this.updateStats();
-      
+
       alert(`🗑️ "${book.titulo}" ha sido eliminado`);
     }
   }
@@ -277,11 +209,11 @@ export class SaleshomeComponent implements OnInit {
 
   updateURL() {
     const queryParams: any = {};
-    
+
     if (this.selectedCategory !== 'Todas') {
       queryParams.category = this.selectedCategory;
     }
-    
+
     if (this.filterStatus !== 'Todos') {
       queryParams.status = this.filterStatus;
     }
@@ -305,10 +237,10 @@ export class SaleshomeComponent implements OnInit {
     // this.router.navigate(['/vendor-analytics']);
   }
 
-goToProfile() {
-  console.log('Ir a perfil de vendedor');
-  this.router.navigate(['/seller-profile']);
-}
+  goToProfile() {
+    console.log('Ir a perfil de vendedor');
+    this.router.navigate(['/seller-profile']);
+  }
 
   closeBookDetails() {
     this.showBookDetails = false;
@@ -323,10 +255,10 @@ goToProfile() {
       localStorage.removeItem('userToken');
       localStorage.removeItem('userData');
       sessionStorage.clear();
-      
+
       // Redirigir al login
       this.router.navigate(['/login']);
-      
+
       alert('👋 Sesión cerrada exitosamente');
     }
   }
@@ -345,7 +277,12 @@ goToProfile() {
     }
   }
 
-  getStatusText(status: string): string {
+  getStatusText(status: string | undefined): string {
+    // Si el estado es undefined, devolvemos un valor predeterminado
+    if (!status) {
+      return 'Desconocido'; // O cualquier valor que prefieras mostrar
+    }
+
     switch (status) {
       case 'activo':
         return 'Activo';
@@ -354,14 +291,14 @@ goToProfile() {
       case 'pausado':
         return 'Pausado';
       default:
-        return status;
+        return 'Desconocido'; // Valor por defecto
     }
   }
 
   formatPrice(price: number): string {
     return new Intl.NumberFormat('es-MX', {
       style: 'currency',
-      currency: 'MXN'
+      currency: 'MXN',
     }).format(price);
   }
 
@@ -369,7 +306,7 @@ goToProfile() {
     return new Date(date).toLocaleDateString('es-MX', {
       year: 'numeric',
       month: 'short',
-      day: 'numeric'
+      day: 'numeric',
     });
   }
 }

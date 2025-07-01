@@ -270,7 +270,7 @@
 </div>
 
 <!-- BACKDROP SEPARADO DEL MODAL -->
-<div 
+<div
   class="modal-backdrop fade"
   [class.show]="showNewPublicationModal"
   [style.display]="showNewPublicationModal ? 'block' : 'none'"
@@ -291,7 +291,9 @@
         <h5 class="modal-title">
           {{ isEditMode ? "✏️ Editar detalles" : "📚 Nueva publicación" }}
         </h5>
-        <button type="button" class="btn-close" (click)="closeModal()">×</button>
+        <button type="button" class="btn-close" (click)="closeModal()">
+          ×
+        </button>
       </div>
 
       <div class="modal-body">
@@ -361,10 +363,24 @@
           </div>
 
           <div class="form-row">
-            <!-- Portada -->
+            <!-- ISBN -->
+            <div class="form-group col-md-6">
+              <label for="isbn">ISBN *</label>
+              <input
+                type="text"
+                id="isbn"
+                class="form-control"
+                [(ngModel)]="currentPublication.isbn"
+                name="isbn"
+                placeholder="978-0-000-00000-0"
+                required
+              />
+            </div>
+
             <div class="form-group col-md-6">
               <label for="portada">Portada</label>
               <div class="file-input-group">
+                <!-- Ocultar input real -->
                 <input
                   type="file"
                   id="portada"
@@ -373,190 +389,187 @@
                   accept="image/*"
                   #fileInput
                 />
-                <button type="button" class="btn btn-outline-secondary" (click)="fileInput.click()">
+
+                <!-- Botón personalizado que abre el input -->
+                <button
+                  type="button"
+                  class="btn btn-outline-secondary"
+                  (click)="fileInput.click()"
+                >
                   Elegir archivo
                 </button>
               </div>
 
-              <div *ngIf="selectedImageFile" class="mt-2 text-success">
-                ✅ Archivo seleccionado: {{ selectedImageFile.name }}
+              <!-- Mostrar nombre del archivo nuevo si el usuario selecciona uno -->
+              <div *ngIf="selectedImageFile" class="mt-2 text-muted">
+                Archivo seleccionado: {{ selectedImageFile.name }}
               </div>
 
-              <div *ngIf="!selectedImageFile && currentPublication.portada" class="mt-2 text-muted">
-                📄 Archivo actual: {{ getFileNameFromUrl(currentPublication.portada) }}
+              <!-- Mostrar nombre del archivo actual si no se ha seleccionado uno nuevo -->
+              <div
+                *ngIf="!selectedImageFile && currentPublication.portada"
+                class="mt-2 text-muted"
+              >
+                Archivo actual:
+                {{ getFileNameFromUrl(currentPublication.portada) }}
               </div>
             </div>
 
-            <!-- Estado del libro -->
-            <div class="form-group col-md-6">
-              <label for="estado">Estado del libro *</label>
-              <select
-                class="form-control"
-                [(ngModel)]="currentPublication.id_estado_libro"
-                name="id_estado_libro"
-                (change)="onSelectChange('id_estado_libro', $event)"
-                required
-              >
-                <option [ngValue]="1">Nuevo</option>
-                <option [ngValue]="2">Usado</option>
-                <option [ngValue]="3">Desgastado</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="form-row">
-            <!-- Categoría -->
-            <div class="form-group col-md-6">
-              <label for="categoria">Categoría *</label>
-              <select
-                id="categoria"
-                class="form-control"
-                [(ngModel)]="currentPublication.id_categoria"
-                name="id_categoria"
-                (change)="onSelectChange('id_categoria', $event)"
-                required
-              >
-                <option [ngValue]="0" disabled>Selecciona una categoría</option>
-                <option
-                  *ngFor="let category of categoriasMap"
-                  [ngValue]="category.id"
+            <div class="form-row">
+              <!-- Estado del libro -->
+              <div class="form-group col-md-6">
+                <label for="estado">Estado del libro *</label>
+                <select
+                  class="form-control"
+                  [(ngModel)]="currentPublication.id_estado_libro"
+                  name="id_estado_libro"
+                  required
                 >
-                  {{ category.label }}
-                </option>
-              </select>
+                  <option [ngValue]="1">Nuevo</option>
+                  <option [ngValue]="2">Usado</option>
+                  <option [ngValue]="3">Desgastado</option>
+                </select>
+              </div>
+
+              <!-- Categoría -->
+              <div class="form-group col-md-6">
+                <label for="categoria">Categoría *</label>
+                <select
+                  id="categoria"
+                  class="form-control"
+                  [(ngModel)]="currentPublication.id_categoria"
+                  name="id_categoria"
+                  required
+                >
+                  <option
+                    *ngFor="let category of categoriasMap"
+                    [ngValue]="category.id"
+                  >
+                    {{ category.label }}
+                  </option>
+                </select>
+              </div>
             </div>
 
-            <!-- Transacción -->
-            <div class="form-group col-md-6">
-              <label for="transaccion">Transacción *</label>
-              <select
-                class="form-control"
-                [(ngModel)]="currentPublication.id_tipo_transaccion"
-                name="id_tipo_transaccion"
-                (change)="onSelectChange('id_tipo_transaccion', $event)"
-                required
+            <div class="form-row">
+              <!-- Transacción -->
+              <div class="form-group col-md-6">
+                <label for="transaccion">Transacción *</label>
+                <select
+                  class="form-control"
+                  [(ngModel)]="currentPublication.id_tipo_transaccion"
+                  name="id_tipo_transaccion"
+                  required
+                >
+                  <option [ngValue]="1">Venta</option>
+                  <option [ngValue]="2">Intercambio</option>
+                  <option [ngValue]="3">Donación</option>
+                </select>
+              </div>
+
+              <!-- Precio (solo si es venta) -->
+              <div
+                *ngIf="currentPublication.id_tipo_transaccion === 1"
+                class="form-group col-md-6"
               >
-                <option [ngValue]="0" disabled>Selecciona el tipo</option>
-                <option [ngValue]="1">Venta</option>
-                <option [ngValue]="2">Intercambio</option>
-                <option [ngValue]="3">Donación</option>
-              </select>
+                <label for="precio">Precio (MXN)</label>
+                <input
+                  type="number"
+                  id="precio"
+                  class="form-control"
+                  [(ngModel)]="currentPublication.precio"
+                  name="precio"
+                  placeholder="0.00"
+                  min="0"
+                  step="0.01"
+                />
+              </div>
+            </div>
+
+            <div class="form-row">
+              <!-- Número de páginas -->
+              <div class="form-group col-md-6">
+                <label for="numPaginas">Número de páginas *</label>
+                <input
+                  type="number"
+                  id="numPaginas"
+                  class="form-control"
+                  [(ngModel)]="currentPublication.numpaginas"
+                  name="numPaginas"
+                  placeholder="0"
+                  min="1"
+                  required
+                />
+              </div>
+
+              <div class="form-group col-md-6">
+                <label for="cantidadlibros">Cantidad de libros *</label>
+                <input
+                  type="number"
+                  id="cantidadlibros"
+                  class="form-control"
+                  [(ngModel)]="currentPublication.disponibilidad"
+                  name="cantidadlibros"
+                  placeholder="0"
+                  min="1"
+                  required
+                />
+              </div>
+
+              <div class="form-group col-md-6">
+                <label for="fechaPublicacion">Fecha de publicación</label>
+                <input
+                  type="date"
+                  id="fechaPublicacion"
+                  class="form-control"
+                  [(ngModel)]="currentPublication.fecha_publicacion"
+                  name="fechaPublicacion"
+                />
+              </div>
+            </div>
+
+            <!-- Descripción -->
+            <div class="form-group">
+              <label for="descripcion">Descripción *</label>
+              <textarea
+                id="descripcion"
+                class="form-control"
+                [(ngModel)]="currentPublication.descripcion"
+                name="descripcion"
+                rows="4"
+                placeholder="Describe el libro, su estado, etc."
+                required
+              ></textarea>
             </div>
           </div>
 
-          <div class="form-row">
-            <!-- Precio (solo si es venta) -->
-            <div
-              *ngIf="currentPublication.id_tipo_transaccion === 1"
-              class="form-group col-md-6"
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              (click)="closeModal()"
             >
-              <label for="precio">Precio (MXN) *</label>
-              <input
-                type="number"
-                id="precio"
-                class="form-control"
-                [(ngModel)]="currentPublication.precio"
-                name="precio"
-                placeholder="0.00"
-                min="0"
-                step="0.01"
-                (input)="onNumberInputChange('precio', $event)"
-                required
-              />
-            </div>
+              Cancelar
+            </button>
 
-            <!-- Número de páginas -->
-            <div class="form-group" [class.col-md-6]="currentPublication.id_tipo_transaccion === 1" [class.col-md-12]="currentPublication.id_tipo_transaccion !== 1">
-              <label for="numPaginas">Número de páginas *</label>
-              <input
-                type="number"
-                id="numPaginas"
-                class="form-control"
-                [(ngModel)]="currentPublication.numpaginas"
-                name="numPaginas"
-                placeholder="0"
-                min="1"
-                (input)="onNumberInputChange('numpaginas', $event)"
-                required
-              />
-            </div>
+            <button
+              type="button"
+              class="btn btn-primary"
+              (click)="savePublication()"
+              [disabled]="!isFormValid()"
+            >
+              {{ isEditMode ? "Guardar" : "Guardar" }}
+            </button>
           </div>
+          <!-- <--- ESTE cierre era el que faltaba -->
 
-          <div class="form-row">
-            <!-- Cantidad de libros -->
-            <div class="form-group col-md-6">
-              <label for="cantidadlibros">Cantidad de libros *</label>
-              <input
-                type="number"
-                id="cantidadlibros"
-                class="form-control"
-                [(ngModel)]="currentPublication.disponibilidad"
-                name="cantidadlibros"
-                placeholder="0"
-                min="1"
-                (input)="onNumberInputChange('disponibilidad', $event)"
-                required
-              />
-            </div>
-
-            <!-- Fecha de publicación -->
-            <div class="form-group col-md-6">
-              <label for="fechaPublicacion">Fecha de publicación</label>
-              <input
-                type="date"
-                id="fechaPublicacion"
-                class="form-control"
-                [(ngModel)]="currentPublication.fecha_publicacion"
-                name="fechaPublicacion"
-                (change)="onDateChange('fecha_publicacion', $event)"
-              />
-            </div>
-          </div>
-
-          <!-- Descripción -->
-          <div class="form-group">
-            <label for="descripcion">Descripción *</label>
-            <textarea
-              id="descripcion"
-              class="form-control"
-              [(ngModel)]="currentPublication.descripcion"
-              name="descripcion"
-              rows="4"
-              placeholder="Describe el libro, su estado, etc."
-              (input)="onTextareaChange('descripcion', $event)"
-              required
-            ></textarea>
-          </div>
-
-          <!-- Debug info (remover en producción) -->
-          <div class="debug-info" *ngIf="isEditMode" style="background: #f8f9fa; padding: 1rem; border-radius: 8px; margin-top: 1rem;">
-            <small>
-              <strong>Debug:</strong> 
-              Modo edición: {{ isEditMode ? 'Sí' : 'No' }} | 
-              Hay cambios: {{ hasFormChanged ? 'Sí' : 'No' }} | 
-              Formulario válido: {{ isFormValid() ? 'Sí' : 'No' }} | 
-              Puede guardar: {{ canSave() ? 'Sí' : 'No' }}
-            </small>
-          </div>
+          <div
+            class="modal-backdrop fade"
+            [class.show]="showNewPublicationModal"
+            *ngIf="showNewPublicationModal"
+            (click)="closeModal()"
+          ></div>
         </form>
-      </div>
-
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" (click)="closeModal()">
-          Cancelar
-        </button>
-
-        <button
-          type="button"
-          class="btn btn-primary"
-          (click)="savePublication()"
-          [disabled]="!canSave()"
-          [class.btn-success]="isEditMode && hasFormChanged"
-        >
-          <span *ngIf="!isEditMode">Crear publicación</span>
-          <span *ngIf="isEditMode && !hasFormChanged">Sin cambios</span>
-          <span *ngIf="isEditMode && hasFormChanged">💾 Guardar cambios</span>
-        </button>
       </div>
     </div>
   </div>

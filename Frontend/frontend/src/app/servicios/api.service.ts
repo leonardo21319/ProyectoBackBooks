@@ -179,4 +179,11 @@ export class ApiService {
       libro
     );
   }
+
+  agregarLibroMarcador(id: number): Observable<any> {
+    console.log(`ApiService: Agregando libro con ID ${id} a marcadores`);
+    return this.http.post(`${this.baseUrl}/intercambio/agregarMarcador`, {
+      id,
+    });
+  }
 }

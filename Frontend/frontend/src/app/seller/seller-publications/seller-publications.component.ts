@@ -1,4 +1,3 @@
-// seller/seller-publications/seller-publications.component.ts
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -22,18 +21,15 @@ export class SellerPublicationsComponent implements OnInit {
   selectedImageFile: File | null = null;
   isEditMode = false;
 
-  // Para detección de cambios
   private originalPublication: Book = this.emptyPublication;
   hasFormChanged = false;
 
-  // Filtros
   filterCategory = 'todas';
   filterStatus = 'todos';
   filterTransaction = 'todas';
   sortBy = 'fecha_desc';
   searchTerm = '';
 
-  // Estadísticas
   totalPublications = 0;
   availablePublications = 0;
   soldPublications = 0;
@@ -78,23 +74,16 @@ export class SellerPublicationsComponent implements OnInit {
 
   public categories = this.categoriasMap;
 
-  constructor(
-    private router: Router,
-    private ApiService: ApiService
-  ) {}
+  constructor(private router: Router, private ApiService: ApiService) {}
 
   ngOnInit(): void {
     const decoded = this.ApiService.decodificarToken();
     if (decoded && decoded.id) {
       this.currentPublication.id_usuario = Number(decoded.id);
     }
-
     this.loadMockPublications();
-    this.updateStats();
-    this.applyFilters();
   }
 
-  // MÉTODOS DE UTILIDAD
   getFileNameFromUrl(url: string): string {
     return url ? url.split('/').pop() || '' : '';
   }
@@ -116,11 +105,10 @@ export class SellerPublicationsComponent implements OnInit {
     return map[id_estado_libro] || 'Desconocido';
   }
 
-  // MÉTODOS DE EVENTOS DE FORMULARIO
   onImageSelected(event: Event): void {
     const target = event.target as HTMLInputElement;
     const file = target?.files?.[0];
-    
+
     if (file) {
       this.selectedImageFile = file;
       this.hasFormChanged = true;
@@ -165,22 +153,14 @@ export class SellerPublicationsComponent implements OnInit {
     }
   }
 
-  // DETECCIÓN DE CAMBIOS
   onFieldChange(field: string, value: any): void {
-    // Verificar que currentPublication existe
     if (!this.currentPublication) {
       console.error('currentPublication no está definido');
       return;
     }
 
-    // Actualizar el campo de forma segura
     (this.currentPublication as any)[field] = value;
-    
-    // Detectar cambios inmediatamente
     this.detectFormChanges();
-    
-    console.log(`✏️ Campo ${field} cambiado a:`, value);
-    console.log(`📊 Estado actual - Hay cambios: ${this.hasFormChanged}, Puede guardar: ${this.canSave()}`);
   }
 
   detectFormChanges(): void {
@@ -190,42 +170,42 @@ export class SellerPublicationsComponent implements OnInit {
       return;
     }
 
-    // Verificar que originalPublication existe
     if (!this.originalPublication || !this.currentPublication) {
       this.hasFormChanged = true;
       console.log('Publicaciones no definidas - marcando como cambiado');
       return;
     }
 
-    // Comparar con la publicación original de forma segura
-    const hasChanges = (
-      (this.currentPublication?.titulo ?? '') !== (this.originalPublication?.titulo ?? '') ||
-      (this.currentPublication?.autor ?? '') !== (this.originalPublication?.autor ?? '') ||
-      (this.currentPublication?.editorial ?? '') !== (this.originalPublication?.editorial ?? '') ||
-      (this.currentPublication?.isbn ?? '') !== (this.originalPublication?.isbn ?? '') ||
-      (this.currentPublication?.descripcion ?? '') !== (this.originalPublication?.descripcion ?? '') ||
-      (this.currentPublication?.id_categoria ?? 0) !== (this.originalPublication?.id_categoria ?? 0) ||
-      (this.currentPublication?.id_estado_libro ?? 0) !== (this.originalPublication?.id_estado_libro ?? 0) ||
-      (this.currentPublication?.id_tipo_transaccion ?? 0) !== (this.originalPublication?.id_tipo_transaccion ?? 0) ||
-      (this.currentPublication?.precio ?? 0) !== (this.originalPublication?.precio ?? 0) ||
-      (this.currentPublication?.numpaginas ?? 0) !== (this.originalPublication?.numpaginas ?? 0) ||
-      (this.currentPublication?.disponibilidad ?? 0) !== (this.originalPublication?.disponibilidad ?? 0) ||
-      (this.currentPublication?.fecha_publicacion ?? '') !== (this.originalPublication?.fecha_publicacion ?? '') ||
-      this.selectedImageFile !== null
-    );
+    const hasChanges =
+      (this.currentPublication?.titulo ?? '') !==
+        (this.originalPublication?.titulo ?? '') ||
+      (this.currentPublication?.autor ?? '') !==
+        (this.originalPublication?.autor ?? '') ||
+      (this.currentPublication?.editorial ?? '') !==
+        (this.originalPublication?.editorial ?? '') ||
+      (this.currentPublication?.isbn ?? '') !==
+        (this.originalPublication?.isbn ?? '') ||
+      (this.currentPublication?.descripcion ?? '') !==
+        (this.originalPublication?.descripcion ?? '') ||
+      (this.currentPublication?.id_categoria ?? 0) !==
+        (this.originalPublication?.id_categoria ?? 0) ||
+      (this.currentPublication?.id_estado_libro ?? 0) !==
+        (this.originalPublication?.id_estado_libro ?? 0) ||
+      (this.currentPublication?.id_tipo_transaccion ?? 0) !==
+        (this.originalPublication?.id_tipo_transaccion ?? 0) ||
+      (this.currentPublication?.precio ?? 0) !==
+        (this.originalPublication?.precio ?? 0) ||
+      (this.currentPublication?.numpaginas ?? 0) !==
+        (this.originalPublication?.numpaginas ?? 0) ||
+      (this.currentPublication?.disponibilidad ?? 0) !==
+        (this.originalPublication?.disponibilidad ?? 0) ||
+      (this.currentPublication?.fecha_publicacion ?? '') !==
+        (this.originalPublication?.fecha_publicacion ?? '') ||
+      this.selectedImageFile !== null;
 
     this.hasFormChanged = hasChanges;
-    
-    console.log('Detectando cambios:', {
-      hasChanges,
-      titulo: `"${this.currentPublication?.titulo}" vs "${this.originalPublication?.titulo}"`,
-      categoria: `${this.currentPublication?.id_categoria} vs ${this.originalPublication?.id_categoria}`,
-      transaccion: `${this.currentPublication?.id_tipo_transaccion} vs ${this.originalPublication?.id_tipo_transaccion}`,
-      archivo: this.selectedImageFile ? 'Archivo seleccionado' : 'Sin archivo'
-    });
   }
 
-  // CARGA Y GESTIÓN DE DATOS
   loadMockPublications() {
     this.ApiService.obtenerLibros().subscribe({
       next: (libros) => {
@@ -261,7 +241,6 @@ export class SellerPublicationsComponent implements OnInit {
     ).length;
   }
 
-  // MÉTODOS DEL HEADER
   onCategorySelected(category: string) {
     console.log('Categoría seleccionada desde publicaciones:', category);
     this.filterCategory = category.toLowerCase();
@@ -274,18 +253,15 @@ export class SellerPublicationsComponent implements OnInit {
     this.applyFilters();
   }
 
-  // FILTROS Y ORDENAMIENTO
   applyFilters() {
     let filtered = [...this.publications];
 
-    /* ---- Filtrar por categoría ---- */
     if (this.filterCategory !== 'todas') {
       filtered = filtered.filter(
         (b) => b.id_categoria === +this.filterCategory
       );
     }
 
-    /* ---- Filtrar por estatus comercial ---- */
     if (this.filterStatus !== 'todos') {
       if (this.filterStatus === 'disponible') {
         filtered = filtered.filter((b) => b.disponibilidad);
@@ -296,14 +272,12 @@ export class SellerPublicationsComponent implements OnInit {
       }
     }
 
-    /* ---- Filtrar por tipo de transacción ---- */
     if (this.filterTransaction !== 'todas') {
       filtered = filtered.filter(
         (b) => b.id_tipo_transaccion === +this.filterTransaction
       );
     }
 
-    /* ---- Búsqueda libre ---- */
     if (this.searchTerm) {
       const term = this.searchTerm.toLowerCase();
       filtered = filtered.filter(
@@ -315,7 +289,6 @@ export class SellerPublicationsComponent implements OnInit {
       );
     }
 
-    /* ---- Ordenar ---- */
     filtered = this.sortPublications(filtered);
     this.filteredPublications = filtered;
   }
@@ -365,29 +338,26 @@ export class SellerPublicationsComponent implements OnInit {
     this.applyFilters();
   }
 
-  // GESTIÓN DE MODAL
   openNewPublicationModal() {
     const decoded = this.ApiService.decodificarToken();
     this.currentPublication = { ...this.emptyPublication };
-    
+
     if (decoded && decoded.id) {
       this.currentPublication.id_usuario = Number(decoded.id);
     }
-    
-    // Para nueva publicación, establecer valores por defecto
+
     this.currentPublication.id_categoria = 1;
     this.currentPublication.id_estado_libro = 1;
     this.currentPublication.id_tipo_transaccion = 1;
     this.currentPublication.disponibilidad = 1;
     this.currentPublication.estatus = 1;
-    
+
     this.originalPublication = { ...this.emptyPublication };
     this.isEditMode = false;
     this.showNewPublicationModal = true;
     this.selectedImageFile = null;
     this.hasFormChanged = false;
-    
-    // Prevenir scroll del body
+
     document.body.classList.add('modal-open');
   }
 
@@ -397,7 +367,6 @@ export class SellerPublicationsComponent implements OnInit {
       return;
     }
 
-    // Crear copia profunda para la edición
     this.currentPublication = {
       ...publication,
       id_categoria: Number(publication.id_categoria) || 0,
@@ -414,15 +383,13 @@ export class SellerPublicationsComponent implements OnInit {
         : 'assets/default-cover.jpg',
     };
 
-    // Guardar copia original para comparar cambios
     this.originalPublication = { ...this.currentPublication };
-    
+
     this.isEditMode = true;
     this.showNewPublicationModal = true;
     this.selectedImageFile = null;
     this.hasFormChanged = false;
-    
-    // Prevenir scroll del body
+
     document.body.classList.add('modal-open');
 
     console.log('Datos cargados para edición:', this.currentPublication);
@@ -435,21 +402,19 @@ export class SellerPublicationsComponent implements OnInit {
     this.originalPublication = { ...this.emptyPublication };
     this.selectedImageFile = null;
     this.hasFormChanged = false;
-    
-    // Restaurar scroll del body
+
     document.body.classList.remove('modal-open');
   }
 
-  // VALIDACIÓN
   isFormValid(): boolean {
-    // Usar optional chaining y nullish coalescing para evitar errores
     const titulo = this.currentPublication?.titulo?.trim() || '';
     const autor = this.currentPublication?.autor?.trim() || '';
     const editorial = this.currentPublication?.editorial?.trim() || '';
     const descripcion = this.currentPublication?.descripcion?.trim() || '';
     const numpaginas = this.currentPublication?.numpaginas ?? 0;
     const id_categoria = this.currentPublication?.id_categoria ?? 0;
-    const id_tipo_transaccion = this.currentPublication?.id_tipo_transaccion ?? 0;
+    const id_tipo_transaccion =
+      this.currentPublication?.id_tipo_transaccion ?? 0;
     const id_estado_libro = this.currentPublication?.id_estado_libro ?? 0;
     const disponibilidad = this.currentPublication?.disponibilidad ?? 0;
     const precio = this.currentPublication?.precio ?? 0;
@@ -466,7 +431,6 @@ export class SellerPublicationsComponent implements OnInit {
       disponibilidad > 0
     );
 
-    // Para venta, verificar que tenga precio
     if (id_tipo_transaccion === 1) {
       return isValid && precio > 0;
     }
@@ -475,35 +439,32 @@ export class SellerPublicationsComponent implements OnInit {
   }
 
   canSave(): boolean {
-    // Verificar validez del formulario primero
     if (!this.isFormValid()) {
       return false;
     }
-    
-    // En modo edición, solo permitir guardar si hay cambios
+
     if (this.isEditMode) {
       return this.hasFormChanged;
     }
-    
-    // En modo nuevo, siempre permitir si es válido
+
     return true;
   }
 
-  // GUARDADO
   savePublication(): void {
     console.log('🚀 Iniciando guardado de publicación...');
-    
+
     if (!this.isFormValid()) {
-      alert('❌ Por favor, completa todos los campos obligatorios correctamente.');
+      alert(
+        '❌ Por favor, completa todos los campos obligatorios correctamente.'
+      );
       return;
     }
 
     if (this.isEditMode && !this.hasFormChanged) {
-      alert('ℹ️ No hay cambios para guardar.');
+      alert('ℹ No hay cambios para guardar.');
       return;
     }
 
-    // Verificar que currentPublication existe
     if (!this.currentPublication) {
       alert('❌ Error: No hay datos para guardar.');
       return;
@@ -513,51 +474,64 @@ export class SellerPublicationsComponent implements OnInit {
       isEditMode: this.isEditMode,
       hasFormChanged: this.hasFormChanged,
       bookId: this.currentPublication.id,
-      titulo: this.currentPublication.titulo
+      titulo: this.currentPublication.titulo,
     });
 
-    // Preparar FormData con verificaciones seguras
     const fd = new FormData();
     fd.append('titulo', this.currentPublication.titulo?.trim() ?? '');
     fd.append('isbn', this.currentPublication.isbn?.trim() ?? '');
     fd.append('autor', this.currentPublication.autor?.trim() ?? '');
     fd.append('editorial', this.currentPublication.editorial?.trim() ?? '');
-    fd.append('fecha_publicacion', this.currentPublication.fecha_publicacion ?? '');
-    fd.append('id_estado_libro', String(this.currentPublication.id_estado_libro ?? 1));
+    fd.append(
+      'fecha_publicacion',
+      this.currentPublication.fecha_publicacion ?? ''
+    );
+    fd.append(
+      'id_estado_libro',
+      String(this.currentPublication.id_estado_libro ?? 1)
+    );
     fd.append('precio', String(this.currentPublication.precio ?? 0));
     fd.append('descripcion', this.currentPublication.descripcion?.trim() ?? '');
     fd.append('id_usuario', String(this.currentPublication.id_usuario ?? 0));
-    fd.append('id_categoria', String(this.currentPublication.id_categoria ?? 1));
-    fd.append('disponibilidad', String(this.currentPublication.disponibilidad ?? 1));
+    fd.append(
+      'id_categoria',
+      String(this.currentPublication.id_categoria ?? 1)
+    );
+    fd.append(
+      'disponibilidad',
+      String(this.currentPublication.disponibilidad ?? 1)
+    );
     fd.append('estatus', String(this.currentPublication.estatus ?? 1));
-    fd.append('id_tipo_transaccion', String(this.currentPublication.id_tipo_transaccion ?? 1));
+    fd.append(
+      'id_tipo_transaccion',
+      String(this.currentPublication.id_tipo_transaccion ?? 1)
+    );
     fd.append('numpaginas', String(this.currentPublication.numpaginas ?? 0));
 
-    // Solo agregar portada si se seleccionó una nueva
     if (this.selectedImageFile) {
       fd.append('portada', this.selectedImageFile);
-      console.log('📷 Archivo de imagen agregado:', this.selectedImageFile.name);
+      console.log(
+        '📷 Archivo de imagen agregado:',
+        this.selectedImageFile.name
+      );
     }
 
     if (this.isEditMode) {
-      // EDITAR LIBRO EXISTENTE
       const bookId = this.currentPublication.id;
       if (!bookId || bookId === 0) {
         alert('❌ Error: ID de libro no válido para edición.');
         return;
       }
 
-      console.log(`📝 Actualizando libro ID: ${bookId}`);
-
       this.ApiService.actualizarLibro(bookId, fd).subscribe({
         next: (res) => {
           console.log('✅ Respuesta del servidor al actualizar:', res);
-          
+
           if (res) {
-            // Encontrar y actualizar el libro en la lista local
-            const index = this.publications.findIndex(pub => pub.id === bookId);
+            const index = this.publications.findIndex(
+              (pub) => pub.id === bookId
+            );
             if (index !== -1) {
-              // Actualizar con los datos de respuesta
               this.publications[index] = {
                 ...this.publications[index],
                 ...res,
@@ -565,18 +539,15 @@ export class SellerPublicationsComponent implements OnInit {
                   ? `http://localhost:3000${res.portada}`
                   : this.publications[index].portada,
               };
-              
+
               console.log('📖 Libro actualizado en la lista local');
             }
-            
-            // Actualizar estadísticas y filtros
+
             this.updateStats();
             this.applyFilters();
-            
-            // Mostrar mensaje de éxito
+
             alert('✅ Libro actualizado correctamente');
-            
-            // Cerrar modal
+
             this.closeModal();
           } else {
             console.error('❌ Respuesta vacía del servidor');
@@ -585,17 +556,20 @@ export class SellerPublicationsComponent implements OnInit {
         },
         error: (error) => {
           console.error('❌ Error al actualizar libro:', error);
-          alert(`❌ Error al actualizar el libro: ${error.message || 'Error desconocido'}`);
+          alert(
+            `Error al actualizar el libro: ${
+              error.message || 'Error desconocido'
+            }`
+          );
         },
       });
     } else {
-      // CREAR LIBRO NUEVO
       console.log('📚 Creando nuevo libro');
 
       this.ApiService.registrarLibro(fd).subscribe({
         next: (res) => {
           console.log('✅ Respuesta del servidor al crear:', res);
-          
+
           if (res) {
             const libroConPortada = {
               ...res,
@@ -603,19 +577,15 @@ export class SellerPublicationsComponent implements OnInit {
                 ? `http://localhost:3000${res.portada}`
                 : 'assets/default-cover.jpg',
             };
-            
-            // Agregar a la lista
+
             this.publications.push(libroConPortada);
             console.log('📖 Nuevo libro agregado a la lista');
-            
-            // Actualizar estadísticas y filtros
+
             this.updateStats();
             this.applyFilters();
-            
-            // Mostrar mensaje de éxito
+
             alert('✅ Libro creado correctamente');
-            
-            // Cerrar modal
+
             this.closeModal();
           } else {
             console.error('❌ Respuesta vacía del servidor');
@@ -624,13 +594,16 @@ export class SellerPublicationsComponent implements OnInit {
         },
         error: (error) => {
           console.error('❌ Error al crear libro:', error);
-          alert(`❌ Error al crear el libro: ${error.message || 'Error desconocido'}`);
+          alert(
+            `❌ Error al crear el libro: ${
+              error.message || 'Error desconocido'
+            }`
+          );
         },
       });
     }
   }
 
-  // ACCIONES SOBRE PUBLICACIONES
   deletePublication(publication: Book) {
     if (
       confirm(`¿Estás seguro de que quieres eliminar "${publication.titulo}"?`)
@@ -641,7 +614,7 @@ export class SellerPublicationsComponent implements OnInit {
       this.updateStats();
       this.applyFilters();
       console.log('Publicación eliminada:', publication);
-      alert('🗑️ Publicación eliminada correctamente');
+      alert('🗑 Publicación eliminada correctamente');
     }
   }
 
@@ -659,7 +632,6 @@ export class SellerPublicationsComponent implements OnInit {
     alert('📋 Publicación duplicada correctamente');
   }
 
-  // MÉTODOS DE UTILIDAD PARA MOSTRAR DATOS
   getStatusText(status: string): string {
     const statuses = {
       disponible: 'Disponible',
@@ -726,26 +698,25 @@ export class SellerPublicationsComponent implements OnInit {
     return book.id;
   }
 
-  // NAVEGACIÓN
   goToDashboard() {
     this.router.navigate(['/saleshome']);
   }
 
   goToBookDetail(bookId: number): void {
-    // Verificación de ID válido
     if (!bookId || bookId <= 0) {
       console.error('ID de libro no válido:', bookId);
       return;
     }
 
-    // Alternativa: Usar optional chaining y buscar en la lista local
-    const libroLocal = this.publications.find(pub => pub.id === bookId);
-    
+    const libroLocal = this.publications.find((pub) => pub.id === bookId);
+
     if (libroLocal) {
       console.log('Libro encontrado en lista local:', libroLocal.titulo);
       this.router.navigate(['/book', bookId]);
     } else {
-      console.log('Libro no encontrado en lista local, navegando directamente...');
+      console.log(
+        'Libro no encontrado en lista local, navegando directamente...'
+      );
       this.router.navigate(['/book', bookId]);
     }
   }

@@ -7,7 +7,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { Book } from '../models/Book.model';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class SavedService {
   private savedBooksSubject = new BehaviorSubject<Book[]>([]);
@@ -52,7 +52,7 @@ export class SavedService {
     if (this.savedBookIds.has(bookId)) {
       this.savedBookIds.delete(bookId);
       const currentBooks = this.savedBooksSubject.value;
-      const updatedBooks = currentBooks.filter(book => book.id !== bookId);
+      const updatedBooks = currentBooks.filter((book) => book.id !== bookId);
       this.savedBooksSubject.next(updatedBooks);
       this.saveBooksToStorage();
       console.log('Libro removido de guardados:', bookId);
@@ -88,7 +88,10 @@ export class SavedService {
     try {
       const booksToSave = this.savedBooksSubject.value;
       localStorage.setItem('savedBooks', JSON.stringify(booksToSave));
-      localStorage.setItem('savedBookIds', JSON.stringify(Array.from(this.savedBookIds)));
+      localStorage.setItem(
+        'savedBookIds',
+        JSON.stringify(Array.from(this.savedBookIds))
+      );
     } catch (error) {
       console.error('Error al guardar en localStorage:', error);
     }
@@ -99,15 +102,18 @@ export class SavedService {
     try {
       const savedBooksJson = localStorage.getItem('savedBooks');
       const savedIdsJson = localStorage.getItem('savedBookIds');
-      
+
       if (savedBooksJson && savedIdsJson) {
         const savedBooks: Book[] = JSON.parse(savedBooksJson);
         const savedIds: number[] = JSON.parse(savedIdsJson);
-        
+
         this.savedBookIds = new Set(savedIds);
         this.savedBooksSubject.next(savedBooks);
-        
-        console.log('Libros guardados cargados desde localStorage:', savedBooks.length);
+
+        console.log(
+          'Libros guardados cargados desde localStorage:',
+          savedBooks.length
+        );
       }
     } catch (error) {
       console.error('Error al cargar desde localStorage:', error);

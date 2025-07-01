@@ -7,19 +7,20 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { HeaderComponent } from '../shared/header/header.component';
-
+import { ApiService } from '../servicios/api.service';
+import { Book } from '../models/Book.model';
 @Component({
   selector: 'app-book-exchange',
   standalone: true,
   imports: [CommonModule, FormsModule, HeaderComponent],
   templateUrl: './book-exchange.component.html',
-  styleUrls: ['./book-exchange.component.css']
+  styleUrls: ['./book-exchange.component.css'],
 })
 export class BookExchangeComponent implements OnInit {
   cartItems = 0;
   savedItems = 0;
   bookId: string | null = null;
-  
+
   // ✨ SOLO LIBROS DE INTERCAMBIO - Datos simulados
   book = {
     id: 3,
@@ -30,21 +31,28 @@ export class BookExchangeComponent implements OnInit {
     owner: 'Carlos Mendoza',
     ownerId: 3, // ✨ ID del propietario para navegación
     type: 'Intercambio',
-    image: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400&h=600&fit=crop',
+    image:
+      'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400&h=600&fit=crop',
     category: 'Historia y filosofía',
     pages: 96,
     publishDate: '10/03/20',
     isbn: '9788441421240',
     editorial: 'EDAF',
     transaction: 'Intercambio',
-    synopsis: 'Tratado sobre estrategia militar escrito por Sun Tzu en el siglo VI a.C. Este clásico texto chino ha influido tanto en el pensamiento militar como en la filosofía empresarial moderna.',
-    details: 'Las enseñanzas de Sun Tzu trascienden el ámbito militar y se aplican en negociación, liderazgo y gestión empresarial. Sus principios sobre conocimiento del enemigo y adaptabilidad siguen vigentes.'
+    synopsis:
+      'Tratado sobre estrategia militar escrito por Sun Tzu en el siglo VI a.C. Este clásico texto chino ha influido tanto en el pensamiento militar como en la filosofía empresarial moderna.',
+    details:
+      'Las enseñanzas de Sun Tzu trascienden el ámbito militar y se aplican en negociación, liderazgo y gestión empresarial. Sus principios sobre conocimiento del enemigo y adaptabilidad siguen vigentes.',
   };
 
-  constructor(private router: Router, private route: ActivatedRoute) {}
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute,
+    private ApiService: ApiService
+  ) {}
 
   ngOnInit() {
-    this.route.paramMap.subscribe(params => {
+    this.route.paramMap.subscribe((params) => {
       this.bookId = params.get('id');
       if (this.bookId) {
         const numericId = parseInt(this.bookId, 10);
@@ -60,19 +68,22 @@ export class BookExchangeComponent implements OnInit {
       }
     });
 
-    this.route.queryParams.subscribe(params => {
+    this.route.queryParams.subscribe((params) => {
       if (params['category']) {
-        console.log('Categoría seleccionada desde book-exchange:', params['category']);
-        this.router.navigate(['/home'], { 
+        console.log(
+          'Categoría seleccionada desde book-exchange:',
+          params['category']
+        );
+        this.router.navigate(['/home'], {
           queryParams: { category: params['category'] },
-          replaceUrl: true 
+          replaceUrl: true,
         });
       }
       if (params['search']) {
         console.log('Búsqueda desde book-exchange:', params['search']);
-        this.router.navigate(['/home'], { 
+        this.router.navigate(['/home'], {
           queryParams: { search: params['search'] },
-          replaceUrl: true 
+          replaceUrl: true,
         });
       }
     });
@@ -80,9 +91,9 @@ export class BookExchangeComponent implements OnInit {
 
   loadBookDetails(bookId: string) {
     console.log('Cargando detalles del libro de intercambio ID:', bookId);
-    
+
     const numericId = parseInt(bookId, 10);
-    
+
     // ✨ SOLO LIBROS DE INTERCAMBIO - Datos simulados con ownerId
     const exchangeBooksData = {
       3: {
@@ -94,15 +105,18 @@ export class BookExchangeComponent implements OnInit {
         owner: 'Carlos Mendoza',
         ownerId: 3, // ✨ ID del propietario
         type: 'Intercambio',
-        image: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400&h=600&fit=crop',
+        image:
+          'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400&h=600&fit=crop',
         category: 'Historia y filosofía',
         pages: 96,
         publishDate: '10/03/20',
         isbn: '9788441421240',
         editorial: 'EDAF',
         transaction: 'Intercambio',
-        synopsis: 'Tratado sobre estrategia militar escrito por Sun Tzu en el siglo VI a.C. Este clásico texto chino ha influido tanto en el pensamiento militar como en la filosofía empresarial moderna.',
-        details: 'Las enseñanzas de Sun Tzu trascienden el ámbito militar y se aplican en negociación, liderazgo y gestión empresarial. Sus principios sobre conocimiento del enemigo y adaptabilidad siguen vigentes.'
+        synopsis:
+          'Tratado sobre estrategia militar escrito por Sun Tzu en el siglo VI a.C. Este clásico texto chino ha influido tanto en el pensamiento militar como en la filosofía empresarial moderna.',
+        details:
+          'Las enseñanzas de Sun Tzu trascienden el ámbito militar y se aplican en negociación, liderazgo y gestión empresarial. Sus principios sobre conocimiento del enemigo y adaptabilidad siguen vigentes.',
       },
       6: {
         id: 6,
@@ -113,15 +127,18 @@ export class BookExchangeComponent implements OnInit {
         owner: 'María Fernández',
         ownerId: 4, // ✨ ID del propietario
         type: 'Intercambio',
-        image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=600&fit=crop',
+        image:
+          'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=600&fit=crop',
         category: 'Literatura',
         pages: 328,
         publishDate: '08/06/49',
         isbn: '9780451524935',
         editorial: 'Signet Classics',
         transaction: 'Intercambio',
-        synopsis: 'Una distopía donde el Gran Hermano vigila cada movimiento de los ciudadanos. Winston Smith lucha contra un sistema totalitario que controla hasta los pensamientos.',
-        details: 'Considerada una de las novelas más influyentes del siglo XX, 1984 presenta conceptos como el doblepensar, la neolengua y la telepantalla que han trascendido la ficción.'
+        synopsis:
+          'Una distopía donde el Gran Hermano vigila cada movimiento de los ciudadanos. Winston Smith lucha contra un sistema totalitario que controla hasta los pensamientos.',
+        details:
+          'Considerada una de las novelas más influyentes del siglo XX, 1984 presenta conceptos como el doblepensar, la neolengua y la telepantalla que han trascendido la ficción.',
       },
       7: {
         id: 7,
@@ -132,23 +149,29 @@ export class BookExchangeComponent implements OnInit {
         owner: 'Roberto Silva',
         ownerId: 5, // ✨ ID del propietario
         type: 'Intercambio',
-        image: 'https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=400&h=600&fit=crop',
+        image:
+          'https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=400&h=600&fit=crop',
         category: 'Historia y filosofía',
         pages: 512,
         publishDate: '04/02/15',
         isbn: '9788499926223',
         editorial: 'Debate',
         transaction: 'Intercambio',
-        synopsis: 'Una breve historia de la humanidad que explora cómo Homo sapiens llegó a dominar el mundo. Desde la revolución cognitiva hasta la revolución científica.',
-        details: 'Harari examina las tres revoluciones que han configurado a la humanidad: la cognitiva, la agrícola y la científica, y especula sobre el futuro de nuestra especie.'
-      }
+        synopsis:
+          'Una breve historia de la humanidad que explora cómo Homo sapiens llegó a dominar el mundo. Desde la revolución cognitiva hasta la revolución científica.',
+        details:
+          'Harari examina las tres revoluciones que han configurado a la humanidad: la cognitiva, la agrícola y la científica, y especula sobre el futuro de nuestra especie.',
+      },
     };
 
-    const bookData = exchangeBooksData[numericId as keyof typeof exchangeBooksData];
+    const bookData =
+      exchangeBooksData[numericId as keyof typeof exchangeBooksData];
     if (bookData) {
       this.book = bookData;
     } else {
-      console.warn('Libro de intercambio no encontrado, usando datos por defecto');
+      console.warn(
+        'Libro de intercambio no encontrado, usando datos por defecto'
+      );
     }
 
     // 🔌 AQUÍ INTEGRAR BACKEND - Solo libros de intercambio
@@ -164,11 +187,11 @@ export class BookExchangeComponent implements OnInit {
   toggleSaveBook() {
     const wasLiked = this.isBookSaved();
     this.savedItems = wasLiked ? this.savedItems - 1 : this.savedItems + 1;
-    
-    const message = wasLiked 
-      ? `"${this.book.title}" removido de guardados` 
+
+    const message = wasLiked
+      ? `"${this.book.title}" removido de guardados`
       : `"${this.book.title}" guardado en favoritos`;
-    
+
     console.log(message);
     this.showSuccessMessage(message);
   }
@@ -177,9 +200,22 @@ export class BookExchangeComponent implements OnInit {
     return this.savedItems > 0;
   }
 
-  // ✨ NUEVO MÉTODO - Navegar a información del propietario
+  guardarLibroMarcador(book: Book) {
+    this.ApiService.agregarLibroMarcador(book.id).subscribe({
+      next: (res) => {
+        console.log('Libro guardado en marcadores:', res);
+      },
+      error: (e) => {
+        console.error('Error al guardar libro en marcadores:', e);
+      },
+    });
+  }
+
   viewOwnerInfo(): void {
-    console.log('Navegando a información del propietario ID:', this.book.ownerId);
+    console.log(
+      'Navegando a información del propietario ID:',
+      this.book.ownerId
+    );
     this.router.navigate(['/seller', this.book.ownerId]);
   }
 
@@ -197,9 +233,9 @@ export class BookExchangeComponent implements OnInit {
 
   onSearchPerformed(searchTerm: string) {
     console.log('Búsqueda desde book-exchange:', searchTerm);
-    this.router.navigate(['/home'], { 
+    this.router.navigate(['/home'], {
       queryParams: { search: searchTerm },
-      replaceUrl: true 
+      replaceUrl: true,
     });
   }
 }

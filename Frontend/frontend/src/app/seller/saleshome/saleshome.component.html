@@ -11,8 +11,6 @@
   >
   </app-sales-header>
 
-  <!-- Removemos el botón flotante de cerrar sesión porque ya está en el header -->
-
   <!-- Banner de bienvenida del vendedor -->
   <section class="vendor-hero-section my-4">
     <div class="container">
@@ -21,12 +19,27 @@
           <h1 class="display-5 fw-bold text-vendor-dark mb-2">
             ¡Bienvenido, Vendedor! 📚
           </h1>
-          <p class="vendor-subtitle">Gestiona tu inventario y maximiza tus ventas</p>
+          <p class="vendor-subtitle">
+            Gestiona tu inventario y maximiza tus ventas
+          </p>
         </div>
         <div class="col-md-4 text-center">
           <button class="btn btn-add-book" (click)="addNewBook()">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="me-2">
-              <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              class="me-2"
+            >
+              <path
+                d="M12 5V19M5 12H19"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
             </svg>
             Agregar Libro
           </button>
@@ -78,7 +91,11 @@
         <div class="col-md-6">
           <div class="filter-controls">
             <label class="filter-label">Filtrar por estado:</label>
-            <select class="form-select filter-select" [(ngModel)]="filterStatus" (change)="changeFilter(filterStatus)">
+            <select
+              class="form-select filter-select"
+              [(ngModel)]="filterStatus"
+              (change)="changeFilter(filterStatus)"
+            >
               <option value="Todos">Todos</option>
               <option value="Activos">Activos</option>
               <option value="Vendidos">Vendidos</option>
@@ -89,7 +106,11 @@
         <div class="col-md-6">
           <div class="sort-controls">
             <label class="filter-label">Ordenar por:</label>
-            <select class="form-select filter-select" [(ngModel)]="sortBy" (change)="changeSorting(sortBy)">
+            <select
+              class="form-select filter-select"
+              [(ngModel)]="sortBy"
+              (change)="changeSorting(sortBy)"
+            >
               <option value="fecha_desc">Más recientes</option>
               <option value="fecha_asc">Más antiguos</option>
               <option value="precio_desc">Precio: Mayor a menor</option>
@@ -103,12 +124,21 @@
   </section>
 
   <!-- Indicador de categoría/filtros activos -->
-  <section class="active-filters" *ngIf="selectedCategory !== 'Todas' || filterStatus !== 'Todos'">
+  <section
+    class="active-filters"
+    *ngIf="selectedCategory !== 'Todas' || filterStatus !== 'Todos'"
+  >
     <div class="container">
       <div class="filters-header">
         <h3 class="filters-title">
-          <span *ngIf="selectedCategory !== 'Todas'">{{ selectedCategory }}</span>
-          <span *ngIf="selectedCategory !== 'Todas' && filterStatus !== 'Todos'"> - </span>
+          <span *ngIf="selectedCategory !== 'Todas'">{{
+            selectedCategory
+          }}</span>
+          <span
+            *ngIf="selectedCategory !== 'Todas' && filterStatus !== 'Todos'"
+          >
+            -
+          </span>
           <span *ngIf="filterStatus !== 'Todos'">{{ filterStatus }}</span>
         </h3>
         <span class="books-count">{{ filteredBooks.length }} libro(s)</span>
@@ -120,7 +150,10 @@
   <section class="vendor-books-section">
     <div class="container">
       <div class="row g-4" *ngIf="filteredBooks.length > 0; else noBooks">
-        <div class="col-12 col-sm-6 col-lg-4" *ngFor="let book of filteredBooks">
+        <div
+          class="col-12 col-sm-6 col-lg-4"
+          *ngFor="let book of filteredBooks"
+        >
           <div class="card vendor-book-card h-100">
             <div class="position-relative">
               <!-- Imagen del libro -->
@@ -133,38 +166,88 @@
               />
 
               <!-- Badge de estado -->
-              <div class="book-status-badge" [ngClass]="getStatusClass(book.estado)">
-                {{ getStatusText(book.estado) }}
+              <div
+                class="book-status-badge"
+                [ngClass]="getStatusClass(book.estado_libro)"
+              >
+                {{ getStatusText(book.estado_libro) }}
               </div>
 
               <!-- Botones de acción rápida -->
               <div class="quick-actions">
-                <button class="btn btn-sm btn-edit" (click)="editBook(book)" title="Editar">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M11 4H4C3.46957 4 2.96086 4.21071 2.58579 4.58579C2.21071 4.96086 2 5.46957 2 6V20C2 20.5304 2.21071 21.0391 2.58579 21.4142C2.96086 21.7893 3.46957 22 4 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M18.5 2.49998C18.8978 2.10216 19.4374 1.87866 20 1.87866C20.5626 1.87866 21.1022 2.10216 21.5 2.49998C21.8978 2.89781 22.1213 3.43737 22.1213 3.99998C22.1213 4.56259 21.8978 5.10216 21.5 5.49998L12 15L8 16L9 12L18.5 2.49998Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <button
+                  class="btn btn-sm btn-edit"
+                  (click)="editBook(book)"
+                  title="Editar"
+                >
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M11 4H4C3.46957 4 2.96086 4.21071 2.58579 4.58579C2.21071 4.96086 2 5.46957 2 6V20C2 20.5304 2.21071 21.0391 2.58579 21.4142C2.96086 21.7893 3.46957 22 4 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V13"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                    <path
+                      d="M18.5 2.49998C18.8978 2.10216 19.4374 1.87866 20 1.87866C20.5626 1.87866 21.1022 2.10216 21.5 2.49998C21.8978 2.89781 22.1213 3.43737 22.1213 3.99998C22.1213 4.56259 21.8978 5.10216 21.5 5.49998L12 15L8 16L9 12L18.5 2.49998Z"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
                   </svg>
                 </button>
-                <button 
-                  class="btn btn-sm btn-toggle" 
-                  [ngClass]="book.estado === 'activo' ? 'btn-pause' : 'btn-activate'"
-                  (click)="toggleBookStatus(book)" 
-                  [title]="book.estado === 'activo' ? 'Pausar' : 'Activar'"
+                <button
+                  class="btn btn-sm btn-toggle"
+                  [ngClass]="
+                    book.estado_libro === 'activo'
+                      ? 'btn-pause'
+                      : 'btn-activate'
+                  "
+                  (click)="toggleBookStatus(book)"
+                  [title]="
+                    book.estado_libro === 'activo' ? 'Pausar' : 'Activar'
+                  "
                 >
-                  <svg *ngIf="book.estado === 'activo'" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M6 4H10V20H6V4ZM14 4H18V20H14V4Z" fill="currentColor"/>
+                  <svg
+                    *ngIf="book.estado_libro === 'activo'"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M6 4H10V20H6V4ZM14 4H18V20H14V4Z"
+                      fill="currentColor"
+                    />
                   </svg>
-                  <svg *ngIf="book.estado !== 'activo'" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M8 5V19L19 12L8 5Z" fill="currentColor"/>
+                  <svg
+                    *ngIf="book.estado_libro !== 'activo'"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path d="M8 5V19L19 12L8 5Z" fill="currentColor" />
                   </svg>
                 </button>
               </div>
             </div>
 
             <div class="card-body d-flex flex-column">
-              <h5 class="card-title text-vendor-dark mb-2">{{ book.titulo }}</h5>
+              <h5 class="card-title text-vendor-dark mb-2">
+                {{ book.titulo }}
+              </h5>
               <p class="card-text text-muted mb-2">{{ book.autor }}</p>
-              
+
               <!-- Información del libro -->
               <div class="book-info mb-3">
                 <div class="info-row">
@@ -173,24 +256,41 @@
                 </div>
                 <div class="info-row">
                   <span class="info-label">Tipo:</span>
-                  <span class="info-value">{{ book.tipo_transaccion_nombre }}</span>
+                  <span class="info-value">{{
+                    book.tipo_transaccion_nombre
+                  }}</span>
                 </div>
-                <div class="info-row" *ngIf="book.precio && book.tipo_transaccion_nombre === 'Venta'">
+                <div
+                  class="info-row"
+                  *ngIf="
+                    book.precio && book.tipo_transaccion_nombre === 'Venta'
+                  "
+                >
                   <span class="info-label">Precio:</span>
-                  <span class="info-value price">{{ formatPrice(book.precio) }}</span>
+                  <span class="info-value price">{{
+                    formatPrice(book.precio)
+                  }}</span>
                 </div>
-                <div class="info-row" *ngIf="book.fecha_creacion">
+                <div class="info-row" *ngIf="book.fecha_publicacion">
                   <span class="info-label">Publicado:</span>
-                  <span class="info-value">{{ formatDate(book.fecha_creacion) }}</span>
+                  <span class="info-value">{{
+                    formatDate(book.fecha_publicacion)
+                  }}</span>
                 </div>
               </div>
 
               <div class="mt-auto">
                 <div class="book-actions">
-                  <button class="btn btn-outline-primary btn-sm" (click)="viewBookDetails(book)">
+                  <button
+                    class="btn btn-outline-primary btn-sm"
+                    (click)="viewBookDetails(book)"
+                  >
                     Ver detalles
                   </button>
-                  <button class="btn btn-outline-danger btn-sm" (click)="deleteBook(book)">
+                  <button
+                    class="btn btn-outline-danger btn-sm"
+                    (click)="deleteBook(book)"
+                  >
                     Eliminar
                   </button>
                 </div>
@@ -204,25 +304,72 @@
       <ng-template #noBooks>
         <div class="text-center py-5">
           <div class="mb-4">
-            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-muted">
-              <path d="M4 19.5C4 18.837 4.26339 18.2011 4.73223 17.7322C5.20107 17.2634 5.83696 17 6.5 17H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M6.5 2H20V22H6.5C5.83696 22 5.20107 21.7893 4.73223 21.2678C4.26339 20.7989 4 20.163 4 19.5V4.5C4 3.83696 4.26339 3.20107 4.73223 2.73223C5.20107 2.26339 5.83696 2 6.5 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M9 7H15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M9 11H15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <svg
+              width="64"
+              height="64"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              class="text-muted"
+            >
+              <path
+                d="M4 19.5C4 18.837 4.26339 18.2011 4.73223 17.7322C5.20107 17.2634 5.83696 17 6.5 17H20"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M6.5 2H20V22H6.5C5.83696 22 5.20107 21.7893 4.73223 21.2678C4.26339 20.7989 4 20.163 4 19.5V4.5C4 3.83696 4.26339 3.20107 4.73223 2.73223C5.20107 2.26339 5.83696 2 6.5 2Z"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M9 7H15"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M9 11H15"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
             </svg>
           </div>
           <h4 class="text-muted">No tienes libros publicados</h4>
-          <p class="text-muted" *ngIf="selectedCategory === 'Todas' && filterStatus === 'Todos'">
+          <p
+            class="text-muted"
+            *ngIf="selectedCategory === 'Todas' && filterStatus === 'Todos'"
+          >
             Comienza agregando tu primer libro para empezar a vender
           </p>
-          <p class="text-muted" *ngIf="selectedCategory !== 'Todas' || filterStatus !== 'Todos'">
+          <p
+            class="text-muted"
+            *ngIf="selectedCategory !== 'Todas' || filterStatus !== 'Todos'"
+          >
             No hay libros que coincidan con los filtros seleccionados
           </p>
           <div class="empty-actions">
-            <button class="btn btn-primary me-2" (click)="addNewBook()" *ngIf="selectedCategory === 'Todas' && filterStatus === 'Todos'">
+            <button
+              class="btn btn-primary me-2"
+              (click)="addNewBook()"
+              *ngIf="selectedCategory === 'Todas' && filterStatus === 'Todos'"
+            >
               Agregar mi primer libro
             </button>
-            <button class="btn btn-outline-primary" (click)="selectedCategory = 'Todas'; filterStatus = 'Todos'; updateURL()" *ngIf="selectedCategory !== 'Todas' || filterStatus !== 'Todos'">
+            <button
+              class="btn btn-outline-primary"
+              (click)="
+                selectedCategory = 'Todas'; filterStatus = 'Todos'; updateURL()
+              "
+              *ngIf="selectedCategory !== 'Todas' || filterStatus !== 'Todos'"
+            >
               Ver todos mis libros
             </button>
           </div>
@@ -264,30 +411,63 @@
   </section>
 </div>
 
-<!-- Modal de detalles del libro (opcional) -->
+<!-- Modal de detalles del libro -->
+<!-- Remove one of the duplicate modals - keep this one -->
 <div class="modal-overlay" *ngIf="showBookDetails" (click)="closeBookDetails()">
-  <div class="modal-content" (click)="$event.stopPropagation()" *ngIf="selectedBook">
+  <div
+    class="modal-content"
+    (click)="$event.stopPropagation()"
+    *ngIf="selectedBook"
+  >
     <div class="modal-header">
       <h3>{{ selectedBook.titulo }}</h3>
       <button class="btn-close" (click)="closeBookDetails()">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M18 6L6 18M6 6L18 18"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
         </svg>
       </button>
     </div>
     <div class="modal-body">
       <div class="row">
         <div class="col-md-4">
-          <img [src]="selectedBook.portada" [alt]="selectedBook.titulo" class="img-fluid rounded">
+          <img
+            [src]="selectedBook.portada"
+            [alt]="selectedBook.titulo"
+            class="img-fluid rounded"
+          />
         </div>
         <div class="col-md-8">
           <div class="book-details">
             <p><strong>Autor:</strong> {{ selectedBook.autor }}</p>
-            <p><strong>Categoría:</strong> {{ selectedBook.categoria_nombre }}</p>
-            <p><strong>Tipo:</strong> {{ selectedBook.tipo_transaccion_nombre }}</p>
-            <p *ngIf="selectedBook.precio"><strong>Precio:</strong> {{ formatPrice(selectedBook.precio) }}</p>
-            <p><strong>Estado:</strong> {{ getStatusText(selectedBook.estado) }}</p>
-            <p *ngIf="selectedBook.fecha_creacion"><strong>Publicado:</strong> {{ formatDate(selectedBook.fecha_creacion) }}</p>
+            <p>
+              <strong>Categoría:</strong> {{ selectedBook.categoria_nombre }}
+            </p>
+            <p>
+              <strong>Tipo:</strong> {{ selectedBook.tipo_transaccion_nombre }}
+            </p>
+            <p *ngIf="selectedBook.precio">
+              <strong>Precio:</strong> {{ formatPrice(selectedBook.precio) }}
+            </p>
+            <p>
+              <strong>Estado:</strong>
+              {{ getStatusText(selectedBook.estado_libro) }}
+            </p>
+            <p *ngIf="selectedBook.fecha_publicacion">
+              <strong>Publicado:</strong>
+              {{ formatDate(selectedBook.fecha_publicacion) }}
+            </p>
             <p><strong>Descripción:</strong></p>
             <p>{{ selectedBook.descripcion }}</p>
           </div>
@@ -295,8 +475,85 @@
       </div>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-outline-primary" (click)="editBook(selectedBook)">Editar</button>
-      <button class="btn btn-outline-secondary" (click)="closeBookDetails()">Cerrar</button>
+      <button class="btn btn-outline-primary" (click)="editBook(selectedBook)">
+        Editar
+      </button>
+      <button class="btn btn-outline-secondary" (click)="closeBookDetails()">
+        Cerrar
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de detalles del libro (opcional) -->
+<div class="modal-overlay" *ngIf="showBookDetails" (click)="closeBookDetails()">
+  <div
+    class="modal-content"
+    (click)="$event.stopPropagation()"
+    *ngIf="selectedBook"
+  >
+    <div class="modal-header">
+      <h3>{{ selectedBook.titulo }}</h3>
+      <button class="btn-close" (click)="closeBookDetails()">
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M18 6L6 18M6 6L18 18"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="row">
+        <div class="col-md-4">
+          <img
+            [src]="selectedBook.portada"
+            [alt]="selectedBook.titulo"
+            class="img-fluid rounded"
+          />
+        </div>
+        <div class="col-md-8">
+          <div class="book-details">
+            <p><strong>Autor:</strong> {{ selectedBook.autor }}</p>
+            <p>
+              <strong>Categoría:</strong> {{ selectedBook.categoria_nombre }}
+            </p>
+            <p>
+              <strong>Tipo:</strong> {{ selectedBook.tipo_transaccion_nombre }}
+            </p>
+            <p *ngIf="selectedBook.precio">
+              <strong>Precio:</strong> {{ formatPrice(selectedBook.precio) }}
+            </p>
+            <p>
+              <strong>Estado:</strong>
+              {{ getStatusText(selectedBook.estado_libro) }}
+            </p>
+            <p *ngIf="selectedBook.fecha_publicacion">
+              <strong>Publicado:</strong>
+              {{ formatDate(selectedBook.fecha_publicacion) }}
+            </p>
+            <p><strong>Descripción:</strong></p>
+            <p>{{ selectedBook.descripcion }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline-primary" (click)="editBook(selectedBook)">
+        Editar
+      </button>
+      <button class="btn btn-outline-secondary" (click)="closeBookDetails()">
+        Cerrar
+      </button>
     </div>
   </div>
 </div>

@@ -142,7 +142,6 @@ export const obtenerLibroPorId = async (id) => {
   }
 };
 
-
 export const eliminarLibroPorId = async (id) => {
   const sql = `
     DELETE FROM libros

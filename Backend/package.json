@@ -13,6 +13,7 @@
   "dependencies": {
     "@angular/animations": "^20.0.4",
     "@angular/cdk": "^20.0.3",
+    "@sendgrid/mail": "^8.1.5",
     "bcrypt": "^5.1.1",
     "bcryptjs": "^3.0.2",
     "body-parser": "^2.2.0",
