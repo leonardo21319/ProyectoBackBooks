@@ -6,6 +6,10 @@ import testConnection from "./src/config/test.js";
 import indexRutas from "./src/modules/login/LoginRoutes.js";
 import IntercambioRutas from "./src/modules/Intercambio/LibroRoutes.js";
 import DocumentacionApi from "./src/config/DocumentacionApi.js";
+import dotenv from 'dotenv';
+dotenv.config();
+
+
 const app = express();
 
 //Configuraciones

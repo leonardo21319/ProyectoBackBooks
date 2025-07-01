@@ -1,4 +1,6 @@
 import Usuario from "../../classes/Usuario.js";
+import Correo from "../../classes/Correo.js";
+
 import {
   guardarUsuarioDB,
   obtenerUsuarioPorCorreo,
@@ -58,10 +60,13 @@ export const RegistroControlador = async (req, res) => {
     try {
       const usuario = new Usuario(usuarioData);
       await guardarUsuarioDB(usuario);
+      await Correo.correoBienvenida(usuario);
+      
       resultados.push({
         id: usuario.id,
         correo: usuario.correoInstitucional,
         exito: true,
+
       });
     } catch (error) {
       resultados.push({
