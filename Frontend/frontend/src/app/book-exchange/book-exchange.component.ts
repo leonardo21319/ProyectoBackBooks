@@ -1,7 +1,3 @@
-// ============================================
-// 📁 ACTUALIZAR: src/app/book-exchange/book-exchange.component.ts
-// ============================================
-
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -9,6 +5,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { HeaderComponent } from '../shared/header/header.component';
 import { ApiService } from '../servicios/api.service';
 import { Book } from '../models/Book.model';
+
 @Component({
   selector: 'app-book-exchange',
   standalone: true,
@@ -20,30 +17,7 @@ export class BookExchangeComponent implements OnInit {
   cartItems = 0;
   savedItems = 0;
   bookId: string | null = null;
-
-  // ✨ SOLO LIBROS DE INTERCAMBIO - Datos simulados
-  book = {
-    id: 3,
-    title: 'El Arte de la Guerra',
-    author: 'Sun Tzu',
-    price: 0,
-    condition: 'Usado',
-    owner: 'Carlos Mendoza',
-    ownerId: 3, // ✨ ID del propietario para navegación
-    type: 'Intercambio',
-    image:
-      'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400&h=600&fit=crop',
-    category: 'Historia y filosofía',
-    pages: 96,
-    publishDate: '10/03/20',
-    isbn: '9788441421240',
-    editorial: 'EDAF',
-    transaction: 'Intercambio',
-    synopsis:
-      'Tratado sobre estrategia militar escrito por Sun Tzu en el siglo VI a.C. Este clásico texto chino ha influido tanto en el pensamiento militar como en la filosofía empresarial moderna.',
-    details:
-      'Las enseñanzas de Sun Tzu trascienden el ámbito militar y se aplican en negociación, liderazgo y gestión empresarial. Sus principios sobre conocimiento del enemigo y adaptabilidad siguen vigentes.',
-  };
+  book: Book | null = null;
 
   constructor(
     private router: Router,
@@ -61,7 +35,7 @@ export class BookExchangeComponent implements OnInit {
           this.router.navigate(['/home']);
           return;
         }
-        this.loadBookDetails(this.bookId);
+        this.loadBookDetails(numericId);
       } else {
         console.error('No se proporcionó ID de libro');
         this.router.navigate(['/home']);
@@ -70,17 +44,12 @@ export class BookExchangeComponent implements OnInit {
 
     this.route.queryParams.subscribe((params) => {
       if (params['category']) {
-        console.log(
-          'Categoría seleccionada desde book-exchange:',
-          params['category']
-        );
         this.router.navigate(['/home'], {
           queryParams: { category: params['category'] },
           replaceUrl: true,
         });
       }
       if (params['search']) {
-        console.log('Búsqueda desde book-exchange:', params['search']);
         this.router.navigate(['/home'], {
           queryParams: { search: params['search'] },
           replaceUrl: true,
@@ -89,108 +58,43 @@ export class BookExchangeComponent implements OnInit {
     });
   }
 
-  loadBookDetails(bookId: string) {
+  loadBookDetails(bookId: number) {
     console.log('Cargando detalles del libro de intercambio ID:', bookId);
-
-    const numericId = parseInt(bookId, 10);
-
-    // ✨ SOLO LIBROS DE INTERCAMBIO - Datos simulados con ownerId
-    const exchangeBooksData = {
-      3: {
-        id: 3,
-        title: 'El Arte de la Guerra',
-        author: 'Sun Tzu',
-        price: 0,
-        condition: 'Usado',
-        owner: 'Carlos Mendoza',
-        ownerId: 3, // ✨ ID del propietario
-        type: 'Intercambio',
-        image:
-          'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400&h=600&fit=crop',
-        category: 'Historia y filosofía',
-        pages: 96,
-        publishDate: '10/03/20',
-        isbn: '9788441421240',
-        editorial: 'EDAF',
-        transaction: 'Intercambio',
-        synopsis:
-          'Tratado sobre estrategia militar escrito por Sun Tzu en el siglo VI a.C. Este clásico texto chino ha influido tanto en el pensamiento militar como en la filosofía empresarial moderna.',
-        details:
-          'Las enseñanzas de Sun Tzu trascienden el ámbito militar y se aplican en negociación, liderazgo y gestión empresarial. Sus principios sobre conocimiento del enemigo y adaptabilidad siguen vigentes.',
+    this.ApiService.obtenerLibroPorId(bookId).subscribe({
+      next: (data: Book) => {
+        // Asegúrate que solo muestre libros de intercambio (por ID o nombre)
+        if (
+          data.id_tipo_transaccion === 2 || // Suponiendo que 2 = Intercambio
+          data.tipo_transaccion_nombre?.toLowerCase() === 'intercambio'
+        ) {
+          this.book = data;
+        } else {
+          console.warn('El libro no es de tipo intercambio.');
+          this.router.navigate(['/home']);
+        }
       },
-      6: {
-        id: 6,
-        title: '1984',
-        author: 'George Orwell',
-        price: 0,
-        condition: 'Nuevo',
-        owner: 'María Fernández',
-        ownerId: 4, // ✨ ID del propietario
-        type: 'Intercambio',
-        image:
-          'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=600&fit=crop',
-        category: 'Literatura',
-        pages: 328,
-        publishDate: '08/06/49',
-        isbn: '9780451524935',
-        editorial: 'Signet Classics',
-        transaction: 'Intercambio',
-        synopsis:
-          'Una distopía donde el Gran Hermano vigila cada movimiento de los ciudadanos. Winston Smith lucha contra un sistema totalitario que controla hasta los pensamientos.',
-        details:
-          'Considerada una de las novelas más influyentes del siglo XX, 1984 presenta conceptos como el doblepensar, la neolengua y la telepantalla que han trascendido la ficción.',
+      error: (err) => {
+        console.error('Error al cargar los detalles del libro:', err);
+        this.router.navigate(['/home']);
       },
-      7: {
-        id: 7,
-        title: 'Sapiens',
-        author: 'Yuval Noah Harari',
-        price: 0,
-        condition: 'Usado',
-        owner: 'Roberto Silva',
-        ownerId: 5, // ✨ ID del propietario
-        type: 'Intercambio',
-        image:
-          'https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=400&h=600&fit=crop',
-        category: 'Historia y filosofía',
-        pages: 512,
-        publishDate: '04/02/15',
-        isbn: '9788499926223',
-        editorial: 'Debate',
-        transaction: 'Intercambio',
-        synopsis:
-          'Una breve historia de la humanidad que explora cómo Homo sapiens llegó a dominar el mundo. Desde la revolución cognitiva hasta la revolución científica.',
-        details:
-          'Harari examina las tres revoluciones que han configurado a la humanidad: la cognitiva, la agrícola y la científica, y especula sobre el futuro de nuestra especie.',
-      },
-    };
-
-    const bookData =
-      exchangeBooksData[numericId as keyof typeof exchangeBooksData];
-    if (bookData) {
-      this.book = bookData;
-    } else {
-      console.warn(
-        'Libro de intercambio no encontrado, usando datos por defecto'
-      );
-    }
-
-    // 🔌 AQUÍ INTEGRAR BACKEND - Solo libros de intercambio
-    // this.exchangeService.getBookById(bookId).subscribe(...)
+    });
   }
 
   makeOffer() {
-    console.log('Navegando a página de hacer oferta para:', this.book.title);
-    // Navegar a la página de hacer oferta
-    this.router.navigate(['/exchange', this.book.id, 'offer']);
+    if (this.book) {
+      console.log('Navegando a página de hacer oferta para:', this.book.titulo);
+      this.router.navigate(['/exchange', this.book.id, 'offer']);
+    }
   }
 
   toggleSaveBook() {
+    if (!this.book) return;
     const wasLiked = this.isBookSaved();
     this.savedItems = wasLiked ? this.savedItems - 1 : this.savedItems + 1;
 
     const message = wasLiked
-      ? `"${this.book.title}" removido de guardados`
-      : `"${this.book.title}" guardado en favoritos`;
+      ? `"${this.book.titulo}" removido de guardados`
+      : `"${this.book.titulo}" guardado en favoritos`;
 
     console.log(message);
     this.showSuccessMessage(message);
@@ -202,21 +106,15 @@ export class BookExchangeComponent implements OnInit {
 
   guardarLibroMarcador(book: Book) {
     this.ApiService.agregarLibroMarcador(book.id).subscribe({
-      next: (res) => {
-        console.log('Libro guardado en marcadores:', res);
-      },
-      error: (e) => {
-        console.error('Error al guardar libro en marcadores:', e);
-      },
+      next: (res) => console.log('Libro guardado en marcadores:', res),
+      error: (e) => console.error('Error al guardar libro en marcadores:', e),
     });
   }
 
   viewOwnerInfo(): void {
-    console.log(
-      'Navegando a información del propietario ID:',
-      this.book.ownerId
-    );
-    this.router.navigate(['/seller', this.book.ownerId]);
+    if (this.book) {
+      this.router.navigate(['/seller', this.book.id_usuario]);
+    }
   }
 
   goBack() {
@@ -232,7 +130,6 @@ export class BookExchangeComponent implements OnInit {
   }
 
   onSearchPerformed(searchTerm: string) {
-    console.log('Búsqueda desde book-exchange:', searchTerm);
     this.router.navigate(['/home'], {
       queryParams: { search: searchTerm },
       replaceUrl: true,
