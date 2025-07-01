@@ -1,4 +1,6 @@
 import Libro from "../../classes/Libro.js";
+import Correo from "../../classes/Correo.js";
+
 import {
   guardarLibroDB,
   obtenerLibroPorId,
@@ -364,3 +366,30 @@ export const obtenerMarcadoresPorUsuarioControlador = async (req, res) => {
     res.status(500).json({ error: "Error interno del servidor" });
   }
 };
+
+
+
+
+
+export const aceptarIntercambioControlador = async (req, res) => {
+  const { idLibro, correoComprador, nombreComprador, nombreVendedor, tituloLibro } = req.body;
+
+  try {
+    // Aquí podrías actualizar el estado de la oferta en la BD si ya tienes esa lógica
+    await Correo.mandarCorreo({
+      to: correoComprador,
+      subject: '¡Tu oferta fue aceptada!',
+      html: `
+        <p>Hola ${nombreComprador},</p>
+        <p><strong>${nombreVendedor}</strong> ha aceptado tu oferta por el libro <em>${tituloLibro}</em>.</p>
+        <p>Ponte en contacto para coordinar el intercambio.</p>
+      `
+    });
+
+    res.status(200).json({ mensaje: 'Correo enviado al comprador exitosamente.' });
+  } catch (error) {
+    console.error('Error al aceptar intercambio:', error);
+    res.status(500).json({ error: 'Error al procesar la aceptación del intercambio.' });
+  }
+};
+
