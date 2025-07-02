@@ -20,35 +20,87 @@ import { SellerPublicationsComponent } from './seller/seller-publications/seller
 import { InfoSalesCustomerComponent } from './info-sales-customer/info-sales-customer.component';
 import { ReportSellerCustomerComponent } from './report-seller-customer/report-seller-customer.component';
 import { RateOrderComponent } from './rate-order/rate-order.component';
-
+import { AuthGuardService } from './auth.guard';
 export const routes: Routes = [
   { path: '', component: LoginComponent },
   { path: 'login', component: LoginComponent },
-  
+
   // 🏠 Páginas principales
-  { path: 'home', component: HomeComponent },
-  { path: 'saleshome', component: SaleshomeComponent },
-  { path: 'seller-profile', component: SellerProfileComponent },
-  { path: 'seller-offers', component: SellerOffersComponent },
-  { path: 'seller-publications', component: SellerPublicationsComponent },
-   
+  { path: 'home', component: HomeComponent, canActivate: [AuthGuardService] },
+  {
+    path: 'saleshome',
+    component: SaleshomeComponent,
+    canActivate: [AuthGuardService],
+  },
+  {
+    path: 'seller-profile',
+    component: SellerProfileComponent,
+    canActivate: [AuthGuardService],
+  },
+  {
+    path: 'seller-offers',
+    component: SellerOffersComponent,
+    canActivate: [AuthGuardService],
+  },
+  {
+    path: 'seller-publications',
+    component: SellerPublicationsComponent,
+    canActivate: [AuthGuardService],
+  },
+
   // 🛒 Funcionalidades de compra
-  { path: 'saved', component: SaveComponent },
-  { path: 'cart', component: CartComponent },
-  { path: 'payment', component: PaymentComponent }, // ✨ NUEVA RUTA DE PAGO
-  { path: 'profile', component: ProfileShooperComponent },
-  
+  { path: 'saved', component: SaveComponent, canActivate: [AuthGuardService] }, // Guardar libros
+  { path: 'cart', component: CartComponent, canActivate: [AuthGuardService] }, // Carrito de compras
+  {
+    path: 'payment',
+    component: PaymentComponent,
+    canActivate: [AuthGuardService],
+  }, // ✨ NUEVA RUTA DE PAGO
+  {
+    path: 'profile',
+    component: ProfileShooperComponent,
+    canActivate: [AuthGuardService],
+  }, // Perfil del comprador
+
   // 📚 Detalles de libros por tipo de transacción
-  { path: 'book/:id', component: BookSaleComponent }, // Para libros de venta
-  { path: 'exchange/:id', component: BookExchangeComponent }, // Para libros de intercambio
-  { path: 'donation/:id', component: BookDonationComponent }, // Para libros de donación
-  { path: 'exchange/:id/offer', component: BookExchangeOfferComponent }, // Para hacer ofertas de intercambio
-  
+  {
+    path: 'book/:id',
+    component: BookSaleComponent,
+    canActivate: [AuthGuardService],
+  }, // Para libros de venta
+  {
+    path: 'exchange/:id',
+    component: BookExchangeComponent,
+    canActivate: [AuthGuardService],
+  }, // Para libros de intercambio
+  {
+    path: 'donation/:id',
+    component: BookDonationComponent,
+    canActivate: [AuthGuardService],
+  }, // Para libros de donación
+  {
+    path: 'exchange/:id/offer',
+    component: BookExchangeOfferComponent,
+    canActivate: [AuthGuardService],
+  }, // Para hacer ofertas de intercambio
+
   // ✨ RUTAS DE INFORMACIÓN Y FUNCIONALIDADES DE USUARIO
-  { path: 'seller/:id', component: InfoSalesCustomerComponent }, // Información del vendedor/propietario/donante
-  { path: 'seller/:id/report', component: ReportSellerCustomerComponent }, // Reportar usuario
-  { path: 'rate-order/:id', component: RateOrderComponent }, // Calificar pedido completado
-  
+  {
+    path: 'seller/:id',
+    component: InfoSalesCustomerComponent,
+    canActivate: [AuthGuardService],
+  }, // Información del vendedor/propietario/donante
+  {
+    path: 'seller/:id/report',
+    component: ReportSellerCustomerComponent,
+    canActivate: [AuthGuardService],
+  }, // Reportar usuario
+  {
+    path: 'rate-order/:id',
+    component: RateOrderComponent,
+    canActivate: [AuthGuardService],
+  }, // Calificar pedido completado
+
   // 🔄 Redirección por defecto
-  { path: '**', redirectTo: 'login' }
+  { path: '**', redirectTo: 'login' },
 ];
