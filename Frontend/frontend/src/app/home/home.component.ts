@@ -1,3 +1,7 @@
+// ============================================
+// 📁 ACTUALIZAR: src/app/home/home.component.ts - SIN SIDEBAR
+// ============================================
+
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -17,9 +21,9 @@ export class HomeComponent implements OnInit {
   cartItems = 0;
   savedItems = 0;
   selectedCategory = 'Todas';
-  showCartSidebar = false;
+  // ✨ ELIMINADO: showCartSidebar = false;
   savedBooksIds: Set<number> = new Set();
-  cartBooks: any[] = [];
+  cartBooks: any[] = []; // ✨ MANTENIDO para contar items
   allBooks: Book[] = [];
 
   constructor(
@@ -90,8 +94,10 @@ export class HomeComponent implements OnInit {
     }
   }
 
+  // ✨ MODIFICADO: Ya no maneja sidebar, solo navega al carrito
   onCartClicked() {
-    this.toggleCartSidebar();
+    console.log('HomeComponent: Navegando al carrito desde header');
+    this.router.navigate(['/cart']);
   }
 
   onSearchPerformed(searchTerm: string) {
@@ -118,8 +124,12 @@ export class HomeComponent implements OnInit {
       (total, item) => total + item.quantity,
       0
     );
+    
+    // ✨ OPCIONAL: Mensaje de confirmación
+    this.showSuccessMessage(`"${book.titulo}" agregado al carrito`);
   }
 
+  // ✨ MANTENIDAS: Funciones de carrito para contar items
   removeFromCart(book: any) {
     const index = this.cartBooks.findIndex((item) => item.id === book.id);
     if (index > -1) {
@@ -153,13 +163,9 @@ export class HomeComponent implements OnInit {
     );
   }
 
-  toggleCartSidebar() {
-    this.showCartSidebar = !this.showCartSidebar;
-  }
-
-  closeCartSidebar() {
-    this.showCartSidebar = false;
-  }
+  // ✨ ELIMINADAS: Funciones del sidebar
+  // toggleCartSidebar() - ELIMINADA
+  // closeCartSidebar() - ELIMINADA
 
   addToSaved(book: Book) {
     const userId = this.ApiService.getUserId();
@@ -172,6 +178,8 @@ export class HomeComponent implements OnInit {
       next: (res) => {
         console.log('Libro guardado en marcadores:', res);
         this.savedBooksIds.add(book.id);
+        this.savedItems = this.savedBooksIds.size;
+        this.showSuccessMessage(`"${book.titulo}" guardado en favoritos`);
       },
       error: (e) => {
         console.error('Error al guardar libro en marcadores:', e);
@@ -184,26 +192,20 @@ export class HomeComponent implements OnInit {
     return this.savedBooksIds.has(bookId);
   }
 
+  // ✨ SIMPLIFICADO: Sin lógica de sidebar
   closeDropdownOnOutsideClick(event: Event) {
-    const target = event.target as HTMLElement;
-    if (
-      !target.closest('.cart-sidebar') &&
-      !target.closest('.nav-item-figma')
-    ) {
-      this.showCartSidebar = false;
-    }
+    // Solo para dropdowns del header si los hay
+    console.log('Click fuera detectado');
   }
 
   requestBook(book: any) {
     console.log('Solicitando donación de libro:', book.titulo);
-    alert(`Solicitud enviada para: ${book.titulo}`);
+    this.showSuccessMessage(`Solicitud enviada para: ${book.titulo}`);
   }
 
   makeOffer(book: any) {
     console.log('Hacer oferta para:', book.titulo);
-    alert(
-      `Función de intercambio para "${book.titulo}" próximamente disponible`
-    );
+    this.router.navigate(['/exchange', book.id, 'offer']);
   }
 
   getButtonAction(book: any) {
@@ -283,16 +285,15 @@ export class HomeComponent implements OnInit {
     }
   }
 
+  // ✨ NUEVA FUNCIONALIDAD: Ir directamente al carrito
   goToCartPage() {
-    this.closeCartSidebar();
+    console.log('HomeComponent: Navegando a la página del carrito');
     this.router.navigate(['/cart']);
-    console.log('Navegando a la página completa del carrito');
   }
 
-  // ✨ NUEVO MÉTODO - Ir directamente a pago desde el sidebar
+  // ✨ NUEVA FUNCIONALIDAD: Ir directamente a pago
   goToPayment() {
-    console.log('Navegando directamente a pago desde sidebar');
-    this.closeCartSidebar();
+    console.log('HomeComponent: Navegando directamente a pago');
     this.router.navigate(['/payment']);
   }
 
@@ -301,5 +302,12 @@ export class HomeComponent implements OnInit {
     this.router.navigate(['/profile'], {
       queryParams: { section: 'Mis pedidos' },
     });
+  }
+
+  // ✨ MÉTODO AUXILIAR: Mostrar mensajes de éxito
+  private showSuccessMessage(message: string) {
+    console.log('✅', message);
+    // TODO: Implementar sistema de notificaciones toast
+    // this.toastr.success(message);
   }
 }
