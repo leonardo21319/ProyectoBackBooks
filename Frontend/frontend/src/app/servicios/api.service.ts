@@ -200,19 +200,22 @@ export class ApiService {
     );
   }
 
-  agregarLibroMarcador(idLibro: number, idUsuario: string): Observable<any> {
-    console.log(`ApiService: Agregando libro con ID ${idLibro} a marcadores`);
 
-    // Verificar que el ID de usuario no sea nulo
-    if (!idUsuario) {
-      throw new Error('El ID de usuario es nulo o no válido');
-    }
 
-    return this.http.post(
-      `${this.baseUrl}/intercambio/agregarMarcador/${idLibro}/${idUsuario}`,
-      { idLibro: idLibro, idUsuario: idUsuario }
-    );
+agregarLibroMarcador(idLibro: number, idUsuario: string): Observable<any> {
+  console.log(`ApiService: Agregando libro con ID ${idLibro} a marcadores`);
+
+  if (!idUsuario) {
+    throw new Error('El ID de usuario es nulo o no válido');
   }
+  return this.http.post(
+    `${this.baseUrl}/intercambio/agregarmarcador/${idLibro}/${idUsuario}`, // ✅ exacto como lo define tu backend
+    {}
+  );
+}
+
+
+
   eliminarLibroMarcador(id: number): Observable<any> {
     console.log(`ApiService: Eliminando libro con ID ${id} de marcadores`);
     return this.http.delete(

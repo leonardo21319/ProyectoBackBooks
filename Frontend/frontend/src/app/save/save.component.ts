@@ -8,6 +8,7 @@ import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { HeaderComponent } from '../shared/header/header.component';
 import { Book } from '../models/Book.model';
+import { ApiService } from '../servicios/api.service';
 
 @Component({
   selector: 'app-save',
@@ -21,78 +22,20 @@ export class SaveComponent implements OnInit {
   savedItems = 0;
   selectedCategory = 'Todas';
   
-  // Libros guardados (simulados) - ✅ CORREGIDO CON TU MODELO
-  savedBooks: Book[] = [
-    {
-      id: 1,
-      titulo: "Drácula",
-      isbn: "9786254449970",
-      autor: "Bram Stoker",
-      editorial: "Pinky Penguin",
-      fecha_publicacion: "1897-05-26",
-      id_estado_libro: 1,
-      precio: 190.00,
-      descripcion: "Una obra maestra del género gótico. La historia se desarrolla a través de cartas, diarios y recortes de periódicos.",
-      portada: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='300' viewBox='0 0 200 300'><rect width='200' height='300' fill='%23f0f8ff'/><circle cx='100' cy='150' r='40' fill='%236A93B2'/><text x='100' y='250' font-family='Arial' font-size='12' text-anchor='middle' fill='%232F4653'>Drácula</text></svg>",
-      id_usuario: 1,
-      id_categoria: 1,
-      disponibilidad: 1,
-      estatus: 1,
-      id_tipo_transaccion: 1,
-      categoria_nombre: "Literatura",
-      estado_libro: "Usado", // ✅ CORREGIDO: estado_libro en lugar de estado_libro_nombre
-      tipo_transaccion_nombre: "Venta"
-    },
-    {
-      id: 2,
-      titulo: "Fundamentos de programación Java",
-      isbn: "9788441539580",
-      autor: "Varios Autores",
-      editorial: "ANAYA Multimedia",
-      fecha_publicacion: "2023-01-15",
-      id_estado_libro: 1,
-      precio: 0,
-      descripcion: "Manual completo para aprender programación en Java desde cero. Incluye conceptos básicos y ejercicios prácticos.",
-      portada: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='300' viewBox='0 0 200 300'><rect width='200' height='300' fill='%23e6f3ff'/><circle cx='100' cy='150' r='40' fill='%23007bff'/><text x='100' y='240' font-family='Arial' font-size='10' text-anchor='middle' fill='%232F4653'>Java</text><text x='100' y='255' font-family='Arial' font-size='10' text-anchor='middle' fill='%232F4653'>Programming</text></svg>",
-      id_usuario: 2,
-      id_categoria: 3,
-      disponibilidad: 1,
-      estatus: 1,
-      id_tipo_transaccion: 2,
-      categoria_nombre: "Ciencias y tecnología",
-      estado_libro: "Nuevo", // ✅ CORREGIDO: estado_libro en lugar de estado_libro_nombre
-      tipo_transaccion_nombre: "Donación"
-    },
-    {
-      id: 3,
-      titulo: "El Arte de la Guerra",
-      isbn: "9788441421240",
-      autor: "Sun Tzu",
-      editorial: "EDAF",
-      fecha_publicacion: "2020-03-10",
-      id_estado_libro: 2,
-      precio: 0,
-      descripcion: "Tratado sobre estrategia militar escrito por Sun Tzu en el siglo VI a.C. Influye en el pensamiento militar y empresarial.",
-      portada: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='300' viewBox='0 0 200 300'><rect width='200' height='300' fill='%23fff5e6'/><circle cx='100' cy='150' r='40' fill='%23fd7e14'/><text x='100' y='245' font-family='Arial' font-size='11' text-anchor='middle' fill='%232F4653'>El Arte de</text><text x='100' y='260' font-family='Arial' font-size='11' text-anchor='middle' fill='%232F4653'>la Guerra</text></svg>",
-      id_usuario: 3,
-      id_categoria: 2,
-      disponibilidad: 1,
-      estatus: 1,
-      id_tipo_transaccion: 3,
-      categoria_nombre: "Historia y filosofía",
-      estado_libro: "Usado", // ✅ CORREGIDO: estado_libro en lugar de estado_libro_nombre
-      tipo_transaccion_nombre: "Intercambio"
-    }
-  ];
+  // Libros guardados (simulados) 
+  savedBooks: Book[] = [];
 
   constructor(
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private apiService: ApiService
   ) {}
+
+
 
   ngOnInit() {
     console.log('SaveComponent: Componente iniciado');
-    this.updateSavedCount();
+     this.loadSavedBooks();
     
     // Manejar parámetros de la URL
     this.route.queryParams.subscribe(params => {
@@ -113,6 +56,27 @@ export class SaveComponent implements OnInit {
       }
     });
   }
+
+
+loadSavedBooks(): void {
+  const userId = this.apiService.getUserId();
+  if (!userId) {
+    console.warn('No se pudo obtener el ID del usuario');
+    return;
+  }
+
+  this.apiService.obtenerLibrosMarcados(userId).subscribe({
+    next: (libros) => {
+      console.log('Libros guardados obtenidos:', libros);
+      this.savedBooks = libros;
+      this.updateSavedCount();
+    },
+    error: (err) => {
+      console.error('Error al cargar libros guardados:', err);
+    },
+  });
+}
+
 
   // ✅ GETTER PARA LIBROS FILTRADOS - Sin arrow functions
   get filteredBooks(): Book[] {
@@ -138,10 +102,17 @@ export class SaveComponent implements OnInit {
     return this.savedBooks.filter(book => book.categoria_nombre === category).length;
   }
 
+
+
+
+
   // Actualizar contador de guardados
   updateSavedCount() {
     this.savedItems = this.savedBooks.length;
   }
+
+
+
 
   // Seleccionar categoría desde header
   onCategorySelected(category: string) {
@@ -185,6 +156,10 @@ export class SaveComponent implements OnInit {
     this.router.navigate(['/seller', book.id_usuario]);
   }
 
+
+
+
+
   // Remover libro de guardados
   removeFromSaved(book: Book): void {
     console.log('SaveComponent: Removiendo libro de guardados:', book.titulo);
@@ -212,6 +187,11 @@ export class SaveComponent implements OnInit {
       this.selectedCategory = 'Todas';
     }
   }
+
+
+
+
+
 
   // Obtener acción del botón según tipo
   getButtonAction(book: Book): void {
