@@ -217,57 +217,6 @@
             }}</span>
           </button>
 
-          <!-- Pedidos -->
-          <button
-            class="nav-item-figma vendor-nav position-relative"
-            [class.active-nav]="isActivePage('orders')"
-            (click)="goToOrders()"
-          >
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M16 4H18C18.5304 4 19.0391 4.21071 19.4142 4.58579C19.7893 4.96086 20 5.46957 20 6V20C20 20.5304 19.7893 21.0391 19.4142 21.4142C19.0391 21.7893 18.5304 22 18 22H6C5.46957 22 4.96086 21.7893 4.58579 21.4142C4.21071 21.0391 4 20.5304 4 20V6C4 5.46957 4.21071 4.96086 4.58579 4.58579C4.96086 4.21071 5.46957 4 6 4H8M16 4C16 2.89543 15.1046 2 14 2H10C8.89543 2 8 2.89543 8 4M16 4V6C16 7.10457 15.1046 8 14 8H10C8.89543 8 8 7.10457 8 6V4M9 12H15M9 16H15"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-            </svg>
-            <span>Pedidos</span>
-            <span *ngIf="ordersCount > 0" class="badge-figma vendor-badge-orders">{{
-              ordersCount
-            }}</span>
-          </button>
-
-          <!-- Botón agregar libro -->
-          <button
-            class="nav-item-figma vendor-nav add-book-btn"
-            (click)="goToAddBook()"
-            title="Agregar nuevo libro"
-          >
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M12 5V19M5 12H19"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-            </svg>
-            <span class="d-none d-lg-inline">Agregar</span>
-          </button>
-
           <!-- Perfil de Vendedor -->
           <div class="position-relative">
             <button

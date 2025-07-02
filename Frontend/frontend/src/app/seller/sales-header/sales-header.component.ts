@@ -17,7 +17,6 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 export class SalesHeaderComponent {
   @Input() offersCount: number = 0; // Ofertas recibidas
   @Input() publicationsCount: number = 0; // Libros publicados
-  @Input() ordersCount: number = 0; // Pedidos pendientes
   @Input() currentPage: string = ''; // 'saleshome', 'offers', 'publications', etc.
   @Input() selectedCategory: string = 'Todas'; // Para mostrar categoría activa
 
@@ -80,25 +79,12 @@ export class SalesHeaderComponent {
   goToPublications() {
     console.log('Ir a mis publicaciones');
     this.router.navigate(['/seller-publications']);
-
-  }
-
-  goToOrders() {
-    console.log('Ir a pedidos');
-    // this.router.navigate(['/vendor-orders']);
-    alert('📦 Navegando a pedidos...');
   }
 
   goToAnalytics() {
     console.log('Ir a analíticas');
     // this.router.navigate(['/vendor-analytics']);
     alert('📊 Navegando a analíticas...');
-  }
-
-  goToAddBook() {
-    console.log('Agregar nuevo libro');
-    // this.router.navigate(['/add-book']);
-    alert('➕ Navegando a agregar libro...');
   }
 
   // Métodos para dropdowns
@@ -144,7 +130,6 @@ export class SalesHeaderComponent {
   goToProfile() {
     this.showProfileDropdown = false;
     this.router.navigate(['/seller-profile']);
-
   }
 
   goToVendorOrders() {
