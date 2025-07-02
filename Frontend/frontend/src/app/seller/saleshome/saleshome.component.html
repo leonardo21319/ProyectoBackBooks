@@ -10,98 +10,57 @@
   >
   </app-sales-header>
 
-  <!-- Banner de bienvenida del vendedor -->
-  <section class="vendor-hero-section my-4">
-    <div class="container">
-      <div class="row align-items-center vendor-banner p-4 rounded-4">
-        <div class="col-md-8">
+<!-- Banner de bienvenida del vendedor -->
+<section class="vendor-hero-section my-4">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-12">
+        <div class="vendor-banner p-4 rounded-4 text-center">
           <h1 class="display-5 fw-bold text-vendor-dark mb-2">
             ¡Bienvenido, Vendedor! 📚
           </h1>
-          <p class="vendor-subtitle">
+          <p class="vendor-subtitle mb-0">
             Gestiona tu inventario y maximiza tus ventas
           </p>
         </div>
-        <div class="col-md-4 text-center">
-          <button class="btn btn-add-book" (click)="addNewBook()">
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              class="me-2"
-            >
-              <path
-                d="M12 5V19M5 12H19"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-            </svg>
-            Agregar Libro
-          </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Estadísticas del vendedor -->
+<section class="vendor-stats-section mb-3">
+  <div class="container">
+    <div class="row g-2 justify-content-center">
+      <div class="col-6 col-md-4">
+        <div class="stat-card stat-total">
+          <div class="stat-icon">📚</div>
+          <div class="stat-number">{{ totalBooks }}</div>
+          <div class="stat-label">Total Libros</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-4">
+        <div class="stat-card stat-active">
+          <div class="stat-icon">✅</div>
+          <div class="stat-number">{{ activeBooks }}</div>
+          <div class="stat-label">Activos</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-4">
+        <div class="stat-card stat-sold">
+          <div class="stat-icon">💰</div>
+          <div class="stat-number">{{ soldBooks }}</div>
+          <div class="stat-label">Vendidos</div>
         </div>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- Estadísticas del vendedor -->
-  <section class="vendor-stats-section mb-4">
-    <div class="container">
-      <div class="row g-3">
-        <div class="col-6 col-md-3">
-          <div class="stat-card stat-total">
-            <div class="stat-icon">📚</div>
-            <div class="stat-number">{{ totalBooks }}</div>
-            <div class="stat-label">Total Libros</div>
-          </div>
-        </div>
-        <div class="col-6 col-md-3">
-          <div class="stat-card stat-active">
-            <div class="stat-icon">✅</div>
-            <div class="stat-number">{{ activeBooks }}</div>
-            <div class="stat-label">Activos</div>
-          </div>
-        </div>
-        <div class="col-6 col-md-3">
-          <div class="stat-card stat-sold">
-            <div class="stat-icon">💰</div>
-            <div class="stat-number">{{ soldBooks }}</div>
-            <div class="stat-label">Vendidos</div>
-          </div>
-        </div>
-        <div class="col-6 col-md-3">
-          <div class="stat-card stat-orders" (click)="goToOrders()">
-            <div class="stat-icon">📦</div>
-            <div class="stat-number">{{ pendingOrders }}</div>
-            <div class="stat-label">Pedidos</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Controles de filtrado y ordenamiento -->
+  <!-- Controles de ordenamiento -->
   <section class="controls-section mb-4">
     <div class="container">
-      <div class="row align-items-center">
-        <div class="col-md-6">
-          <div class="filter-controls">
-            <label class="filter-label">Filtrar por estado:</label>
-            <select
-              class="form-select filter-select"
-              [(ngModel)]="filterStatus"
-              (change)="changeFilter(filterStatus)"
-            >
-              <option value="Todos">Todos</option>
-              <option value="Activos">Activos</option>
-              <option value="Vendidos">Vendidos</option>
-              <option value="Pausados">Pausados</option>
-            </select>
-          </div>
-        </div>
+      <div class="row">
         <div class="col-md-6">
           <div class="sort-controls">
             <label class="filter-label">Ordenar por:</label>
@@ -111,7 +70,6 @@
               (change)="changeSorting(sortBy)"
             >
               <option value="fecha_desc">Más recientes</option>
-              <option value="fecha_asc">Más antiguos</option>
               <option value="precio_desc">Precio: Mayor a menor</option>
               <option value="precio_asc">Precio: Menor a mayor</option>
               <option value="titulo_asc">Título: A-Z</option>
@@ -122,24 +80,14 @@
     </div>
   </section>
 
-  <!-- Indicador de categoría/filtros activos -->
+  <!-- Indicador de categoría activa -->
   <section
     class="active-filters"
-    *ngIf="selectedCategory !== 'Todas' || filterStatus !== 'Todos'"
+    *ngIf="selectedCategory !== 'Todas'"
   >
     <div class="container">
       <div class="filters-header">
-        <h3 class="filters-title">
-          <span *ngIf="selectedCategory !== 'Todas'">{{
-            selectedCategory
-          }}</span>
-          <span
-            *ngIf="selectedCategory !== 'Todas' && filterStatus !== 'Todos'"
-          >
-            -
-          </span>
-          <span *ngIf="filterStatus !== 'Todos'">{{ filterStatus }}</span>
-        </h3>
+        <h3 class="filters-title">{{ selectedCategory }}</h3>
         <span class="books-count">{{ filteredBooks.length }} libro(s)</span>
       </div>
     </div>
@@ -217,6 +165,10 @@
                 <div class="info-row">
                   <span class="info-label">Categoría:</span>
                   <span class="info-value">{{ book.categoria_nombre }}</span>
+                </div>
+                <div class="info-row">
+                  <span class="info-label">Estado:</span>
+                  <span class="info-value">{{ book.estado_libro }}</span>
                 </div>
                 <div class="info-row">
                   <span class="info-label">Tipo:</span>
@@ -309,30 +261,28 @@
           <h4 class="text-muted">No tienes libros publicados</h4>
           <p
             class="text-muted"
-            *ngIf="selectedCategory === 'Todas' && filterStatus === 'Todos'"
+            *ngIf="selectedCategory === 'Todas'"
           >
             Comienza agregando tu primer libro para empezar a vender
           </p>
           <p
             class="text-muted"
-            *ngIf="selectedCategory !== 'Todas' || filterStatus !== 'Todos'"
+            *ngIf="selectedCategory !== 'Todas'"
           >
-            No hay libros que coincidan con los filtros seleccionados
+            No hay libros que coincidan con la categoría seleccionada
           </p>
           <div class="empty-actions">
             <button
               class="btn btn-primary me-2"
               (click)="addNewBook()"
-              *ngIf="selectedCategory === 'Todas' && filterStatus === 'Todos'"
+              *ngIf="selectedCategory === 'Todas'"
             >
               Agregar mi primer libro
             </button>
             <button
               class="btn btn-outline-primary"
-              (click)="
-                selectedCategory = 'Todas'; filterStatus = 'Todos'; updateURL()
-              "
-              *ngIf="selectedCategory !== 'Todas' || filterStatus !== 'Todos'"
+              (click)="selectedCategory = 'Todas'; updateURL()"
+              *ngIf="selectedCategory !== 'Todas'"
             >
               Ver todos mis libros
             </button>
@@ -343,40 +293,27 @@
   </section>
 
   <!-- Enlaces rápidos -->
-  <section class="quick-links-section py-4">
-    <div class="container">
-      <div class="row g-3">
-        <div class="col-6 col-md-3">
-          <div class="quick-link-card" (click)="goToOrders()">
-            <div class="quick-link-icon">📦</div>
-            <div class="quick-link-title">Mis Pedidos</div>
-          </div>
+<section class="quick-links-section py-4">
+  <div class="container">
+    <div class="row g-4 justify-content-center">
+      <div class="col-8 col-sm-6 col-md-4 col-lg-3">
+        <div class="quick-link-card" (click)="goToOrders()">
+          <div class="quick-link-icon">📦</div>
+          <div class="quick-link-title">Mis Publicaciones</div>
         </div>
-        <div class="col-6 col-md-3">
-          <div class="quick-link-card" (click)="goToAnalytics()">
-            <div class="quick-link-icon">📊</div>
-            <div class="quick-link-title">Analíticas</div>
-          </div>
-        </div>
-        <div class="col-6 col-md-3">
-          <div class="quick-link-card" (click)="addNewBook()">
-            <div class="quick-link-icon">➕</div>
-            <div class="quick-link-title">Agregar Libro</div>
-          </div>
-        </div>
-        <div class="col-6 col-md-3">
-          <div class="quick-link-card" (click)="goToProfile()">
-            <div class="quick-link-icon">👤</div>
-            <div class="quick-link-title">Mi Perfil</div>
-          </div>
+      </div>
+      <div class="col-8 col-sm-6 col-md-4 col-lg-3">
+        <div class="quick-link-card" (click)="goToProfile()">
+          <div class="quick-link-icon">👤</div>
+          <div class="quick-link-title">Mi Perfil</div>
         </div>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 </div>
 
 <!-- Modal de detalles del libro -->
-<!-- Remove one of the duplicate modals - keep this one -->
 <div class="modal-overlay" *ngIf="showBookDetails" (click)="closeBookDetails()">
   <div
     class="modal-content"
@@ -420,87 +357,13 @@
               <strong>Categoría:</strong> {{ selectedBook.categoria_nombre }}
             </p>
             <p>
-              <strong>Tipo:</strong> {{ selectedBook.tipo_transaccion_nombre }}
-            </p>
-            <p *ngIf="selectedBook.precio">
-              <strong>Precio:</strong> {{ formatPrice(selectedBook.precio) }}
-            </p>
-            <p *ngIf="selectedBook.estado_libro">
-              <strong>Estado:</strong>
-              {{ selectedBook.estado_libro }}
-            </p>
-            <p *ngIf="selectedBook.fecha_publicacion">
-              <strong>Publicado:</strong>
-              {{ formatDate(selectedBook.fecha_publicacion) }}
-            </p>
-            <p><strong>Descripción:</strong></p>
-            <p>{{ selectedBook.descripcion }}</p>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-outline-primary" (click)="editBook(selectedBook)">
-        Editar
-      </button>
-      <button class="btn btn-outline-secondary" (click)="closeBookDetails()">
-        Cerrar
-      </button>
-    </div>
-  </div>
-</div>
-
-<!-- Modal de detalles del libro (opcional) -->
-<div class="modal-overlay" *ngIf="showBookDetails" (click)="closeBookDetails()">
-  <div
-    class="modal-content"
-    (click)="$event.stopPropagation()"
-    *ngIf="selectedBook"
-  >
-    <div class="modal-header">
-      <h3>{{ selectedBook.titulo }}</h3>
-      <button class="btn-close" (click)="closeBookDetails()">
-        <svg
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M18 6L6 18M6 6L18 18"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-        </svg>
-      </button>
-    </div>
-    <div class="modal-body">
-      <div class="row">
-        <div class="col-md-4">
-          <img
-            [src]="selectedBook.portada"
-            [alt]="selectedBook.titulo"
-            class="img-fluid rounded"
-          />
-        </div>
-        <div class="col-md-8">
-          <div class="book-details">
-            <p><strong>Autor:</strong> {{ selectedBook.autor }}</p>
-            <p>
-              <strong>Categoría:</strong> {{ selectedBook.categoria_nombre }}
+              <strong>Estado:</strong> {{ selectedBook.estado_libro }}
             </p>
             <p>
               <strong>Tipo:</strong> {{ selectedBook.tipo_transaccion_nombre }}
             </p>
             <p *ngIf="selectedBook.precio">
               <strong>Precio:</strong> {{ formatPrice(selectedBook.precio) }}
-            </p>
-            <p>
-              <strong>Estado:</strong>
-              {{ selectedBook.estado_libro }}
             </p>
             <p *ngIf="selectedBook.fecha_publicacion">
               <strong>Publicado:</strong>

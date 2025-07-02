@@ -229,7 +229,7 @@ export class SaleshomeComponent implements OnInit {
   // Métodos para navegación (simulados)
   goToOrders() {
     console.log('Ir a pedidos');
-    alert('📦 Ir a página de pedidos...');
+    this.router.navigate(['/seller-']);
     // this.router.navigate(['/vendor-orders']);
   }
 

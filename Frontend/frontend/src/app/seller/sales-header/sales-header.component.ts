@@ -72,7 +72,6 @@ export class SalesHeaderComponent {
 
   goToOffers() {
     console.log('Ir a ofertas recibidas');
-    // this.router.navigate(['/vendor-offers']);
     this.router.navigate(['/seller-offers']);
   }
 
@@ -83,7 +82,6 @@ export class SalesHeaderComponent {
 
   goToAnalytics() {
     console.log('Ir a analíticas');
-    // this.router.navigate(['/vendor-analytics']);
     alert('📊 Navegando a analíticas...');
   }
 
@@ -115,6 +113,9 @@ export class SalesHeaderComponent {
     this.showCategoriesDropdown = false;
     console.log('Categoría seleccionada:', category);
 
+    // CORRECCIÓN: Actualizar la categoría seleccionada en el header
+    this.selectedCategory = category;
+
     if (this.currentPage === 'saleshome') {
       // En saleshome, emitir evento para filtrar
       this.categorySelected.emit(category);
@@ -135,14 +136,12 @@ export class SalesHeaderComponent {
   goToVendorOrders() {
     this.showProfileDropdown = false;
     console.log('Ir a historial de pedidos');
-    // this.router.navigate(['/vendor-orders-history']);
     alert('📋 Navegando a historial de pedidos...');
   }
 
   goToSettings() {
     this.showProfileDropdown = false;
     console.log('Ir a configuración');
-    // this.router.navigate(['/vendor-settings']);
     alert('⚙️ Navegando a configuración...');
   }
 
