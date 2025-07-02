@@ -1,16 +1,16 @@
 # ============================================
-# 📁 VERIFICAR/CREAR: Frontend/netlify.toml
+# 📁 ACTUALIZAR: netlify.toml - CONFIGURACIÓN CORREGIDA
 # ============================================
 
 [build]
-  # Directorio base donde está package.json (Frontend/frontend/)
+  # Directorio base donde está package.json (frontend/)
   base = "frontend"
   
   # Comando para construir el proyecto
-  command = "npm run build:prod"
+  command = "npm run build"
   
-  # Directorio donde se generan los archivos (Frontend/frontend/dist/frontend)
-  publish = "dist/frontend"
+  # 🔥 CORREGIDO: Angular genera archivos en dist/frontend/browser/
+  publish = "dist/frontend/browser"
 
 [build.environment]
   NODE_VERSION = "18"
@@ -29,3 +29,4 @@
     X-Frame-Options = "DENY"
     X-XSS-Protection = "1; mode=block"
     X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
