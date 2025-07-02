@@ -1,8 +1,13 @@
+// ============================================
+// 📁 ACTUALIZAR: Frontend/frontend/src/app/servicios/api.service.ts
+// ============================================
+
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { jwtDecode } from 'jwt-decode';
 import { Observable, throwError } from 'rxjs';
 import { catchError, timeout } from 'rxjs/operators';
+import { environment } from '../../environments/environments';
 
 interface DecodedToken {
   rol: number;
@@ -15,9 +20,14 @@ interface DecodedToken {
   providedIn: 'root',
 })
 export class ApiService {
-  private baseUrl = 'https://proyectobackend-4r99.onrender.com';
-
-  constructor(private http: HttpClient) {}
+  // ✅ Usar baseUrl del environment
+  private baseUrl = environment.apiUrl;
+  
+  constructor(private http: HttpClient) {
+    console.log('ApiService: Inicializando con URL:', this.baseUrl);
+    console.log('ApiService: Modo producción:', environment.production);
+    console.log('ApiService: App:', environment.appName, 'v' + environment.version);
+  }
 
   // MANTENER TU MÉTODO LOGIN EXACTAMENTE IGUAL
   login(data: {
@@ -25,7 +35,7 @@ export class ApiService {
   }): Observable<any> {
     console.log('ApiService: Iniciando login');
     return this.http.post(`${this.baseUrl}/auth/login`, data).pipe(
-      timeout(10000),
+      timeout(environment.requestTimeout),
       catchError((error) => {
         console.error('ApiService: Error en login:', error);
         return throwError(() => error);
@@ -37,7 +47,7 @@ export class ApiService {
   register(datos: any): Observable<any> {
     console.log('ApiService: Iniciando registro');
     return this.http.post(`${this.baseUrl}/auth/registro`, datos).pipe(
-      timeout(10000),
+      timeout(environment.requestTimeout),
       catchError((error) => {
         console.error('ApiService: Error en registro:', error);
         return throwError(
@@ -57,16 +67,20 @@ export class ApiService {
   }
 
   getUserId(): string | null {
-    const token = this.obtenerToken(); // Obtener el token del almacenamiento
+    const token = this.obtenerToken();
     if (!token) {
-      console.log('ApiService: No hay token disponible');
+      if (environment.enableLogging) {
+        console.log('ApiService: No hay token disponible');
+      }
       return null;
     }
 
     try {
-      const decoded = jwtDecode<DecodedToken>(token); // Decodificar el token
+      const decoded = jwtDecode<DecodedToken>(token);
       if (decoded && decoded.id) {
-        console.log('ApiService: ID de usuario decodificado:', decoded.id);
+        if (environment.enableLogging) {
+          console.log('ApiService: ID de usuario decodificado:', decoded.id);
+        }
         return decoded.id;
       }
     } catch (error) {
@@ -76,6 +90,7 @@ export class ApiService {
 
     return null;
   }
+
   // MANTENER EXACTAMENTE IGUAL
   obtenerToken(): string | null {
     try {
@@ -120,13 +135,14 @@ export class ApiService {
   decodificarToken(): DecodedToken | null {
     const token = this.obtenerToken();
     if (!token) {
-      console.log('ApiService: No hay token para decodificar');
+      if (environment.enableLogging) {
+        console.log('ApiService: No hay token para decodificar');
+      }
       return null;
     }
 
     try {
       const decoded = jwtDecode<DecodedToken>(token);
-
       return decoded;
     } catch (error) {
       return null;
@@ -175,6 +191,7 @@ export class ApiService {
   isAdmin(): boolean {
     return this.getUserRole() === 1;
   }
+
   //METODO PARA OBTENER LIBROS
   obtenerLibros(): Observable<any> {
     return this.http.get(`${this.baseUrl}/intercambio/obtenerLibros`).pipe(
@@ -209,7 +226,7 @@ export class ApiService {
       throw new Error('El ID de usuario es nulo o no válido');
     }
     return this.http.post(
-      `${this.baseUrl}/intercambio/agregarmarcador/${idLibro}/${idUsuario}`, // ✅ exacto como lo define tu backend
+      `${this.baseUrl}/intercambio/agregarmarcador/${idLibro}/${idUsuario}`,
       {}
     );
   }
@@ -232,5 +249,29 @@ export class ApiService {
           );
         })
       );
+  }
+
+  // ✅ MÉTODO para probar conexión
+  testConnection(): Observable<any> {
+    console.log('ApiService: Probando conexión con backend...');
+    return this.http.get(`${this.baseUrl}/health`).pipe(
+      timeout(5000),
+      catchError((error) => {
+        console.error('ApiService: Error de conexión:', error);
+        return throwError(() => error);
+      })
+    );
+  }
+
+  // ✅ MÉTODO para obtener configuración del environment
+  getEnvironmentInfo() {
+    return {
+      production: environment.production,
+      apiUrl: this.baseUrl,
+      appName: environment.appName,
+      version: environment.version,
+      debugMode: environment.debugMode,
+      enableLogging: environment.enableLogging
+    };
   }
 }

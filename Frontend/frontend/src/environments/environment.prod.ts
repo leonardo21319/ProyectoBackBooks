@@ -1,32 +1,32 @@
 // ============================================
-// 📁 ACTUALIZAR: Frontend/frontend/src/environments/environment.ts
+// 📁 CREAR: Frontend/frontend/src/environments/environment.prod.ts
 // ============================================
 
 export const environment = {
-  production: false,
-  apiUrl: 'http://localhost:3000',
+  production: true,
+  apiUrl: 'https://proyectobackend-4r99.onrender.com',
   
-  // Configuraciones de desarrollo
-  enableLogging: true,
-  debugMode: true,
+  // Configuraciones de producción
+  enableLogging: false,
+  debugMode: false,
   
   // Configuraciones de la aplicación
-  appName: 'BookStore - Dev',
-  version: '1.0.0-dev',
+  appName: 'BookStore',
+  version: '1.0.0',
   
   // Límites y configuraciones
   maxFileSize: 5 * 1024 * 1024, // 5MB
   allowedImageTypes: ['image/jpeg', 'image/png', 'image/webp'],
   
-  // Configuraciones de cache (más corto en dev)
-  cacheTimeout: 60000, // 1 minuto
+  // Configuraciones de cache (más largo en producción)
+  cacheTimeout: 300000, // 5 minutos
   
   // Configuraciones de paginación
   defaultPageSize: 12,
   maxPageSize: 50,
   
-  // Timeouts para requests (más corto en dev)
-  requestTimeout: 10000, // 10 segundos
+  // Timeouts para requests
+  requestTimeout: 30000, // 30 segundos para producción
   
   // URLs de endpoints específicos
   endpoints: {
