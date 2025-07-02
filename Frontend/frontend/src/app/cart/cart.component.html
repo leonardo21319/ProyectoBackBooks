@@ -1,4 +1,7 @@
-<!-- src/app/cart/cart.component.html - SIMPLIFICADO CON HEADER COMPARTIDO -->
+<!-- ============================================ -->
+<!-- 📁 ACTUALIZAR: src/app/cart/cart.component.html - COMPLETO CON DATOS REALES -->
+<!-- ============================================ -->
+
 <div class="bookstore-container">
   
   <!-- Header compartido -->
@@ -27,7 +30,7 @@
             </div>
             <h3>Tu carrito está vacío</h3>
             <p>Explora nuestro catálogo y encuentra libros increíbles</p>
-            <button class="btn btn-primary btn-lg" onclick="window.location.href='/home'">
+            <button class="btn btn-primary btn-lg" (click)="goToHome()">
               Explorar libros
             </button>
           </div>
@@ -43,34 +46,39 @@
                 <div class="table-cell actions-header"></div>
               </div>
 
-              <!-- Items del carrito -->
+              <!-- ✨ Items del carrito - DATOS REALES -->
               <div class="cart-item-row" *ngFor="let book of cartBooks">
                 <div class="table-cell product-cell">
                   <div class="product-info">
                     <div class="product-image">
-                      <img [src]="book.image" [alt]="book.title">
+                      <!-- ✨ USAR DATOS REALES -->
+                      <img [src]="book.portada" [alt]="book.titulo">
                     </div>
                     <div class="product-details">
-                      <h4 class="product-title">{{book.title}}</h4>
-                      <p class="product-author">{{book.author}}</p>
+                      <!-- ✨ USAR PROPIEDADES REALES -->
+                      <h4 class="product-title">{{book.titulo}}</h4>
+                      <p class="product-author">{{book.autor}}</p>
+                      <!-- ✨ INFORMACIÓN ADICIONAL OPCIONAL -->
+                      <p class="product-isbn" *ngIf="book.isbn">ISBN: {{book.isbn}}</p>
                     </div>
                   </div>
                 </div>
                 
                 <div class="table-cell price-cell">
-                  <span class="product-price">${{book.price}}</span>
+                  <!-- ✨ USAR PRECIO REAL -->
+                  <span class="product-price">${{book.precio}}</span>
                 </div>
                 
                 <div class="table-cell quantity-cell">
                   <div class="quantity-controls">
-                    <button class="qty-btn" (click)="updateQuantity(book, book.quantity - 1)">-</button>
+                    <button class="qty-btn" (click)="updateQuantity(book, book.quantity - 1)" title="Disminuir cantidad">-</button>
                     <span class="quantity">{{book.quantity}}</span>
-                    <button class="qty-btn" (click)="updateQuantity(book, book.quantity + 1)">+</button>
+                    <button class="qty-btn" (click)="updateQuantity(book, book.quantity + 1)" title="Aumentar cantidad">+</button>
                   </div>
                 </div>
                 
                 <div class="table-cell actions-cell">
-                  <button class="remove-btn" (click)="removeFromCart(book)">
+                  <button class="remove-btn" (click)="removeFromCart(book)" title="Eliminar del carrito">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path d="M3 6H5H21M8 6V4C8 3.46957 8.21071 2.96086 8.58579 2.58579C8.96086 2.21071 9.46957 2 10 2H14C14.5304 2 15.0391 2.21071 15.4142 2.58579C15.7893 2.96086 16 3.46957 16 4V6M19 6V20C19 20.5304 18.7893 21.0391 18.4142 21.4142C18.0391 21.7893 17.5304 22 17 22H7C6.46957 22 5.96086 21.7893 5.58579 21.4142C5.21071 21.0391 5 20.5304 5 20V6H19Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
@@ -82,13 +90,25 @@
             <!-- Resumen y total -->
             <div class="cart-summary">
               <div class="summary-row">
-                <span class="summary-label">Subtotal</span>
+                <span class="summary-label">Subtotal ({{cartItems}} {{cartItems === 1 ? 'artículo' : 'artículos'}})</span>
+                <!-- ✨ USAR TOTAL REAL DEL SERVICIO -->
                 <span class="summary-value">${{getSubtotal()}}</span>
               </div>
               
               <div class="checkout-section">
                 <button class="btn btn-primary btn-lg checkout-btn" (click)="goToCheckout()">
-                  Pagar
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-right: 8px;">
+                    <path d="M12 22S8 18 8 12V7L12 5L16 7V12C16 18 12 22 12 22Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  Proceder al pago
+                </button>
+                
+                <!-- ✨ BOTÓN OPCIONAL: Limpiar carrito -->
+                <button class="btn btn-outline-secondary mt-2 w-100" (click)="clearCart()" *ngIf="cartBooks.length > 0">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-right: 8px;">
+                    <path d="M3 6H5H21M8 6V4C8 3.46957 8.21071 2.96086 8.58579 2.58579C8.96086 2.21071 9.46957 2 10 2H14C14.5304 2 15.0391 2.21071 15.4142 2.58579C15.7893 2.96086 16 3.46957 16 4V6M19 6V20C19 20.5304 18.7893 21.0391 18.4142 21.4142C18.0391 21.7893 17.5304 22 17 22H7C6.46957 22 5.96086 21.7893 5.58579 21.4142C5.21071 21.0391 5 20.5304 5 20V6H19Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  Vaciar carrito
                 </button>
               </div>
             </div>

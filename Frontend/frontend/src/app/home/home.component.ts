@@ -1,13 +1,15 @@
 // ============================================
-// 📁 ACTUALIZAR: src/app/home/home.component.ts - SIN SIDEBAR
+// 📁 ACTUALIZAR: src/app/home/home.component.ts - SIN FILTRO DE VENTA
 // ============================================
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { HeaderComponent } from '../shared/header/header.component';
 import { ApiService } from '../servicios/api.service';
+import { CartService } from '../servicios/cart.service';
 import { Book } from '../models/Book.model';
 
 @Component({
@@ -17,41 +19,76 @@ import { Book } from '../models/Book.model';
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css'],
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, OnDestroy {
   cartItems = 0;
   savedItems = 0;
   selectedCategory = 'Todas';
-  // ✨ ELIMINADO: showCartSidebar = false;
   savedBooksIds: Set<number> = new Set();
-  cartBooks: any[] = []; // ✨ MANTENIDO para contar items
   allBooks: Book[] = [];
+
+  private cartSubscription: Subscription = new Subscription();
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private ApiService: ApiService
-  ) {}
+    private ApiService: ApiService,
+    public cartService: CartService
+  ) {
+    console.log('🏠 ===== CONSTRUCTOR INICIADO =====');
+    console.log('🏠 HomeComponent: Constructor ejecutado');
+    console.log('🏠 HomeComponent: CartService existe:', !!this.cartService);
+  }
 
   ngOnInit(): void {
-    console.log('HomeComponent: Componente iniciado');
+    console.log('🏠 ===== NGONINIT INICIADO =====');
 
+    // Verificar CartService
+    if (!this.cartService) {
+      console.error('🏠 ngOnInit: ❌ CartService no está disponible!');
+      return;
+    }
+
+    // Suscribirse al contador del carrito
+    console.log('🏠 ngOnInit: Suscribiéndose al cartCount$...');
+    this.cartSubscription = this.cartService.cartCount$.subscribe({
+      next: (count) => {
+        console.log('🏠 ngOnInit: Cart count actualizado a:', count);
+        this.cartItems = count;
+      },
+      error: (error) => {
+        console.error('🏠 ngOnInit: Error en suscripción cartCount$:', error);
+      }
+    });
+
+    // Cargar libros
     this.cargarLibros();
 
+    // Manejar parámetros de URL
     this.route.queryParams.subscribe((params) => {
       if (params['category']) {
         this.selectedCategory = params['category'];
-        console.log('Categoría desde URL:', params['category']);
+        console.log('🏠 Categoría desde URL:', params['category']);
       }
       if (params['search']) {
-        console.log('Búsqueda desde URL:', params['search']);
+        console.log('🏠 Búsqueda desde URL:', params['search']);
       }
     });
+
+    console.log('🏠 ===== NGONINIT TERMINADO =====');
+  }
+
+  ngOnDestroy(): void {
+    this.cartSubscription.unsubscribe();
+    console.log('🏠 HomeComponent: Componente destruido');
   }
 
   cargarLibros(): void {
+    console.log('🏠 cargarLibros: Iniciando carga desde API...');
     this.ApiService.obtenerLibros().subscribe({
       next: (libros) => {
-        console.log('Libros obtenidos:', libros);
+        console.log('🏠 cargarLibros: Datos RAW del backend:', libros);
+        console.log('🏠 cargarLibros: Cantidad recibida:', libros.length);
+        
         this.allBooks = libros.map((libro: any) => ({
           ...libro,
           portada: libro.portada
@@ -60,10 +97,21 @@ export class HomeComponent implements OnInit {
           tipo_transaccion_nombre: libro.tipo_transaccion,
           categoria_nombre: libro.categoria,
         }));
-        console.log('Total de libros cargados:', this.allBooks.length);
+        
+        console.log('🏠 cargarLibros: Libros PROCESADOS:', this.allBooks.length);
+        console.log('🏠 cargarLibros: Primer libro PROCESADO:', this.allBooks[0]);
+        
+        // Verificar tipos de libros
+        const ventaBooks = this.allBooks.filter(book => book.tipo_transaccion_nombre === 'Venta');
+        const donacionBooks = this.allBooks.filter(book => book.tipo_transaccion_nombre === 'Donación');
+        const intercambioBooks = this.allBooks.filter(book => book.tipo_transaccion_nombre === 'Intercambio');
+        
+        console.log('🏠 cargarLibros: Libros de VENTA:', ventaBooks.length);
+        console.log('🏠 cargarLibros: Libros de DONACIÓN:', donacionBooks.length);
+        console.log('🏠 cargarLibros: Libros de INTERCAMBIO:', intercambioBooks.length);
       },
-      error: () => {
-        this.router.navigate(['/home']);
+      error: (error) => {
+        console.error('🏠 cargarLibros: Error:', error);
       },
     });
   }
@@ -77,13 +125,156 @@ export class HomeComponent implements OnInit {
     );
   }
 
-  onCategorySelected(category: string) {
-    console.log(
-      'HomeComponent: Categoría seleccionada desde header:',
-      category
-    );
-    this.selectedCategory = category;
+  // ✨ MÉTODOS DEBUG MANTENIDOS
+  logCartItems() {
+    console.log('🏠 Items en carrito:', this.cartService?.getCartItems());
+  }
 
+  logCartCount() {
+    console.log('🏠 Contador de carrito:', this.cartService?.getCartCount());
+  }
+
+  getCartServiceStatus(): string {
+    return !!this.cartService ? '✅ OK' : '❌ ERROR';
+  }
+
+  testCartService() {
+    console.log('🏠 ===== TEST CART SERVICE =====');
+    console.log('🏠 CartService existe:', !!this.cartService);
+    
+    if (!this.cartService) {
+      console.error('🏠 Test: CartService no disponible');
+      alert('❌ CartService no está disponible');
+      return;
+    }
+    
+    const testBook = {
+      id: 999,
+      titulo: 'Libro de Prueba',
+      autor: 'Autor Test',
+      precio: 100,
+      tipo_transaccion_nombre: 'Venta',
+      portada: 'test.jpg',
+      isbn: 'test-123',
+      editorial: 'Editorial Test'
+    };
+    
+    console.log('🏠 Test: Agregando libro de prueba:', testBook);
+    
+    try {
+      this.cartService.addToCart(testBook);
+      console.log('🏠 Test: addToCart() ejecutado sin errores');
+      
+      const items = this.cartService.getCartItems();
+      const count = this.cartService.getCartCount();
+      console.log('🏠 Test: Items después de agregar:', items);
+      console.log('🏠 Test: Count después de agregar:', count);
+      
+      alert(`✅ Test exitoso! Items: ${count}`);
+    } catch (error) {
+      console.error('🏠 Test: Error en addToCart:', error);
+      alert('❌ Error en test: ' + error);
+    }
+    
+    console.log('🏠 ===== TEST TERMINADO =====');
+  }
+
+  getButtonAction(book: any) {
+    console.log('🏠 ===== BUTTON ACTION INICIADO =====');
+    console.log('🏠 Libro clickeado:', book.titulo);
+    console.log('🏠 ID del libro:', book.id);
+    console.log('🏠 Tipo de transacción:', book.tipo_transaccion_nombre);
+    console.log('🏠 Precio:', book.precio);
+    
+    const tipoTransaccion = book.tipo_transaccion_nombre || 'Venta';
+    console.log('🏠 Tipo normalizado:', tipoTransaccion);
+
+    switch (tipoTransaccion) {
+      case 'Venta':
+        console.log('🏠 EJECUTANDO: addToCart para venta');
+        this.addToCart(book);
+        break;
+      case 'Donación':
+        console.log('🏠 EJECUTANDO: requestBook para donación');
+        this.requestBook(book);
+        break;
+      case 'Intercambio':
+        console.log('🏠 EJECUTANDO: makeOffer para intercambio');
+        this.makeOffer(book);
+        break;
+      default:
+        console.log('🏠 EJECUTANDO: addToCart por defecto');
+        this.addToCart(book);
+        break;
+    }
+    
+    console.log('🏠 ===== BUTTON ACTION TERMINADO =====');
+  }
+
+  // ✨ MÉTODO SIMPLIFICADO - SIN VALIDACIÓN DE TIPO
+  addToCart(book: any) {
+    console.log('🏠 ===== ADD TO CART INICIADO =====');
+    console.log('🏠 addToCart: Libro recibido:', book.titulo);
+    console.log('🏠 addToCart: Tipo de transacción:', book.tipo_transaccion_nombre);
+    console.log('🏠 addToCart: CartService disponible:', !!this.cartService);
+    
+    if (!this.cartService) {
+      console.error('🏠 addToCart: ❌ CartService no disponible');
+      alert('Error: Servicio de carrito no disponible');
+      return;
+    }
+
+    // ✨ REMOVIDO: Ya no validamos el tipo de transacción
+    console.log('🏠 addToCart: ✅ Sin validaciones de tipo, agregando directamente...');
+
+    try {
+      // Estado anterior
+      const beforeCount = this.cartService.getCartCount();
+      console.log('🏠 addToCart: ANTES - Count:', beforeCount);
+      
+      // Llamar al servicio
+      this.cartService.addToCart(book);
+      console.log('🏠 addToCart: ✅ cartService.addToCart() ejecutado');
+      
+      // Estado posterior
+      const afterCount = this.cartService.getCartCount();
+      console.log('🏠 addToCart: DESPUÉS - Count:', afterCount);
+      
+      // Verificar que se agregó
+      if (afterCount > beforeCount) {
+        console.log('🏠 addToCart: ✅ Libro agregado exitosamente');
+        alert(`✅ "${book.titulo}" agregado al carrito`);
+      } else {
+        console.warn('🏠 addToCart: ⚠️ No se detectó cambio en el contador');
+        alert(`⚠️ No se pudo agregar "${book.titulo}"`);
+      }
+      
+    } catch (error) {
+      console.error('🏠 addToCart: ❌ Error:', error);
+      alert('❌ Error al agregar al carrito: ' + error);
+    }
+    
+    console.log('🏠 ===== ADD TO CART TERMINADO =====');
+  }
+
+  // ✨ MÉTODOS SIMPLIFICADOS PARA OTROS TIPOS
+  requestBook(book: any) {
+    console.log('🏠 Solicitando libro:', book.titulo);
+    // ✨ OPCIÓN: También agregar al carrito si lo deseas
+    // this.addToCart(book); 
+    alert(`Solicitud enviada para: ${book.titulo}`);
+  }
+
+  makeOffer(book: any) {
+    console.log('🏠 Haciendo oferta para:', book.titulo);
+    // ✨ OPCIÓN: También agregar al carrito si lo deseas
+    // this.addToCart(book);
+    this.router.navigate(['/exchange', book.id, 'offer']);
+  }
+
+  // Resto de métodos mantenidos igual...
+  onCategorySelected(category: string) {
+    this.selectedCategory = category;
     if (category === 'Todas') {
       this.router.navigate(['/home'], { replaceUrl: true });
     } else {
@@ -94,96 +285,33 @@ export class HomeComponent implements OnInit {
     }
   }
 
-  // ✨ MODIFICADO: Ya no maneja sidebar, solo navega al carrito
   onCartClicked() {
-    console.log('HomeComponent: Navegando al carrito desde header');
     this.router.navigate(['/cart']);
   }
 
   onSearchPerformed(searchTerm: string) {
-    console.log('Búsqueda desde header:', searchTerm);
-
     this.router.navigate(['/home'], {
       queryParams: { search: searchTerm },
       replaceUrl: true,
     });
   }
 
-  addToCart(book: any) {
-    console.log('HomeComponent: Añadiendo al carrito:', book.titulo);
-    const existingBook = this.cartBooks.find((item) => item.id === book.id);
-    if (existingBook) {
-      existingBook.quantity += 1;
-    } else {
-      this.cartBooks.push({
-        ...book,
-        quantity: 1,
-      });
-    }
-    this.cartItems = this.cartBooks.reduce(
-      (total, item) => total + item.quantity,
-      0
-    );
-    
-    // ✨ OPCIONAL: Mensaje de confirmación
-    this.showSuccessMessage(`"${book.titulo}" agregado al carrito`);
-  }
-
-  // ✨ MANTENIDAS: Funciones de carrito para contar items
-  removeFromCart(book: any) {
-    const index = this.cartBooks.findIndex((item) => item.id === book.id);
-    if (index > -1) {
-      this.cartBooks.splice(index, 1);
-      this.cartItems = this.cartBooks.reduce(
-        (total, item) => total + item.quantity,
-        0
-      );
-    }
-  }
-
-  updateQuantity(book: any, quantity: number) {
-    if (quantity <= 0) {
-      this.removeFromCart(book);
-    } else {
-      const cartBook = this.cartBooks.find((item) => item.id === book.id);
-      if (cartBook) {
-        cartBook.quantity = quantity;
-        this.cartItems = this.cartBooks.reduce(
-          (total, item) => total + item.quantity,
-          0
-        );
-      }
-    }
-  }
-
-  getCartSubtotal(): number {
-    return this.cartBooks.reduce(
-      (total, item) => total + (item.precio || 0) * item.quantity,
-      0
-    );
-  }
-
-  // ✨ ELIMINADAS: Funciones del sidebar
-  // toggleCartSidebar() - ELIMINADA
-  // closeCartSidebar() - ELIMINADA
-
   addToSaved(book: Book) {
     const userId = this.ApiService.getUserId();
     if (!userId) {
-      console.error('No se pudo obtener el ID del usuario');
+      console.error('🏠 No se pudo obtener el ID del usuario');
       return;
     }
-    console.log('Guardando libro en marcadores:', book.titulo);
+    
     this.ApiService.agregarLibroMarcador(book.id, userId).subscribe({
       next: (res) => {
-        console.log('Libro guardado en marcadores:', res);
         this.savedBooksIds.add(book.id);
         this.savedItems = this.savedBooksIds.size;
-        this.showSuccessMessage(`"${book.titulo}" guardado en favoritos`);
+        alert(`"${book.titulo}" guardado en favoritos`);
       },
       error: (e) => {
-        console.error('Error al guardar libro en marcadores:', e);
-        alert('Error al guardar el libro en marcadores. Inténtalo de nuevo.');
+        console.error('🏠 Error al guardar libro:', e);
+        alert('Error al guardar el libro en marcadores');
       },
     });
   }
@@ -192,67 +320,22 @@ export class HomeComponent implements OnInit {
     return this.savedBooksIds.has(bookId);
   }
 
-  // ✨ SIMPLIFICADO: Sin lógica de sidebar
-  closeDropdownOnOutsideClick(event: Event) {
-    // Solo para dropdowns del header si los hay
-    console.log('Click fuera detectado');
-  }
-
-  requestBook(book: any) {
-    console.log('Solicitando donación de libro:', book.titulo);
-    this.showSuccessMessage(`Solicitud enviada para: ${book.titulo}`);
-  }
-
-  makeOffer(book: any) {
-    console.log('Hacer oferta para:', book.titulo);
-    this.router.navigate(['/exchange', book.id, 'offer']);
-  }
-
-  getButtonAction(book: any) {
-    console.log(
-      'HomeComponent: Acción para libro tipo:',
-      book.tipo_transaccion_nombre
-    );
-    const tipoTransaccion = book.tipo_transaccion_nombre || 'Venta';
-
-    switch (tipoTransaccion) {
-      case 'Venta':
-        this.addToCart(book);
-        break;
-      case 'Donación':
-        this.requestBook(book);
-        break;
-      case 'Intercambio':
-        this.makeOffer(book);
-        break;
-      default:
-        this.addToCart(book);
-        break;
-    }
+  isInCart(bookId: number): boolean {
+    return this.cartService ? this.cartService.isInCart(bookId) : false;
   }
 
   getButtonText(type: string | undefined): string {
     const tipoTransaccion = type || 'Venta';
-
     switch (tipoTransaccion) {
-      case 'Venta':
-        return 'Añadir al carrito';
-      case 'Donación':
-        return 'Solicitar libro';
-      case 'Intercambio':
-        return 'Hacer oferta';
-      default:
-        return 'Añadir al carrito';
+      case 'Venta': return 'Añadir al carrito';
+      case 'Donación': return 'Solicitar libro';
+      case 'Intercambio': return 'Hacer oferta';
+      default: return 'Añadir al carrito';
     }
   }
 
   selectCategory(category: string) {
-    console.log(
-      'HomeComponent: Categoría seleccionada directamente:',
-      category
-    );
     this.selectedCategory = category;
-
     if (category === 'Todas') {
       this.router.navigate(['/home'], { replaceUrl: true });
     } else {
@@ -264,15 +347,7 @@ export class HomeComponent implements OnInit {
   }
 
   viewBookDetail(book: Book): void {
-    console.log(
-      'Navegando al detalle del libro:',
-      book.titulo,
-      'Tipo:',
-      book.tipo_transaccion_nombre
-    );
-
     const tipoTransaccion = book.tipo_transaccion_nombre || 'Venta';
-
     if (tipoTransaccion === 'Venta') {
       this.router.navigate(['/book', book.id]);
     } else if (tipoTransaccion === 'Intercambio') {
@@ -280,34 +355,11 @@ export class HomeComponent implements OnInit {
     } else if (tipoTransaccion === 'Donación') {
       this.router.navigate(['/donation', book.id]);
     } else {
-      console.warn('Tipo de libro no reconocido:', tipoTransaccion);
       this.router.navigate(['/book', book.id]);
     }
   }
 
-  // ✨ NUEVA FUNCIONALIDAD: Ir directamente al carrito
-  goToCartPage() {
-    console.log('HomeComponent: Navegando a la página del carrito');
-    this.router.navigate(['/cart']);
-  }
-
-  // ✨ NUEVA FUNCIONALIDAD: Ir directamente a pago
-  goToPayment() {
-    console.log('HomeComponent: Navegando directamente a pago');
-    this.router.navigate(['/payment']);
-  }
-
-  goToOrders() {
-    console.log('Ir a Mis pedidos desde home');
-    this.router.navigate(['/profile'], {
-      queryParams: { section: 'Mis pedidos' },
-    });
-  }
-
-  // ✨ MÉTODO AUXILIAR: Mostrar mensajes de éxito
-  private showSuccessMessage(message: string) {
-    console.log('✅', message);
-    // TODO: Implementar sistema de notificaciones toast
-    // this.toastr.success(message);
+  closeDropdownOnOutsideClick(event: Event) {
+    // Vacío por ahora
   }
 }

@@ -1,5 +1,5 @@
 /* ============================================ */
-/* 📁 ACTUALIZAR: src/app/home/home.component.css - SIN SIDEBAR */
+/* 📁 ACTUALIZAR: src/app/home/home.component.css - CON BOTÓN MEJORADO */
 /* ============================================ */
 
 .bookstore-container {
@@ -243,7 +243,7 @@
   color: #6A93B2;
 }
 
-/* === BOTONES DE ACCIÓN - COLORES ORIGINALES === */
+/* === BOTONES DE ACCIÓN - MEJORADOS CON EFECTOS === */
 .btn-custom-venta {
   background: linear-gradient(135deg, #6A93B2, #87ACC5) !important;
   border: none !important;
@@ -252,13 +252,36 @@
   padding: 12px 20px !important;
   border-radius: 8px !important;
   transition: all 0.3s ease !important;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-custom-venta::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: left 0.5s;
+}
+
+.btn-custom-venta:hover::before {
+  left: 100%;
 }
 
 .btn-custom-venta:hover {
   background: linear-gradient(135deg, #2F4653, #6A93B2) !important;
   transform: translateY(-2px) !important;
-  box-shadow: 0 4px 12px rgba(106, 147, 178, 0.3) !important;
+  box-shadow: 0 6px 20px rgba(106, 147, 178, 0.4) !important;
   color: white !important;
+}
+
+/* ✨ EFECTO ESPECIAL PARA BOTÓN "AÑADIR AL CARRITO" */
+.btn-custom-venta:active {
+  transform: translateY(0px) scale(0.98) !important;
+  box-shadow: 0 2px 8px rgba(106, 147, 178, 0.6) !important;
 }
 
 .btn-custom-donacion {
@@ -269,12 +292,29 @@
   padding: 12px 20px !important;
   border-radius: 8px !important;
   transition: all 0.3s ease !important;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-custom-donacion::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: left 0.5s;
+}
+
+.btn-custom-donacion:hover::before {
+  left: 100%;
 }
 
 .btn-custom-donacion:hover {
   background: linear-gradient(135deg, #0056b3, #520dc2) !important;
   transform: translateY(-2px) !important;
-  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3) !important;
+  box-shadow: 0 6px 20px rgba(0, 123, 255, 0.4) !important;
   color: white !important;
 }
 
@@ -286,17 +326,42 @@
   padding: 12px 20px !important;
   border-radius: 8px !important;
   transition: all 0.3s ease !important;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-custom-intercambio::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: left 0.5s;
+}
+
+.btn-custom-intercambio:hover::before {
+  left: 100%;
 }
 
 .btn-custom-intercambio:hover {
   background: linear-gradient(135deg, #e8650e, #d91a72) !important;
   transform: translateY(-2px) !important;
-  box-shadow: 0 4px 12px rgba(253, 126, 20, 0.3) !important;
+  box-shadow: 0 6px 20px rgba(253, 126, 20, 0.4) !important;
   color: white !important;
 }
 
-/* ✨ ELIMINADO: Todo el CSS del sidebar del carrito */
-/* cart-overlay, cart-sidebar, cart-header, cart-content, etc. - ELIMINADOS */
+/* ✨ ESTADO CUANDO EL LIBRO YA ESTÁ EN EL CARRITO */
+.btn-custom-venta.in-cart {
+  background: linear-gradient(135deg, #28a745, #20c997) !important;
+  box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3) !important;
+}
+
+.btn-custom-venta.in-cart:hover {
+  background: linear-gradient(135deg, #1e7e34, #1a995e) !important;
+  transform: translateY(-1px) !important;
+}
 
 /* === MENSAJES VACÍOS === */
 .text-center {
@@ -467,4 +532,24 @@
 
 .book-card-custom {
   animation: fadeIn 0.5s ease-out;
+}
+
+/* ✨ ANIMACIÓN ESPECIAL PARA FEEDBACK DE CARRITO */
+@keyframes addToCartPulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 4px 12px rgba(106, 147, 178, 0.3);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 8px 25px rgba(106, 147, 178, 0.6);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 4px 12px rgba(106, 147, 178, 0.3);
+  }
+}
+
+.btn-custom-venta.cart-added {
+  animation: addToCartPulse 0.6s ease-in-out;
 }

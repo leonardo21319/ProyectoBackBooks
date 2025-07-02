@@ -1,9 +1,14 @@
-// src/app/shared/header/header.component.ts
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+// ============================================
+// 📁 ACTUALIZAR: src/app/shared/header/header.component.ts - CON CART SERVICE
+// ============================================
+
+import { Component, Input, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { ApiService } from '../../servicios/api.service';
+import { CartService } from '../../servicios/cart.service'; // ✨ IMPORT DEL SERVICIO
 import { lastValueFrom } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
@@ -14,7 +19,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css'],
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnInit, OnDestroy {
   @Input() cartItems: number = 0;
   @Input() savedItems: number = 0;
   @Input() currentPage: string = '';
@@ -28,6 +33,9 @@ export class HeaderComponent {
   searchTerm = '';
   showCategoriesDropdown = false;
   showProfileDropdown = false;
+
+  // ✨ SUSCRIPCIÓN PARA EL CARRITO
+  private cartSubscription: Subscription = new Subscription();
 
   // MANTENER TU LISTA DE CATEGORÍAS EXACTAMENTE IGUAL
   categories = [
@@ -49,8 +57,26 @@ export class HeaderComponent {
   constructor(
     private ApiService: ApiService,
     private router: Router,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private cartService: CartService // ✨ INYECTAR SERVICIO DE CARRITO
   ) {}
+
+  // ✨ NUEVO: Suscribirse al carrito al inicializar
+  ngOnInit() {
+    // Solo suscribirse si no se está pasando cartItems como Input
+    // Esto permite que funcione tanto con el servicio como con datos locales
+    this.cartSubscription = this.cartService.cartCount$.subscribe(count => {
+      // Solo actualizar si no viene del componente padre
+      if (this.cartItems === 0 || !this.cartItems) {
+        this.cartItems = count;
+      }
+    });
+  }
+
+  // ✨ NUEVO: Limpiar suscripción
+  ngOnDestroy() {
+    this.cartSubscription.unsubscribe();
+  }
 
   // MANTENER TU MÉTODO EXACTAMENTE IGUAL
   onSearch() {
@@ -75,12 +101,11 @@ export class HeaderComponent {
     this.router.navigate(['/saved']);
   }
 
+  // ✨ ACTUALIZADO: Simplificar navegación del carrito
   goToCart() {
-    if (this.currentPage === 'home') {
-      this.cartClicked.emit();
-    } else {
-      this.router.navigate(['/cart']);
-    }
+    console.log('HeaderComponent: Navegando al carrito');
+    // ✨ ELIMINAR LÓGICA ANTIGUA DEL SIDEBAR - SIEMPRE NAVEGAR A /cart
+    this.router.navigate(['/cart']);
   }
 
   // SOLO AGREGAR LOGS Y stopPropagation PARA FIX
