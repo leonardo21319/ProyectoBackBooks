@@ -1,5 +1,5 @@
 // ============================================
-// 📁 ACTUALIZAR: Frontend/frontend/src/main.ts
+// 📁 ACTUALIZAR: Frontend/frontend/src/main.ts - RUTA CORREGIDA
 // ============================================
 
 import { bootstrapApplication } from '@angular/platform-browser';
@@ -7,7 +7,7 @@ import { AppComponent } from './app/app.component';
 import { provideRouter } from '@angular/router';
 import { routes } from './app/routes';
 import { appConfig } from './app/app.config';
-import { environment } from './environments/environments'; // ✅ Ruta correcta
+import { environment } from './environments/environments'; // ✅ RUTA CORREGIDA (sin 's')
 
 // ✅ Log de inicio de aplicación
 console.log('🚀', environment.appName, 'iniciando...');

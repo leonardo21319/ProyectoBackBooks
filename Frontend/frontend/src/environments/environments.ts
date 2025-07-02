@@ -3,30 +3,30 @@
 // ============================================
 
 export const environment = {
-  production: false,
-  apiUrl: 'http://localhost:3000',
+  production: true, // ✨ CAMBIAR A TRUE para Render
+  apiUrl: 'https://proyectobackend-4r99.onrender.com', // ✨ TU URL DE RENDER
   
-  // Configuraciones de desarrollo
-  enableLogging: true,
-  debugMode: true,
+  // Configuraciones de producción
+  enableLogging: true, // Mantener en true para debugging inicial
+  debugMode: false, // Cambiar a false en producción
   
   // Configuraciones de la aplicación
-  appName: 'BookStore - Dev',
-  version: '1.0.0-dev',
+  appName: 'BookStore',
+  version: '1.0.0',
   
   // Límites y configuraciones
   maxFileSize: 5 * 1024 * 1024, // 5MB
   allowedImageTypes: ['image/jpeg', 'image/png', 'image/webp'],
   
-  // Configuraciones de cache (más corto en dev)
-  cacheTimeout: 60000, // 1 minuto
+  // Configuraciones de cache
+  cacheTimeout: 300000, // 5 minutos para producción
   
   // Configuraciones de paginación
   defaultPageSize: 12,
   maxPageSize: 50,
   
-  // Timeouts para requests (más corto en dev)
-  requestTimeout: 10000, // 10 segundos
+  // Timeouts para requests (más largo para Render)
+  requestTimeout: 30000, // 30 segundos para conexiones lentas
   
   // URLs de endpoints específicos
   endpoints: {

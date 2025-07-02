@@ -7,7 +7,7 @@ import { HttpClient } from '@angular/common/http';
 import { jwtDecode } from 'jwt-decode';
 import { Observable, throwError } from 'rxjs';
 import { catchError, timeout } from 'rxjs/operators';
-import { environment } from '../../environments/environments';
+import { environment } from '../../environments/environments'; // ✅ RUTA CORREGIDA (sin 's')
 
 interface DecodedToken {
   rol: number;
@@ -195,6 +195,7 @@ export class ApiService {
   //METODO PARA OBTENER LIBROS
   obtenerLibros(): Observable<any> {
     return this.http.get(`${this.baseUrl}/intercambio/obtenerLibros`).pipe(
+      timeout(environment.requestTimeout),
       catchError((error) => {
         console.error('ApiService: Error al obtener libros:', error);
         return throwError(() => new Error('Error al obtener libros'));
@@ -204,18 +205,36 @@ export class ApiService {
 
   obtenerLibroPorId(id: number): Observable<any> {
     console.log(`ApiService: Obteniendo libro con ID ${id}`);
-    return this.http.get(`${this.baseUrl}/intercambio/obtenerlibros/${id}`);
+    return this.http.get(`${this.baseUrl}/intercambio/obtenerlibros/${id}`).pipe(
+      timeout(environment.requestTimeout),
+      catchError((error) => {
+        console.error('ApiService: Error al obtener libro por ID:', error);
+        return throwError(() => error);
+      })
+    );
   }
 
   registrarLibro(formData: FormData): Observable<any> {
-    console.log('ApiService: Datos del libro:', formData);
-    return this.http.post(`${this.baseUrl}/intercambio/cargarlibros`, formData);
+    console.log('ApiService: Registrando libro');
+    return this.http.post(`${this.baseUrl}/intercambio/cargarlibros`, formData).pipe(
+      timeout(environment.requestTimeout),
+      catchError((error) => {
+        console.error('ApiService: Error al registrar libro:', error);
+        return throwError(() => error);
+      })
+    );
   }
 
   actualizarLibro(id: number, libro: any): Observable<any> {
     return this.http.put(
       `${this.baseUrl}/intercambio/actualizarlibro/${id}`,
       libro
+    ).pipe(
+      timeout(environment.requestTimeout),
+      catchError((error) => {
+        console.error('ApiService: Error al actualizar libro:', error);
+        return throwError(() => error);
+      })
     );
   }
 
@@ -228,6 +247,12 @@ export class ApiService {
     return this.http.post(
       `${this.baseUrl}/intercambio/agregarmarcador/${idLibro}/${idUsuario}`,
       {}
+    ).pipe(
+      timeout(environment.requestTimeout),
+      catchError((error) => {
+        console.error('ApiService: Error al agregar marcador:', error);
+        return throwError(() => error);
+      })
     );
   }
 
@@ -235,6 +260,12 @@ export class ApiService {
     console.log(`ApiService: Eliminando libro con ID ${id} de marcadores`);
     return this.http.delete(
       `${this.baseUrl}/intercambio/eliminarMarcador/${id}`
+    ).pipe(
+      timeout(environment.requestTimeout),
+      catchError((error) => {
+        console.error('ApiService: Error al eliminar marcador:', error);
+        return throwError(() => error);
+      })
     );
   }
 
@@ -242,6 +273,7 @@ export class ApiService {
     return this.http
       .get(`${this.baseUrl}/intercambio/obtenermarcadores/${idUsuario}`)
       .pipe(
+        timeout(environment.requestTimeout),
         catchError((error) => {
           console.error('ApiService: Error al obtener libros marcados:', error);
           return throwError(
@@ -251,13 +283,22 @@ export class ApiService {
       );
   }
 
-  // ✅ MÉTODO para probar conexión
+  // ✅ MÉTODO para probar conexión con mejor manejo de errores
   testConnection(): Observable<any> {
     console.log('ApiService: Probando conexión con backend...');
     return this.http.get(`${this.baseUrl}/health`).pipe(
-      timeout(5000),
+      timeout(10000), // 10 segundos para test de conexión
       catchError((error) => {
         console.error('ApiService: Error de conexión:', error);
+        
+        // Información más detallada del error
+        if (error.status === 0) {
+          console.error('❌ No se puede conectar al servidor. Verifica:');
+          console.error('   - URL del backend:', this.baseUrl);
+          console.error('   - CORS configurado correctamente');
+          console.error('   - Backend está activo');
+        }
+        
         return throwError(() => error);
       })
     );

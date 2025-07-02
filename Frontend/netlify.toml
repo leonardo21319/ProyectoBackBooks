@@ -1,32 +1,21 @@
-# ============================================
-# 📁 ACTUALIZAR: netlify.toml - CONFIGURACIÓN CORREGIDA
-# ============================================
-
 [build]
-  # Directorio base donde está package.json (frontend/)
-  base = "frontend"
-  
-  # Comando para construir el proyecto
-  command = "npm run build"
-  
-  # 🔥 CORREGIDO: Angular genera archivos en dist/frontend/browser/
-  publish = "dist/frontend/browser"
+base = "Frontend/frontend"
+command = "npm run build:prod"
+publish = "Frontend/frontend/dist/frontend/browser"
 
 [build.environment]
-  NODE_VERSION = "18"
-  NPM_VERSION = "9"
+NODE_VERSION = "18"
+NPM_VERSION = "9"
 
-# ⚠️ MUY IMPORTANTE: Redirecciones para Angular SPA
 [[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
+from = "/*"
+to = "/index.html"
+status = 200
 
-# Headers de seguridad
 [[headers]]
-  for = "/*"
-  [headers.values]
-    X-Frame-Options = "DENY"
-    X-XSS-Protection = "1; mode=block"
-    X-Content-Type-Options = "nosniff"
-    Referrer-Policy = "strict-origin-when-cross-origin"
+for = "/*"
+[headers.values]
+X-Frame-Options = "DENY"
+X-XSS-Protection = "1; mode=block"
+X-Content-Type-Options = "nosniff"
+Referrer-Policy = "strict-origin-when-cross-origin"
