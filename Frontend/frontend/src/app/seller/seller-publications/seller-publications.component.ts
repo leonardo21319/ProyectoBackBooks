@@ -212,7 +212,7 @@ export class SellerPublicationsComponent implements OnInit {
         this.publications = libros.map((libro: any) => ({
           ...libro,
           portada: libro.portada
-            ? `http://localhost:3000${libro.portada}`
+            ? `https://proyectobackend-4r99.onrender.com${libro.portada}`
             : 'assets/default-cover.jpg',
         }));
         this.applyFilters();
@@ -379,7 +379,7 @@ export class SellerPublicationsComponent implements OnInit {
       portada: publication.portada
         ? publication.portada.startsWith('http')
           ? publication.portada
-          : `http://localhost:3000${publication.portada}`
+          : `https://proyectobackend-4r99.onrender.com${publication.portada}`
         : 'assets/default-cover.jpg',
     };
 
@@ -536,7 +536,7 @@ export class SellerPublicationsComponent implements OnInit {
                 ...this.publications[index],
                 ...res,
                 portada: res.portada
-                  ? `http://localhost:3000${res.portada}`
+                  ? `https://proyectobackend-4r99.onrender.com${res.portada}`
                   : this.publications[index].portada,
               };
 
@@ -574,7 +574,7 @@ export class SellerPublicationsComponent implements OnInit {
             const libroConPortada = {
               ...res,
               portada: res.portada
-                ? `http://localhost:3000${res.portada}`
+                ? `https://proyectobackend-4r99.onrender.com${res.portada}`
                 : 'assets/default-cover.jpg',
             };
 

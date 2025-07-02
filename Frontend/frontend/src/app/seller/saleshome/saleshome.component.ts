@@ -61,7 +61,7 @@ export class SaleshomeComponent implements OnInit {
         this.vendorBooks = libros.map((libro: any) => ({
           ...libro,
           portada: libro.portada
-            ? `http://localhost:3000${libro.portada}`
+            ? `https://proyectobackend-4r99.onrender.com${libro.portada}`
             : 'assets/default-cover.jpg',
           estado_libro: libro.estado_libro || 'activo', // Esto garantiza que nunca sea undefined
         }));

@@ -15,7 +15,7 @@ import { Book } from '../models/Book.model';
   standalone: true,
   imports: [CommonModule, FormsModule, HeaderComponent],
   templateUrl: './book-sale.component.html',
-  styleUrls: ['./book-sale.component.css']
+  styleUrls: ['./book-sale.component.css'],
 })
 export class BookSaleComponent implements OnInit {
   cartItems = 0;
@@ -23,43 +23,45 @@ export class BookSaleComponent implements OnInit {
   bookId!: number;
   book: (Book & { vendedor: string; vendedorId: number }) | null = null;
 
-  constructor(private router: Router, private route: ActivatedRoute, private ApiService: ApiService) {}
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute,
+    private ApiService: ApiService
+  ) {}
 
   ngOnInit() {
-    this.route.paramMap.subscribe(params => {
+    this.route.paramMap.subscribe((params) => {
       this.route.paramMap.subscribe((params) => {
-      const id = Number(params.get('id'));
-      if (!id) {
-        this.router.navigate(['/home']);
-        return;
-      }
-      this.bookId = id;
-      this.loadBookDetails();
-    });
+        const id = Number(params.get('id'));
+        if (!id) {
+          this.router.navigate(['/home']);
+          return;
+        }
+        this.bookId = id;
+        this.loadBookDetails();
+      });
     });
   }
 
-loadBookDetails(): void {
-  this.ApiService.obtenerLibroPorId(this.bookId).subscribe({
-    next: (res) => {
-      console.log(res)
-      this.book = {
-        ...res,
-        vendedorId: res.id_usuario,
-        portada: res.portada
-          ? `http://localhost:3000${res.portada}`
-          : 'assets/default-cover.jpg',
+  loadBookDetails(): void {
+    this.ApiService.obtenerLibroPorId(this.bookId).subscribe({
+      next: (res) => {
+        console.log(res);
+        this.book = {
+          ...res,
+          vendedorId: res.id_usuario,
+          portada: res.portada
+            ? `https://proyectobackend-4r99.onrender.com${res.portada}`
+            : 'assets/default-cover.jpg',
           tipo_transaccion_nombre: res.tipo_transaccion,
           categoria_nombre: res.categoria,
-      };
-    },
-    error: () => {
-      this.router.navigate(['/home']);
-    },
-  });
-}
-
-
+        };
+      },
+      error: () => {
+        this.router.navigate(['/home']);
+      },
+    });
+  }
 
   addToCart() {
     this.cartItems++;
@@ -70,11 +72,11 @@ loadBookDetails(): void {
   toggleSaveBook() {
     const wasLiked = this.isBookSaved();
     this.savedItems = wasLiked ? this.savedItems - 1 : this.savedItems + 1;
-    
-    const message = wasLiked 
-      ? `"${this.book?.titulo}" removido de guardados` 
+
+    const message = wasLiked
+      ? `"${this.book?.titulo}" removido de guardados`
       : `"${this.book?.titulo}" guardado en favoritos`;
-    
+
     console.log(message);
     this.showSuccessMessage(message);
   }
@@ -85,7 +87,10 @@ loadBookDetails(): void {
 
   // ✨ NUEVO MÉTODO - Navegar a información del vendedor
   viewSellerInfo(): void {
-    console.log('Navegando a información del vendedor ID:', this.book?.vendedorId);
+    console.log(
+      'Navegando a información del vendedor ID:',
+      this.book?.vendedorId
+    );
     this.router.navigate(['/seller', this.book?.vendedorId]);
   }
 
@@ -103,9 +108,9 @@ loadBookDetails(): void {
 
   onSearchPerformed(searchTerm: string) {
     console.log('Búsqueda desde book-sale:', searchTerm);
-    this.router.navigate(['/home'], { 
+    this.router.navigate(['/home'], {
       queryParams: { search: searchTerm },
-      replaceUrl: true 
+      replaceUrl: true,
     });
   }
 }

@@ -15,7 +15,7 @@ interface DecodedToken {
   providedIn: 'root',
 })
 export class ApiService {
-  private baseUrl = 'http://localhost:3000';
+  private baseUrl = 'https://proyectobackend-4r99.onrender.com';
 
   constructor(private http: HttpClient) {}
 
