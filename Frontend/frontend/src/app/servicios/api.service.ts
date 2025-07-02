@@ -40,7 +40,9 @@ export class ApiService {
       timeout(10000),
       catchError((error) => {
         console.error('ApiService: Error en registro:', error);
-        return throwError(() => error);
+        return throwError(
+          () => new Error(error.message || 'Error desconocido')
+        );
       })
     );
   }
@@ -200,21 +202,17 @@ export class ApiService {
     );
   }
 
+  agregarLibroMarcador(idLibro: number, idUsuario: string): Observable<any> {
+    console.log(`ApiService: Agregando libro con ID ${idLibro} a marcadores`);
 
-
-agregarLibroMarcador(idLibro: number, idUsuario: string): Observable<any> {
-  console.log(`ApiService: Agregando libro con ID ${idLibro} a marcadores`);
-
-  if (!idUsuario) {
-    throw new Error('El ID de usuario es nulo o no válido');
+    if (!idUsuario) {
+      throw new Error('El ID de usuario es nulo o no válido');
+    }
+    return this.http.post(
+      `${this.baseUrl}/intercambio/agregarmarcador/${idLibro}/${idUsuario}`, // ✅ exacto como lo define tu backend
+      {}
+    );
   }
-  return this.http.post(
-    `${this.baseUrl}/intercambio/agregarmarcador/${idLibro}/${idUsuario}`, // ✅ exacto como lo define tu backend
-    {}
-  );
-}
-
-
 
   eliminarLibroMarcador(id: number): Observable<any> {
     console.log(`ApiService: Eliminando libro con ID ${id} de marcadores`);

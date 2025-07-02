@@ -47,7 +47,7 @@ import jwt from "jsonwebtoken";
  */
 export const RegistroControlador = async (req, res) => {
   const listaUsuarios = req.body;
-
+  console.log(listaUsuarios);
   if (!Array.isArray(listaUsuarios)) {
     return res
       .status(400)
@@ -61,12 +61,11 @@ export const RegistroControlador = async (req, res) => {
       const usuario = new Usuario(usuarioData);
       await guardarUsuarioDB(usuario);
       await Correo.correoBienvenida(usuario);
-      
+
       resultados.push({
         id: usuario.id,
         correo: usuario.correoInstitucional,
         exito: true,
-
       });
     } catch (error) {
       resultados.push({

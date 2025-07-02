@@ -3,7 +3,12 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ApiService } from '../servicios/api.service';
-
+interface RegistroResultado {
+  id: number;
+  correo: string;
+  exito: boolean;
+  error?: string; // La propiedad error puede ser opcional
+}
 @Component({
   selector: 'app-login',
   standalone: true,
@@ -22,14 +27,14 @@ export class LoginComponent implements OnInit {
   isLoading = false; // Para mostrar estado de carga
 
   constructor(
-    private ApiService: ApiService, 
+    private ApiService: ApiService,
     private router: Router,
     private route: ActivatedRoute // Para manejar query params
   ) {}
 
   ngOnInit() {
     console.log('LoginComponent: Componente iniciado');
-    
+
     // Verificar si ya hay una sesión activa
     if (this.ApiService.isTokenValid()) {
       console.log('LoginComponent: Usuario ya autenticado, redirigiendo');
@@ -41,10 +46,11 @@ export class LoginComponent implements OnInit {
     }
 
     // Verificar si llegó de un cierre de sesión
-    this.route.queryParams.subscribe(params => {
+    this.route.queryParams.subscribe((params) => {
       if (params['sessionEnded']) {
         console.log('LoginComponent: Sesión terminada, mostrando mensaje');
-        this.error = 'Tu sesión ha expirado. Por favor, inicia sesión nuevamente.';
+        this.error =
+          'Tu sesión ha expirado. Por favor, inicia sesión nuevamente.';
         // Limpiar el query param después de mostrar el mensaje
         setTimeout(() => {
           this.router.navigate(['/login'], { replaceUrl: true });
@@ -60,7 +66,10 @@ export class LoginComponent implements OnInit {
   }
 
   toggleLogin(value: boolean) {
-    console.log('LoginComponent: Cambiando modo:', value ? 'Login' : 'Registro');
+    console.log(
+      'LoginComponent: Cambiando modo:',
+      value ? 'Login' : 'Registro'
+    );
     this.isLoginActive = value;
     this.error = ''; // Limpiar errores al cambiar modo
     this.clearForm(); // Limpiar formulario al cambiar modo
@@ -68,7 +77,7 @@ export class LoginComponent implements OnInit {
 
   login() {
     console.log('LoginComponent: Iniciando proceso de login');
-    
+
     // Validaciones básicas
     if (!this.correo.trim() || !this.contrasena.trim()) {
       this.error = 'Por favor, completa todos los campos';
@@ -93,12 +102,12 @@ export class LoginComponent implements OnInit {
     this.ApiService.login(payload).subscribe({
       next: (res) => {
         console.log('LoginComponent: Login exitoso', res);
-        
+
         if (res && res.data) {
           this.ApiService.guardarToken(res.data);
           const decodedToken = this.ApiService.decodificarToken();
           console.log('LoginComponent: Token decodificado:', decodedToken);
-          
+
           if (decodedToken) {
             this.redirectByRole(decodedToken.rol);
           } else {
@@ -113,7 +122,7 @@ export class LoginComponent implements OnInit {
       error: (err) => {
         console.error('LoginComponent: Error en login:', err);
         this.isLoading = false;
-        
+
         // Manejar diferentes tipos de errores
         if (err.status === 401 || err.status === 400) {
           this.error = 'Credenciales inválidas';
@@ -130,7 +139,7 @@ export class LoginComponent implements OnInit {
 
   signup() {
     console.log('LoginComponent: Iniciando proceso de registro');
-    
+
     // Validaciones básicas para registro
     if (!this.nombre.trim() || !this.correo.trim() || !this.contrasena.trim()) {
       this.error = 'Por favor, completa todos los campos obligatorios';
@@ -150,36 +159,49 @@ export class LoginComponent implements OnInit {
     this.isLoading = true;
     this.error = '';
 
-    const payload = {
-      data: {
+    const payload = [
+      {
         nombre: this.nombre.trim(),
-        appaterno: this.appaterno.trim(),
-        apmaterno: this.apmaterno.trim(),
-        correo: this.correo.trim(),
+        apellidoPaterno: this.appaterno.trim(),
+        apellidoMaterno: this.apmaterno.trim(),
+        correoInstitucional: this.correo.trim(),
         contrasena: this.contrasena,
       },
-    };
+    ];
 
     this.ApiService.register(payload).subscribe({
-      next: (res) => {
-        console.log('LoginComponent: Registro exitoso', res);
+      next: (res: RegistroResultado[]) => {
+        // Aquí usamos la interfaz
+        console.log('Registro exitoso', res);
+
+        // Ahora TypeScript sabe que `res` es un arreglo de `RegistroResultado`
+        res.forEach((result) => {
+          if (result.exito) {
+            console.log(
+              `Usuario con correo ${result.correo} registrado exitosamente`
+            );
+          } else {
+            console.log(
+              `Error al registrar usuario con correo ${result.correo}: ${result.error}`
+            );
+          }
+        });
+
         this.isLoading = false;
-        
-        // Cambiar a modo login y mostrar mensaje de éxito
         this.isLoginActive = true;
         this.error = '';
         alert('Registro exitoso. Ahora puedes iniciar sesión.');
-        
-        // Limpiar campos excepto correo para facilitar login
+
+        // Limpiar campos
         this.nombre = '';
         this.appaterno = '';
         this.apmaterno = '';
         this.contrasena = '';
       },
       error: (err) => {
-        console.error('LoginComponent: Error en registro:', err);
+        console.error('Error en registro:', err);
         this.isLoading = false;
-        
+
         if (err.status === 409) {
           this.error = 'Este correo ya está registrado';
         } else if (err.status === 0) {
@@ -197,7 +219,7 @@ export class LoginComponent implements OnInit {
   private redirectByRole(userRole: number) {
     console.log('LoginComponent: Redirigiendo según rol:', userRole);
     this.isLoading = false;
-    
+
     switch (userRole) {
       case 1: // Admin
         console.log('LoginComponent: Redirigiendo a admin');
