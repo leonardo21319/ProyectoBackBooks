@@ -1,5 +1,5 @@
 // ============================================
-// src/app/payment/payment.component.ts
+// 📁 REEMPLAZAR COMPLETO: src/app/payment/payment.component.ts - SIN IMPUESTOS
 // ============================================
 
 import { Component, OnInit } from '@angular/core';
@@ -7,6 +7,10 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { HeaderComponent } from '../shared/header/header.component';
+import { PaymentService } from '../servicios/payment.service';
+import { PDFService } from '../servicios/pdf.service';
+import { ApiService } from '../servicios/api.service';
+import { PaymentData, PaymentRequest, OrderSummary } from '../models/Payment.model';
 
 @Component({
   selector: 'app-payment',
@@ -16,11 +20,11 @@ import { HeaderComponent } from '../shared/header/header.component';
   styleUrls: ['./payment.component.css']
 })
 export class PaymentComponent implements OnInit {
-  cartItems = 3; // Ejemplo
+  cartItems = 3;
   savedItems = 0;
   
   // Datos del formulario de pago
-  paymentData = {
+  paymentData: PaymentData = {
     cardNumber: '',
     expirationMonth: '',
     expirationYear: '',
@@ -44,30 +48,12 @@ export class PaymentComponent implements OnInit {
     { id: 'paypal', name: 'PayPal', icon: 'P', active: false }
   ];
 
-  // Datos del pedido (simulados)
-  orderSummary = {
-    items: [
-      {
-        id: 1,
-        title: 'Drácula',
-        author: 'Bram Stoker',
-        price: 190,
-        quantity: 2,
-        image: 'https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=300&h=400&fit=crop'
-      },
-      {
-        id: 4,
-        title: 'El Señor de los Anillos',
-        author: 'J.R.R. Tolkien',
-        price: 350,
-        quantity: 1,
-        image: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=300&h=400&fit=crop'
-      }
-    ],
-    subtotal: 730,
+  // ✨ DATOS DEL PEDIDO SIN IMPUESTOS
+  orderSummary: OrderSummary = {
+    items: [],
+    subtotal: 0,
     shipping: 0,
-    tax: 116.80,
-    total: 846.80
+    total: 0
   };
 
   // Estados del formulario
@@ -75,17 +61,28 @@ export class PaymentComponent implements OnInit {
   showPaymentSuccess = false;
   showPaymentError = false;
   errorMessage = '';
+  
+  // ✨ NUEVAS PROPIEDADES
+  completedOrderId = '';
+  pdfDownloadUrl = '';
+  currentUser: any = null;
 
   constructor(
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private paymentService: PaymentService,
+    private pdfService: PDFService,
+    private apiService: ApiService
   ) {}
 
   ngOnInit() {
     console.log('PaymentComponent: Componente iniciado');
     
-    // Cargar datos del usuario si está autenticado
+    // ✨ CARGAR DATOS DEL USUARIO AUTENTICADO
     this.loadUserData();
+    
+    // ✨ CARGAR DATOS DEL CARRITO
+    this.loadCartData();
     
     // Manejar redirecciones por categorías/búsqueda desde el header
     this.route.queryParams.subscribe(params => {
@@ -106,11 +103,59 @@ export class PaymentComponent implements OnInit {
     });
   }
 
-  // Cargar datos del usuario
+  // ✨ CARGAR DATOS DEL USUARIO
   loadUserData() {
-    // TODO: Cargar desde el servicio de usuario
-    this.paymentData.email = 'usuario@ejemplo.com';
-    this.paymentData.name = 'Michael Kerr';
+    this.currentUser = this.apiService.decodificarToken();
+    if (this.currentUser) {
+      this.paymentData.email = this.currentUser.correo || '';
+      this.paymentData.name = `${this.currentUser.nombre || ''} ${this.currentUser.appaterno || ''}`.trim();
+      console.log('PaymentComponent: Datos de usuario cargados', this.currentUser);
+    }
+  }
+
+  // ✨ CARGAR DATOS DEL CARRITO SIN IMPUESTOS
+  loadCartData() {
+    // TODO: Reemplazar con datos reales del carrito
+    
+    // Calcular totales
+    const itemsData = [
+      {
+        id: 1,
+        title: 'Drácula',
+        author: 'Bram Stoker',
+        price: 190,
+        quantity: 2,
+        image: 'https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=300&h=400&fit=crop',
+        isbn: '9786254449970',
+        editorial: 'Pinky Penguin'
+      },
+      {
+        id: 4,
+        title: 'El Señor de los Anillos',
+        author: 'J.R.R. Tolkien',
+        price: 350,
+        quantity: 1,
+        image: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=300&h=400&fit=crop',
+        isbn: '9788445000663',
+        editorial: 'Minotauro'
+      }
+    ];
+
+    // Calcular subtotal
+    const subtotal = itemsData.reduce((total, item) => total + (item.price * item.quantity), 0);
+    const shipping = 0; // Envío gratis
+    const totalFinal = subtotal + shipping;
+
+    // ✨ ESTRUCTURA CORRECTA SIN IMPUESTOS
+    this.orderSummary = {
+      items: itemsData,
+      subtotal: subtotal,
+      shipping: shipping,
+      total: totalFinal
+    };
+    
+    this.cartItems = this.orderSummary.items.reduce((total, item) => total + item.quantity, 0);
+    console.log('PaymentComponent: Datos del carrito cargados SIN IMPUESTOS', this.orderSummary);
   }
 
   // Seleccionar método de pago
@@ -152,21 +197,17 @@ export class PaymentComponent implements OnInit {
     this.paymentData.cvc = value;
   }
 
-  // Validar formulario
+  // ✨ VALIDAR FORMULARIO MEJORADO
   validateForm(): boolean {
     if (this.selectedPaymentMethod === 'card') {
-      if (!this.paymentData.cardNumber || this.paymentData.cardNumber.replace(/\s/g, '').length < 16) {
-        this.showError('Número de tarjeta inválido');
-        return false;
-      }
-      
-      if (!this.paymentData.expirationMonth || !this.paymentData.expirationYear) {
-        this.showError('Fecha de expiración requerida');
-        return false;
-      }
-      
-      if (!this.paymentData.cvc || this.paymentData.cvc.length < 3) {
-        this.showError('CVC inválido');
+      // Usar validación del servicio
+      if (!this.paymentService.validateCardData(
+        this.paymentData.cardNumber,
+        this.paymentData.expirationMonth,
+        this.paymentData.expirationYear,
+        this.paymentData.cvc
+      )) {
+        this.showError('Datos de tarjeta inválidos');
         return false;
       }
     }
@@ -184,52 +225,84 @@ export class PaymentComponent implements OnInit {
     return true;
   }
 
-  // Procesar pago
+  // ✨ PROCESAR PAGO CON BACKEND
   async processPayment() {
     if (!this.validateForm()) {
       return;
     }
 
+    if (!this.currentUser) {
+      this.showError('Usuario no autenticado');
+      return;
+    }
+
     this.isProcessing = true;
-    console.log('Procesando pago...', this.paymentData);
+    console.log('PaymentComponent: Procesando pago...', this.paymentData);
 
     try {
-      // Simular procesamiento de pago
-      await this.simulatePaymentProcessing();
+      // Preparar datos para el backend
+      const paymentRequest: PaymentRequest = {
+        paymentData: this.paymentData,
+        orderSummary: this.orderSummary,
+        userId: this.currentUser.id_usuario,
+        paymentMethod: this.selectedPaymentMethod
+      };
+
+      // ✨ LLAMAR AL BACKEND
+      const response = await this.paymentService.processPayment(paymentRequest).toPromise();
       
-      // TODO: Integrar con API de pago real
-      // const result = await this.paymentService.processPayment(this.paymentData);
+      if (response?.success) {
+        this.completedOrderId = response.orderId || '';
+        this.pdfDownloadUrl = response.pdfUrl || '';
+        
+        console.log('PaymentComponent: Pago procesado exitosamente', response);
+        this.showPaymentSuccess = true;
+        
+        // ✨ DESCARGAR PDF AUTOMÁTICAMENTE
+        if (this.completedOrderId) {
+          setTimeout(async () => {
+            try {
+              await this.downloadTicketPDF();
+            } catch (error) {
+              console.error('Error descargando PDF:', error);
+            }
+          }, 1000);
+        }
+        
+        // Redirigir después de 3 segundos
+        setTimeout(() => {
+          this.router.navigate(['/profile'], { 
+            queryParams: { section: 'Mis pedidos', paymentSuccess: true }
+          });
+        }, 3000);
+        
+      } else {
+        throw new Error(response?.message || 'Error procesando pago');
+      }
       
-      this.showPaymentSuccess = true;
-      console.log('Pago procesado exitosamente');
-      
-      // Redirigir después de 3 segundos
-      setTimeout(() => {
-        this.router.navigate(['/profile'], { 
-          queryParams: { section: 'Mis pedidos', paymentSuccess: true }
-        });
-      }, 3000);
-      
-    } catch (error) {
-      console.error('Error procesando pago:', error);
-      this.showError('Error al procesar el pago. Intente nuevamente.');
+    } catch (error: any) {
+      console.error('PaymentComponent: Error procesando pago:', error);
+      this.showError(error.error?.message || error.message || 'Error al procesar el pago. Intente nuevamente.');
     } finally {
       this.isProcessing = false;
     }
   }
 
-  // Simular procesamiento de pago
-  private simulatePaymentProcessing(): Promise<void> {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        // Simular éxito/fallo (90% éxito)
-        if (Math.random() > 0.1) {
-          resolve();
-        } else {
-          reject(new Error('Pago rechazado'));
-        }
-      }, 2000);
-    });
+  // ✨ DESCARGAR TICKET PDF
+  async downloadTicketPDF() {
+    if (!this.completedOrderId) {
+      console.error('No hay orden completada para descargar');
+      return;
+    }
+
+    try {
+      const fileName = this.pdfService.generateFileName(this.completedOrderId, this.paymentData.name);
+      await this.pdfService.downloadPDFTicket(this.completedOrderId, fileName);
+      console.log('PaymentComponent: PDF descargado exitosamente');
+    } catch (error) {
+      console.error('PaymentComponent: Error descargando PDF:', error);
+      this.showError('Error descargando el ticket. Puedes intentar descargarlo desde "Mis pedidos".');
+    }
   }
 
   // Mostrar error
@@ -270,12 +343,14 @@ export class PaymentComponent implements OnInit {
 
   // Obtener icono de tarjeta según el número
   getCardIcon(): string {
-    const number = this.paymentData.cardNumber.replace(/\s/g, '');
+    const cardType = this.paymentService.getCardType(this.paymentData.cardNumber);
     
-    if (number.startsWith('4')) return '💙'; // Visa
-    if (number.startsWith('5')) return '🔴'; // Mastercard
-    if (number.startsWith('3')) return '💚'; // American Express
-    
-    return '💳'; // Genérica
+    switch (cardType) {
+      case 'visa': return '💙';
+      case 'mastercard': return '🔴';
+      case 'amex': return '💚';
+      case 'discover': return '🟠';
+      default: return '💳';
+    }
   }
 }

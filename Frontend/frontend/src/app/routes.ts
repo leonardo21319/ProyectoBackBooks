@@ -17,7 +17,6 @@ import { BookExchangeOfferComponent } from './book-exchange-offer/book-exchange-
 import { SellerProfileComponent } from './seller/seller-profile/seller-profile.component';
 import { SellerOffersComponent } from './seller/seller-offers/seller-offers.component';
 import { SellerPublicationsComponent } from './seller/seller-publications/seller-publications.component';
-
 import { InfoSalesCustomerComponent } from './info-sales-customer/info-sales-customer.component';
 import { ReportSellerCustomerComponent } from './report-seller-customer/report-seller-customer.component';
 import { RateOrderComponent } from './rate-order/rate-order.component';

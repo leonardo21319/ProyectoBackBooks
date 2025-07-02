@@ -1,5 +1,5 @@
 <!-- ============================================ -->
-<!-- 📁 CREAR: src/app/payment/payment.component.html -->
+<!-- 📁 ACTUALIZAR: src/app/payment/payment.component.html - SIN IMPUESTOS -->
 <!-- ============================================ -->
 
 <div class="bookstore-container">
@@ -314,7 +314,7 @@
               </div>
             </div>
 
-            <!-- Totales -->
+            <!-- ✨ TOTALES SIN IMPUESTOS -->
             <div class="order-totals">
               <div class="total-row">
                 <span class="total-label">Subtotal</span>
@@ -329,10 +329,7 @@
                 </span>
               </div>
               
-              <div class="total-row">
-                <span class="total-label">Impuestos</span>
-                <span class="total-value">${{orderSummary.tax}}</span>
-              </div>
+              <!-- ❌ ELIMINADA SECCIÓN DE IMPUESTOS -->
               
               <div class="total-row total-final">
                 <span class="total-label">Total</span>
@@ -377,5 +374,4 @@
     </div>
   </div>
 
-  
 </div>
