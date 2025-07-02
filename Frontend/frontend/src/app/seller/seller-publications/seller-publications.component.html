@@ -1,4 +1,3 @@
-<!-- seller/seller-publications/seller-publications.component.html -->
 <div class="seller-publications-container">
   <!-- Header del vendedor -->
   <app-sales-header
@@ -363,20 +362,121 @@
           </div>
 
           <div class="form-row">
-            <!-- ISBN -->
+            <!-- Estado del libro -->
             <div class="form-group col-md-6">
-              <label for="isbn">ISBN *</label>
-              <input
-                type="text"
-                id="isbn"
+              <label for="estado">Estado del libro *</label>
+              <select
                 class="form-control"
-                [(ngModel)]="currentPublication.isbn"
-                name="isbn"
-                placeholder="978-0-000-00000-0"
+                [(ngModel)]="currentPublication.id_estado_libro"
+                name="id_estado_libro"
+                required
+              >
+                <option [ngValue]="1">Nuevo</option>
+                <option [ngValue]="2">Usado</option>
+                <option [ngValue]="3">Desgastado</option>
+              </select>
+            </div>
+
+            <!-- Categoría -->
+            <div class="form-group col-md-6">
+              <label for="categoria">Categoría *</label>
+              <select
+                id="categoria"
+                class="form-control"
+                [(ngModel)]="currentPublication.id_categoria"
+                name="id_categoria"
+                required
+              >
+                <option
+                  *ngFor="let category of categoriasMap"
+                  [ngValue]="category.id"
+                >
+                  {{ category.label }}
+                </option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <!-- Transacción -->
+            <div class="form-group col-md-6">
+              <label for="transaccion">Transacción *</label>
+              <select
+                class="form-control"
+                [(ngModel)]="currentPublication.id_tipo_transaccion"
+                name="id_tipo_transaccion"
+                required
+              >
+                <option [ngValue]="1">Venta</option>
+                <option [ngValue]="2">Intercambio</option>
+                <option [ngValue]="3">Donación</option>
+              </select>
+            </div>
+
+            <!-- Precio (solo si es venta) -->
+            <div
+              *ngIf="currentPublication.id_tipo_transaccion === 1"
+              class="form-group col-md-6"
+            >
+              <label for="precio">Precio (MXN)</label>
+              <input
+                type="number"
+                id="precio"
+                class="form-control"
+                [(ngModel)]="currentPublication.precio"
+                name="precio"
+                placeholder="0.00"
+                min="0"
+                step="0.01"
+              />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <!-- Número de páginas -->
+            <div class="form-group col-md-6">
+              <label for="numPaginas">Número de páginas *</label>
+              <input
+                type="number"
+                id="numPaginas"
+                class="form-control"
+                [(ngModel)]="currentPublication.numpaginas"
+                name="numPaginas"
+                placeholder="0"
+                min="1"
                 required
               />
             </div>
 
+            <div class="form-group col-md-6">
+              <label for="cantidadlibros">Cantidad de libros *</label>
+              <input
+                type="number"
+                id="cantidadlibros"
+                class="form-control"
+                [(ngModel)]="currentPublication.disponibilidad"
+                name="cantidadlibros"
+                placeholder="0"
+                min="1"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <!-- Fecha de publicación -->
+            <div class="form-group col-md-6">
+              <label for="fechaPublicacion">Fecha de publicación</label>
+              <input
+                type="date"
+                id="fechaPublicacion"
+                class="form-control"
+                [(ngModel)]="currentPublication.fecha_publicacion"
+                name="fechaPublicacion"
+              />
+            </div>
+
+            <!-- Portada -->
             <div class="form-group col-md-6">
               <label for="portada">Portada</label>
               <div class="file-input-group">
@@ -414,133 +514,20 @@
                 {{ getFileNameFromUrl(currentPublication.portada) }}
               </div>
             </div>
+          </div>
 
-            <div class="form-row">
-              <!-- Estado del libro -->
-              <div class="form-group col-md-6">
-                <label for="estado">Estado del libro *</label>
-                <select
-                  class="form-control"
-                  [(ngModel)]="currentPublication.id_estado_libro"
-                  name="id_estado_libro"
-                  required
-                >
-                  <option [ngValue]="1">Nuevo</option>
-                  <option [ngValue]="2">Usado</option>
-                  <option [ngValue]="3">Desgastado</option>
-                </select>
-              </div>
-
-              <!-- Categoría -->
-              <div class="form-group col-md-6">
-                <label for="categoria">Categoría *</label>
-                <select
-                  id="categoria"
-                  class="form-control"
-                  [(ngModel)]="currentPublication.id_categoria"
-                  name="id_categoria"
-                  required
-                >
-                  <option
-                    *ngFor="let category of categoriasMap"
-                    [ngValue]="category.id"
-                  >
-                    {{ category.label }}
-                  </option>
-                </select>
-              </div>
-            </div>
-
-            <div class="form-row">
-              <!-- Transacción -->
-              <div class="form-group col-md-6">
-                <label for="transaccion">Transacción *</label>
-                <select
-                  class="form-control"
-                  [(ngModel)]="currentPublication.id_tipo_transaccion"
-                  name="id_tipo_transaccion"
-                  required
-                >
-                  <option [ngValue]="1">Venta</option>
-                  <option [ngValue]="2">Intercambio</option>
-                  <option [ngValue]="3">Donación</option>
-                </select>
-              </div>
-
-              <!-- Precio (solo si es venta) -->
-              <div
-                *ngIf="currentPublication.id_tipo_transaccion === 1"
-                class="form-group col-md-6"
-              >
-                <label for="precio">Precio (MXN)</label>
-                <input
-                  type="number"
-                  id="precio"
-                  class="form-control"
-                  [(ngModel)]="currentPublication.precio"
-                  name="precio"
-                  placeholder="0.00"
-                  min="0"
-                  step="0.01"
-                />
-              </div>
-            </div>
-
-            <div class="form-row">
-              <!-- Número de páginas -->
-              <div class="form-group col-md-6">
-                <label for="numPaginas">Número de páginas *</label>
-                <input
-                  type="number"
-                  id="numPaginas"
-                  class="form-control"
-                  [(ngModel)]="currentPublication.numpaginas"
-                  name="numPaginas"
-                  placeholder="0"
-                  min="1"
-                  required
-                />
-              </div>
-
-              <div class="form-group col-md-6">
-                <label for="cantidadlibros">Cantidad de libros *</label>
-                <input
-                  type="number"
-                  id="cantidadlibros"
-                  class="form-control"
-                  [(ngModel)]="currentPublication.disponibilidad"
-                  name="cantidadlibros"
-                  placeholder="0"
-                  min="1"
-                  required
-                />
-              </div>
-
-              <div class="form-group col-md-6">
-                <label for="fechaPublicacion">Fecha de publicación</label>
-                <input
-                  type="date"
-                  id="fechaPublicacion"
-                  class="form-control"
-                  [(ngModel)]="currentPublication.fecha_publicacion"
-                  name="fechaPublicacion"
-                />
-              </div>
-            </div>
-
-            <!-- Descripción -->
-            <div class="form-group">
-              <label for="descripcion">Descripción *</label>
-              <textarea
-                id="descripcion"
-                class="form-control"
-                [(ngModel)]="currentPublication.descripcion"
-                name="descripcion"
-                rows="4"
-                placeholder="Describe el libro, su estado, etc."
-                required
-              ></textarea>
-            </div>
+          <!-- Descripción -->
+          <div class="form-group">
+            <label for="descripcion">Descripción *</label>
+            <textarea
+              id="descripcion"
+              class="form-control"
+              [(ngModel)]="currentPublication.descripcion"
+              name="descripcion"
+              rows="4"
+              placeholder="Describe el libro, su estado, etc."
+              required
+            ></textarea>
           </div>
 
           <div class="modal-footer">
@@ -558,17 +545,9 @@
               (click)="savePublication()"
               [disabled]="!isFormValid()"
             >
-              {{ isEditMode ? "Guardar" : "Guardar" }}
+              {{ isEditMode ? "Guardar" : "Publicar" }}
             </button>
           </div>
-          <!-- <--- ESTE cierre era el que faltaba -->
-
-          <div
-            class="modal-backdrop fade"
-            [class.show]="showNewPublicationModal"
-            *ngIf="showNewPublicationModal"
-            (click)="closeModal()"
-          ></div>
         </form>
       </div>
     </div>
