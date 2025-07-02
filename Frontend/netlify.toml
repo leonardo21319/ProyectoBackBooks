@@ -1,23 +1,22 @@
 # ============================================
-# 📁 CREAR: Frontend/netlify.toml
+# 📁 VERIFICAR/CREAR: Frontend/netlify.toml
 # ============================================
 
 [build]
-  # Directorio base donde está package.json
+  # Directorio base donde está package.json (Frontend/frontend/)
   base = "frontend"
   
   # Comando para construir el proyecto
   command = "npm run build:prod"
   
-  # Directorio donde se generan los archivos de producción
-  publish = "frontend/dist/frontend"
+  # Directorio donde se generan los archivos (Frontend/frontend/dist/frontend)
+  publish = "dist/frontend"
 
 [build.environment]
-  # Versión de Node.js para el build
   NODE_VERSION = "18"
   NPM_VERSION = "9"
 
-# Redirecciones para Angular SPA (MUY IMPORTANTE)
+# ⚠️ MUY IMPORTANTE: Redirecciones para Angular SPA
 [[redirects]]
   from = "/*"
   to = "/index.html"
@@ -30,29 +29,3 @@
     X-Frame-Options = "DENY"
     X-XSS-Protection = "1; mode=block"
     X-Content-Type-Options = "nosniff"
-    Referrer-Policy = "strict-origin-when-cross-origin"
-
-# Headers para archivos estáticos (cache)
-[[headers]]
-  for = "/assets/*"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000"
-
-# Headers para JS y CSS
-[[headers]]
-  for = "/*.js"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000"
-
-[[headers]]
-  for = "/*.css"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000"
-
-# Variables de entorno para producción
-[context.production.environment]
-  NODE_ENV = "production"
-  
-# Variables para preview branches
-[context.deploy-preview.environment]
-  NODE_ENV = "development"
