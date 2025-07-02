@@ -62,9 +62,9 @@ export class BookExchangeComponent implements OnInit {
     console.log('Cargando detalles del libro de intercambio ID:', bookId);
     this.ApiService.obtenerLibroPorId(bookId).subscribe({
       next: (data: Book) => {
-        // Asegúrate que solo muestre libros de intercambio (por ID o nombre)
+        // Verifica que el libro sea del tipo "intercambio"
         if (
-          data.id_tipo_transaccion === 2 || // Suponiendo que 2 = Intercambio
+          data.id_tipo_transaccion === 2 || // Suponiendo que 2 es para "Intercambio"
           data.tipo_transaccion_nombre?.toLowerCase() === 'intercambio'
         ) {
           this.book = data;
@@ -105,7 +105,14 @@ export class BookExchangeComponent implements OnInit {
   }
 
   guardarLibroMarcador(book: Book) {
-    this.ApiService.agregarLibroMarcador(book.id).subscribe({
+    const idUsuario = this.ApiService.getUserId(); // Obtener el ID del usuario
+
+    if (!idUsuario) {
+      console.error('No se pudo obtener el ID del usuario');
+      return;
+    }
+
+    this.ApiService.agregarLibroMarcador(book.id, idUsuario).subscribe({
       next: (res) => console.log('Libro guardado en marcadores:', res),
       error: (e) => console.error('Error al guardar libro en marcadores:', e),
     });

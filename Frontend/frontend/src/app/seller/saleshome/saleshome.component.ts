@@ -57,14 +57,15 @@ export class SaleshomeComponent implements OnInit {
   cargarDatosMock() {
     this.ApiService.obtenerLibros().subscribe({
       next: (libros) => {
+        console.log('Libros obtenidos:', libros);
         this.vendorBooks = libros.map((libro: any) => ({
           ...libro,
           portada: libro.portada
             ? `http://localhost:3000${libro.portada}`
             : 'assets/default-cover.jpg',
-          estado_libro: libro.estado_libro || 'activo', // Ensure status exists
+          estado_libro: libro.estado_libro || 'activo', // Esto garantiza que nunca sea undefined
         }));
-        this.allVendorBooks = [...this.vendorBooks]; // Initialize allVendorBooks
+        this.allVendorBooks = [...this.vendorBooks]; //   Initialize allVendorBooks
         this.updateStats(); // Update statistics
       },
       error: (error) => {
@@ -170,6 +171,7 @@ export class SaleshomeComponent implements OnInit {
     this.selectedBook = book;
     this.showBookDetails = true;
     console.log('Ver detalles del libro:', book.titulo);
+    console.log('Detalles del libro:', book);
   }
 
   toggleBookStatus(book: Book) {
@@ -264,7 +266,7 @@ export class SaleshomeComponent implements OnInit {
   }
 
   // Métodos de utilidad
-  getStatusClass(status: string): string {
+  getStatusClass(status: string | undefined): string {
     switch (status) {
       case 'activo':
         return 'status-active';
@@ -273,14 +275,14 @@ export class SaleshomeComponent implements OnInit {
       case 'pausado':
         return 'status-paused';
       default:
-        return 'status-default';
+        return 'status-default'; // Para manejar undefined o cualquier otro valor no esperado
     }
   }
 
   getStatusText(status: string | undefined): string {
     // Si el estado es undefined, devolvemos un valor predeterminado
     if (!status) {
-      return 'Desconocido'; // O cualquier valor que prefieras mostrar
+      return 'Desconocido'; // O cualquier valor predeterminado que prefieras
     }
 
     switch (status) {
@@ -291,10 +293,18 @@ export class SaleshomeComponent implements OnInit {
       case 'pausado':
         return 'Pausado';
       default:
-        return 'Desconocido'; // Valor por defecto
+        return 'Desconocido'; // Valor por defecto si no coincide con ninguno
     }
   }
 
+  getEstadoFisicoNombre(id_estado_libro: number): string {
+    const map: { [key: number]: string } = {
+      1: 'Nuevo',
+      2: 'Usado',
+      3: 'Desgastado',
+    };
+    return map[id_estado_libro] || 'Desconocido';
+  }
   formatPrice(price: number): string {
     return new Intl.NumberFormat('es-MX', {
       style: 'currency',

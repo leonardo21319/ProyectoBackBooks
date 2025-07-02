@@ -10,52 +10,55 @@ import { Subscription } from 'rxjs';
 import { HeaderComponent } from '../shared/header/header.component';
 import { SavedService } from '../servicios/saved.service';
 import { Book } from '../models/Book.model';
-
+import { ApiService } from '../servicios/api.service';
 @Component({
   selector: 'app-save',
   standalone: true,
   imports: [CommonModule, FormsModule, HeaderComponent],
   templateUrl: './save.component.html',
-  styleUrls: ['./save.component.css']
+  styleUrls: ['./save.component.css'],
 })
 export class SaveComponent implements OnInit, OnDestroy {
   cartItems = 0;
   savedItems = 0;
   savedBooks: Book[] = [];
   selectedCategory = 'Todas';
-  
+
   private savedBooksSubscription?: Subscription;
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private savedService: SavedService
+    private savedService: SavedService,
+    private ApiService: ApiService
   ) {}
 
   ngOnInit() {
     console.log('SaveComponent: Componente iniciado');
-    
+
     // Suscribirse a los cambios en libros guardados
-    this.savedBooksSubscription = this.savedService.savedBooks$.subscribe(books => {
-      this.savedBooks = books;
-      this.savedItems = books.length;
-      console.log('Libros guardados actualizados:', books.length);
-    });
+    this.savedBooksSubscription = this.savedService.savedBooks$.subscribe(
+      (books) => {
+        this.savedBooks = books;
+        this.savedItems = books.length;
+        console.log('Libros guardados actualizados:', books.length);
+      }
+    );
 
     // Manejar redirecciones por categorías/búsqueda desde el header
-    this.route.queryParams.subscribe(params => {
+    this.route.queryParams.subscribe((params) => {
       if (params['category']) {
         console.log('Categoría seleccionada desde saved:', params['category']);
-        this.router.navigate(['/home'], { 
+        this.router.navigate(['/home'], {
           queryParams: { category: params['category'] },
-          replaceUrl: true 
+          replaceUrl: true,
         });
       }
       if (params['search']) {
         console.log('Búsqueda desde saved:', params['search']);
-        this.router.navigate(['/home'], { 
+        this.router.navigate(['/home'], {
           queryParams: { search: params['search'] },
-          replaceUrl: true 
+          replaceUrl: true,
         });
       }
     });
@@ -73,15 +76,20 @@ export class SaveComponent implements OnInit, OnDestroy {
     if (this.selectedCategory === 'Todas') {
       return this.savedBooks;
     }
-    return this.savedBooks.filter(book => book.categoria_nombre === this.selectedCategory);
+    return this.savedBooks.filter(
+      (book) => book.categoria_nombre === this.selectedCategory
+    );
   }
 
   // ✅ CORREGIDO - Obtener categorías disponibles SIN undefined
   get availableCategories(): string[] {
     const categories = new Set(
       this.savedBooks
-        .map(book => book.categoria_nombre)
-        .filter((category): category is string => category !== undefined && category !== null)
+        .map((book) => book.categoria_nombre)
+        .filter(
+          (category): category is string =>
+            category !== undefined && category !== null
+        )
     );
     return Array.from(categories).sort();
   }
@@ -91,7 +99,8 @@ export class SaveComponent implements OnInit, OnDestroy {
     if (category === 'Todas') {
       return this.savedBooks.length;
     }
-    return this.savedBooks.filter(book => book.categoria_nombre === category).length;
+    return this.savedBooks.filter((book) => book.categoria_nombre === category)
+      .length;
   }
 
   // Cambiar categoría seleccionada
@@ -135,7 +144,7 @@ export class SaveComponent implements OnInit, OnDestroy {
   // Acción del botón según tipo de transacción
   getButtonAction(book: Book) {
     const tipoTransaccion = book.tipo_transaccion_nombre || 'Venta';
-    
+
     switch (tipoTransaccion) {
       case 'Venta':
         this.addToCart(book);
@@ -155,7 +164,7 @@ export class SaveComponent implements OnInit, OnDestroy {
   // Texto del botón según tipo de transacción
   getButtonText(type: string | undefined): string {
     const tipoTransaccion = type || 'Venta';
-    
+
     switch (tipoTransaccion) {
       case 'Venta':
         return 'Añadir al carrito';
@@ -171,9 +180,9 @@ export class SaveComponent implements OnInit, OnDestroy {
   // Ver detalles del libro
   viewBookDetail(book: Book): void {
     console.log('Navegando al detalle del libro:', book.titulo);
-    
+
     const tipoTransaccion = book.tipo_transaccion_nombre || 'Venta';
-    
+
     if (tipoTransaccion === 'Venta') {
       this.router.navigate(['/book', book.id]);
     } else if (tipoTransaccion === 'Intercambio') {
@@ -189,19 +198,23 @@ export class SaveComponent implements OnInit, OnDestroy {
   viewSellerInfo(book: Book): void {
     // Determinar el ID del usuario según el tipo de transacción
     let userId = 1; // Valor por defecto
-    
+
     // Simular obtención del ID del usuario desde el libro
     if (book.id_usuario) {
       userId = book.id_usuario;
     }
-    
+
     console.log('Navegando a información del usuario ID:', userId);
     this.router.navigate(['/seller', userId]);
   }
 
   // Limpiar todos los guardados
   clearAllSaved() {
-    if (confirm('¿Estás seguro de que quieres eliminar todos los libros guardados?')) {
+    if (
+      confirm(
+        '¿Estás seguro de que quieres eliminar todos los libros guardados?'
+      )
+    ) {
       this.savedService.clearAllSaved();
       this.showSuccessMessage('Todos los libros guardados han sido eliminados');
     }
@@ -221,9 +234,18 @@ export class SaveComponent implements OnInit, OnDestroy {
   // Manejar búsqueda desde header
   onSearchPerformed(searchTerm: string) {
     console.log('Búsqueda desde saved:', searchTerm);
-    this.router.navigate(['/home'], { 
+    this.router.navigate(['/home'], {
       queryParams: { search: searchTerm },
-      replaceUrl: true 
+      replaceUrl: true,
     });
+  }
+
+  obtenerLibrosGuardados(): Book[] {
+    return this.ApiService.obtenerLibros().pipe(
+      catchError((error) => {
+        console.error('Error al obtener libros guardados:', error);
+        return throwError(() => new Error('Error al obtener libros guardados'));
+      })
+    );
   }
 }

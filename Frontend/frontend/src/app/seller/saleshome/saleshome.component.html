@@ -170,7 +170,7 @@
                 class="book-status-badge"
                 [ngClass]="getStatusClass(book.estado_libro)"
               >
-                {{ getStatusText(book.estado_libro) }}
+                {{ book.estado_libro }}
               </div>
 
               <!-- Botones de acción rápida -->
@@ -203,42 +203,6 @@
                     />
                   </svg>
                 </button>
-                <button
-                  class="btn btn-sm btn-toggle"
-                  [ngClass]="
-                    book.estado_libro === 'activo'
-                      ? 'btn-pause'
-                      : 'btn-activate'
-                  "
-                  (click)="toggleBookStatus(book)"
-                  [title]="
-                    book.estado_libro === 'activo' ? 'Pausar' : 'Activar'
-                  "
-                >
-                  <svg
-                    *ngIf="book.estado_libro === 'activo'"
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M6 4H10V20H6V4ZM14 4H18V20H14V4Z"
-                      fill="currentColor"
-                    />
-                  </svg>
-                  <svg
-                    *ngIf="book.estado_libro !== 'activo'"
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path d="M8 5V19L19 12L8 5Z" fill="currentColor" />
-                  </svg>
-                </button>
               </div>
             </div>
 
@@ -246,6 +210,7 @@
               <h5 class="card-title text-vendor-dark mb-2">
                 {{ book.titulo }}
               </h5>
+
               <p class="card-text text-muted mb-2">{{ book.autor }}</p>
 
               <!-- Información del libro -->
@@ -421,6 +386,7 @@
   >
     <div class="modal-header">
       <h3>{{ selectedBook.titulo }}</h3>
+
       <button class="btn-close" (click)="closeBookDetails()">
         <svg
           width="24"
@@ -460,9 +426,9 @@
             <p *ngIf="selectedBook.precio">
               <strong>Precio:</strong> {{ formatPrice(selectedBook.precio) }}
             </p>
-            <p>
+            <p *ngIf="selectedBook.estado_libro">
               <strong>Estado:</strong>
-              {{ getStatusText(selectedBook.estado_libro) }}
+              {{ selectedBook.estado_libro }}
             </p>
             <p *ngIf="selectedBook.fecha_publicacion">
               <strong>Publicado:</strong>
@@ -535,7 +501,7 @@
             </p>
             <p>
               <strong>Estado:</strong>
-              {{ getStatusText(selectedBook.estado_libro) }}
+              {{ selectedBook.estado_libro }}
             </p>
             <p *ngIf="selectedBook.fecha_publicacion">
               <strong>Publicado:</strong>

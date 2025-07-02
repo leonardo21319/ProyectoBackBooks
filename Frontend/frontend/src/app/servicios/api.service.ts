@@ -54,6 +54,26 @@ export class ApiService {
     }
   }
 
+  getUserId(): string | null {
+    const token = this.obtenerToken(); // Obtener el token del almacenamiento
+    if (!token) {
+      console.log('ApiService: No hay token disponible');
+      return null;
+    }
+
+    try {
+      const decoded = jwtDecode<DecodedToken>(token); // Decodificar el token
+      if (decoded && decoded.id) {
+        console.log('ApiService: ID de usuario decodificado:', decoded.id);
+        return decoded.id;
+      }
+    } catch (error) {
+      console.error('ApiService: Error al decodificar token:', error);
+      return null;
+    }
+
+    return null;
+  }
   // MANTENER EXACTAMENTE IGUAL
   obtenerToken(): string | null {
     try {
@@ -180,10 +200,36 @@ export class ApiService {
     );
   }
 
-  agregarLibroMarcador(id: number): Observable<any> {
-    console.log(`ApiService: Agregando libro con ID ${id} a marcadores`);
-    return this.http.post(`${this.baseUrl}/intercambio/agregarMarcador`, {
-      id,
-    });
+  agregarLibroMarcador(idLibro: number, idUsuario: string): Observable<any> {
+    console.log(`ApiService: Agregando libro con ID ${idLibro} a marcadores`);
+
+    // Verificar que el ID de usuario no sea nulo
+    if (!idUsuario) {
+      throw new Error('El ID de usuario es nulo o no válido');
+    }
+
+    return this.http.post(
+      `${this.baseUrl}/intercambio/agregarMarcador/${idLibro}/${idUsuario}`,
+      { idLibro: idLibro, idUsuario: idUsuario }
+    );
+  }
+  eliminarLibroMarcador(id: number): Observable<any> {
+    console.log(`ApiService: Eliminando libro con ID ${id} de marcadores`);
+    return this.http.delete(
+      `${this.baseUrl}/intercambio/eliminarMarcador/${id}`
+    );
+  }
+
+  obtenerLibrosMarcados(idUsuario: string): Observable<any> {
+    return this.http
+      .get(`${this.baseUrl}/intercambio/obtenermarcadores/${idUsuario}`)
+      .pipe(
+        catchError((error) => {
+          console.error('ApiService: Error al obtener libros marcados:', error);
+          return throwError(
+            () => new Error('Error al obtener libros marcados')
+          );
+        })
+      );
   }
 }

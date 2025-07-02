@@ -221,36 +221,16 @@ router.delete("/eliminarlibro/:id", eliminarLibroControlador);
  *       500:
  *         description: Error en el servidor.
  */
-router.post("/agregarmarcador", agregarMarcadorLibroControlador);
 
-/**
- * @swagger
- * /intercambio/eliminarmarcador:
- *   post:
- *     summary: Elimina un marcador de un libro.
- *     description: Permite eliminar un marcador de un libro específico utilizando el ID de libro y usuario.
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               idLibro:
- *                 type: integer
- *                 description: ID del libro del que se eliminará el marcador.
- *               idUsuario:
- *                 type: integer
- *                 description: ID del usuario que desea eliminar el marcador.
- *     responses:
- *       200:
- *         description: Marcador eliminado exitosamente.
- *       404:
- *         description: Marcador no encontrado.
- *       500:
- *         description: Error en el servidor.
- */
-router.post("/eliminarmarcador", eliminarMarcadorLibroControlador);
+router.post(
+  "/agregarmarcador/:idLibro/:idUsuario",
+  agregarMarcadorLibroControlador
+);
+
+router.delete(
+  "/eliminarmarcador/:idLibro/:idUsuario",
+  eliminarMarcadorLibroControlador
+);
 
 /**
  * @swagger
