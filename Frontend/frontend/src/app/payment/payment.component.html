@@ -1,7 +1,3 @@
-<!-- ============================================ -->
-<!-- 📁 ACTUALIZAR: src/app/payment/payment.component.html - SIN IMPUESTOS -->
-<!-- ============================================ -->
-
 <div class="bookstore-container">
   
   <!-- Header compartido -->
@@ -58,7 +54,7 @@
                   <!-- Ícono del método -->
                   <div class="method-icon" [ngSwitch]="method.id">
                     <div *ngSwitchCase="'card'" class="card-icons">
-                      <div class="card-icon visa">💳</div>
+                      <div class="card-icon">💳</div>
                     </div>
                     <div *ngSwitchCase="'klarna'" class="klarna-icon">K</div>
                     <div *ngSwitchCase="'afterpay'" class="afterpay-icon">⚡</div>
@@ -85,7 +81,7 @@
                       type="email"
                       id="email"
                       class="form-control"
-                      [(ngModel)]="paymentData.email"
+                      [(ngModel)]="userData.email"
                       name="email"
                       required
                       placeholder="tu@email.com">
@@ -114,10 +110,12 @@
                     
                     <!-- Iconos de tarjetas aceptadas -->
                     <div class="card-icons-display">
-                      <div class="card-brand visa"></div>
-                      <div class="card-brand mastercard"></div>
-                      <div class="card-brand amex"></div>
-                      <div class="card-brand discover"></div>
+                      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/2560px-Visa_Inc._logo.svg.png" 
+                           alt="Visa" class="card-brand">
+                      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Mastercard-logo.svg/1280px-Mastercard-logo.svg.png" 
+                           alt="Mastercard" class="card-brand">
+                      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/American_Express_logo.svg/1200px-American_Express_logo.svg.png" 
+                           alt="American Express" class="card-brand">
                     </div>
                   </div>
                 </div>
@@ -266,7 +264,7 @@
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="me-2">
                       <path d="M12 22S8 18 8 12V7L12 5L16 7V12C16 18 12 22 12 22Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
-                    Pagar ${{orderSummary.total}}
+                    Pagar ${{orderSummary.total | number:'1.2-2'}}
                   </span>
                   
                   <span *ngIf="isProcessing" class="processing-text">
@@ -309,31 +307,29 @@
                   <div class="item-quantity">Cantidad: {{item.quantity}}</div>
                 </div>
                 <div class="item-price">
-                  ${{item.price * item.quantity}}
+                  ${{(item.price * item.quantity) | number:'1.2-2'}}
                 </div>
               </div>
             </div>
 
-            <!-- ✨ TOTALES SIN IMPUESTOS -->
+            <!-- Totales -->
             <div class="order-totals">
               <div class="total-row">
                 <span class="total-label">Subtotal</span>
-                <span class="total-value">${{orderSummary.subtotal}}</span>
+                <span class="total-value">${{orderSummary.subtotal | number:'1.2-2'}}</span>
               </div>
               
               <div class="total-row">
                 <span class="total-label">Envío</span>
                 <span class="total-value">
                   <span *ngIf="orderSummary.shipping === 0" class="free-shipping">Gratis</span>
-                  <span *ngIf="orderSummary.shipping > 0">${{orderSummary.shipping}}</span>
+                  <span *ngIf="orderSummary.shipping > 0">${{orderSummary.shipping | number:'1.2-2'}}</span>
                 </span>
               </div>
               
-              <!-- ❌ ELIMINADA SECCIÓN DE IMPUESTOS -->
-              
               <div class="total-row total-final">
                 <span class="total-label">Total</span>
-                <span class="total-value">${{orderSummary.total}}</span>
+                <span class="total-value">${{orderSummary.total | number:'1.2-2'}}</span>
               </div>
             </div>
 
