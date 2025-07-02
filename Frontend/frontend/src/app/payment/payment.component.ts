@@ -5,6 +5,8 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { HeaderComponent } from '../shared/header/header.component';
 import { CartService, CartItem } from '../servicios/cart.service';
 import { ApiService } from '../servicios/api.service';
+import { jsPDF } from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 interface PaymentData {
   cardNumber: string;
@@ -42,13 +44,17 @@ interface OrderSummary {
 }
 
 interface DecodedToken {
-  rol: number;
-  id: string;
+  rol?: number;
+  id?: string;
   exp?: number;
   iat?: number;
   correo?: string;
+  email?: string;
   nombre?: string;
+  name?: string;
   apellido?: string;
+  appaterno?: string;
+  lastName?: string;
 }
 
 @Component({
@@ -134,32 +140,48 @@ export class PaymentComponent implements OnInit {
   }
 
   loadUserData() {
-    const token = this.apiService.obtenerToken();
-    if (token) {
-      try {
-        const decodedToken = this.apiService.decodificarToken();
-        if (decodedToken) {
-          this.userData = {
-            email: this.getSafeTokenProperty(decodedToken, 'correo', 'email'),
-            fullName: this.getUserFullName(decodedToken)
-          };
-        }
-      } catch (error) {
-        console.error('Error decodificando token:', error);
+    const defaultUserData = {
+      email: '',
+      fullName: ''
+    };
+
+    try {
+      const token = this.apiService.obtenerToken();
+      if (!token) {
+        this.userData = defaultUserData;
+        return;
       }
+
+      const decodedToken = this.apiService.decodificarToken();
+      if (!decodedToken) {
+        this.userData = defaultUserData;
+        return;
+      }
+
+      const email = this.getSafeTokenProperty(decodedToken, 'correo', 'email');
+      const fullName = this.getUserFullName(decodedToken);
+
+      this.userData = {
+        email: email,
+        fullName: fullName
+      };
+    } catch (error) {
+      console.error('Error al cargar datos del usuario:', error);
+      this.userData = defaultUserData;
     }
   }
 
-  private getSafeTokenProperty(token: any, ...possibleProperties: string[]): string {
+  private getSafeTokenProperty(token: DecodedToken, ...possibleProperties: string[]): string {
     for (const prop of possibleProperties) {
-      if (token[prop]) {
-        return token[prop];
+      const value = token[prop as keyof DecodedToken];
+      if (typeof value === 'string' && value.trim() !== '') {
+        return value;
       }
     }
     return '';
   }
 
-  private getUserFullName(token: any): string {
+  private getUserFullName(token: DecodedToken): string {
     const nombre = this.getSafeTokenProperty(token, 'nombre', 'name');
     const apellido = this.getSafeTokenProperty(token, 'apellido', 'appaterno', 'lastName');
     return `${nombre} ${apellido}`.trim();
@@ -252,7 +274,7 @@ export class PaymentComponent implements OnInit {
       }
     }
 
-    if (!this.userData.email || !this.userData.email.includes('@')) {
+    if (!this.userData.email.trim() || !this.userData.email.includes('@')) {
       this.showError('Email inválido');
       return false;
     }
@@ -280,39 +302,8 @@ export class PaymentComponent implements OnInit {
     try {
       await new Promise(resolve => setTimeout(resolve, 1500));
       
-      const pdfData = {
-        user: {
-          email: this.userData.email,
-          fullName: this.userData.fullName
-        },
-        shippingInfo: {
-          address: this.paymentData.address,
-          city: this.paymentData.city,
-          state: this.paymentData.state,
-          country: this.paymentData.country,
-          postalCode: this.paymentData.postalCode
-        },
-        order: {
-          items: this.orderSummary.items,
-          subtotal: this.orderSummary.subtotal,
-          shipping: this.orderSummary.shipping,
-          total: this.orderSummary.total,
-          date: new Date().toLocaleDateString(),
-          paymentMethod: this.paymentMethods.find(m => m.id === this.selectedPaymentMethod)?.name || 'Tarjeta',
-          cardLastFour: this.paymentData.cardNumber.slice(-4).replace(/\s/g, '')
-        }
-      };
-
-      console.log('Datos para PDF:', pdfData);
-      
       this.cartService.clearCart();
       this.showPaymentSuccess = true;
-      
-      setTimeout(() => {
-        this.router.navigate(['/profile'], { 
-          queryParams: { section: 'Mis pedidos', paymentSuccess: true }
-        });
-      }, 3000);
       
     } catch (error: any) {
       console.error('Error procesando pago:', error);
@@ -320,6 +311,72 @@ export class PaymentComponent implements OnInit {
     } finally {
       this.isProcessing = false;
     }
+  }
+
+  generatePDF() {
+    const doc = new jsPDF();
+    
+    // Logo y título
+    doc.setFontSize(20);
+    doc.setTextColor(40, 40, 40);
+    doc.text('Comprobante de Pago', 105, 20, { align: 'center' });
+    
+    doc.setFontSize(12);
+    doc.text(`N° de Transacción: ${this.generateTransactionId()}`, 105, 30, { align: 'center' });
+    doc.text(`Fecha: ${new Date().toLocaleDateString()}`, 105, 36, { align: 'center' });
+
+    // Información del cliente
+    doc.setFontSize(14);
+    doc.text('Información del Cliente', 14, 50);
+    
+    doc.setFontSize(11);
+    doc.text(`Nombre: ${this.paymentData.name || this.userData.fullName}`, 14, 58);
+    doc.text(`Email: ${this.userData.email}`, 14, 65);
+    doc.text(`Dirección: ${this.paymentData.address}, ${this.paymentData.city}`, 14, 72);
+
+    // Detalles del pedido
+    doc.setFontSize(14);
+    doc.text('Detalles del Pedido', 14, 85);
+
+    // Tabla de productos
+    autoTable(doc, {
+      startY: 90,
+      head: [['Producto', 'Autor', 'Cantidad', 'Precio', 'Total']],
+      body: this.orderSummary.items.map(item => [
+        item.title,
+        item.author,
+        item.quantity.toString(),
+        `$${item.price.toFixed(2)}`,
+        `$${(item.price * item.quantity).toFixed(2)}`
+      ]),
+      theme: 'grid',
+      headStyles: { fillColor: [41, 128, 185] }
+    });
+
+    // Totales
+    const finalY = (doc as any).lastAutoTable.finalY + 10;
+    doc.setFontSize(12);
+    doc.text(`Subtotal: $${this.orderSummary.subtotal.toFixed(2)}`, 140, finalY);
+    doc.text(`Envío: $${this.orderSummary.shipping.toFixed(2)}`, 140, finalY + 7);
+    doc.setFontSize(14);
+    doc.setFont('helvetica', 'bold');
+    doc.text(`Total: $${this.orderSummary.total.toFixed(2)}`, 140, finalY + 17);
+
+    // Método de pago
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(12);
+    doc.text(`Método de pago: ${this.paymentMethods.find(m => m.id === this.selectedPaymentMethod)?.name}`, 14, finalY + 30);
+    
+    if (this.selectedPaymentMethod === 'card') {
+      doc.text(`Tarjeta terminada en: ${this.paymentData.cardNumber.slice(-4)}`, 14, finalY + 37);
+    }
+
+    // Guardar el PDF
+    doc.save(`comprobante-pago-${this.generateTransactionId()}.pdf`);
+  }
+
+  private generateTransactionId(): string {
+    return 'TXN-' + Math.random().toString(36).substr(2, 9).toUpperCase();
   }
 
   private showError(message: string): void {
@@ -332,9 +389,7 @@ export class PaymentComponent implements OnInit {
 
   closeSuccessPopup(): void {
     this.showPaymentSuccess = false;
-    this.router.navigate(['/profile'], { 
-      queryParams: { section: 'Mis pedidos' }
-    });
+    this.router.navigate(['/home']);
   }
 
   closeErrorPopup(): void {
